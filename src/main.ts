@@ -5,7 +5,7 @@ import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  app.setGlobalPrefix('api/v1'); // Hace que todos los endpoints empiecen con /api
+  app.setGlobalPrefix('api/v1/'); // Hace que todos los endpoints empiecen con /api
 
   const config = new DocumentBuilder()
     .setTitle('API de Ejemplo')
@@ -14,7 +14,7 @@ async function bootstrap() {
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api/docs', app, document);
+  SwaggerModule.setup('api/v1/docs', app, document);
 
   app.useGlobalPipes(
     new ValidationPipe({

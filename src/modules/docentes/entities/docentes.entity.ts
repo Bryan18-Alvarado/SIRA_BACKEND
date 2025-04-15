@@ -41,4 +41,3 @@ export class Docente {
   @Column({ type: 'bool', default: true })
   isAvailable: boolean;
 }
-export default Docente;
