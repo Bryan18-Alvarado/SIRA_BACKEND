@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { DocentesService } from '../services/docentes.service';
 import { createDocenteDto } from '../dto/docente-create.dto';
 
@@ -7,12 +7,22 @@ export class DocentesController {
   constructor(private readonly docentesService: DocentesService) {}
 
   @Get()
-  getDocentesAll() {
-    return 'Todos los docentes';
+  findAll() {
+    return this.docentesService.findAll();
   }
 
   @Post()
   createDocente(@Body() createDocenteDto: createDocenteDto) {
-    return this.docentesService.createDocente(createDocenteDto);
+    return this.docentesService.create(createDocenteDto);
+  }
+
+  @Get(':id')
+  findOne(@Param('id') id: number) {
+    return this.docentesService.findOne(id);
+  }
+
+  @Delete(':id')
+  remove(@Param(':id') id: number) {
+    return this.docentesService.remove(id);
   }
 }
