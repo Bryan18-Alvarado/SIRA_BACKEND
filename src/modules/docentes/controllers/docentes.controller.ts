@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { DocentesService } from '../services/docentes.service';
-import { createDocenteDto } from '../dto/docente-create.dto';
+import { CreateDocenteDto } from '../dto/docente-create.dto';
 
 @Controller('docentes')
 export class DocentesController {
@@ -12,7 +12,7 @@ export class DocentesController {
   }
 
   @Post()
-  createDocente(@Body() createDocenteDto: createDocenteDto) {
+  createDocente(@Body() createDocenteDto: CreateDocenteDto) {
     return this.docentesService.create(createDocenteDto);
   }
 

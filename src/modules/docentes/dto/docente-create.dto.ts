@@ -11,7 +11,7 @@ import {
   MinLength,
 } from 'class-validator';
 
-export class createDocenteDto {
+export class CreateDocenteDto {
   @IsOptional()
   @IsNumber()
   @ApiProperty()
@@ -75,4 +75,4 @@ export class createDocenteDto {
   isAvailable: boolean;
 }
 
-export class UpdateDocenteDto extends PartialType(createDocenteDto) {}
+export class UpdateDocenteDto extends PartialType(CreateDocenteDto) {}

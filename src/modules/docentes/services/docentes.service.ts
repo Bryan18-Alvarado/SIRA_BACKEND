@@ -5,13 +5,13 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { createDocenteDto } from '../dto/docente-create.dto';
 import { Repository } from 'typeorm';
 import { Docente } from '../entities/docentes.entity';
+import { CreateDocenteDto } from '../dto/docente-create.dto';
 
 @Injectable()
 export class DocentesService {
-  private readonly logger = new Logger('CarsService');
+  private readonly logger = new Logger('DocentesService');
 
   constructor(
     @InjectRepository(Docente)
@@ -22,7 +22,7 @@ export class DocentesService {
     return this.docenteRepository.find({});
   }
 
-  async create(createDocenteDto: createDocenteDto) {
+  async create(createDocenteDto: CreateDocenteDto) {
     try {
       const docente = this.docenteRepository.create(createDocenteDto);
       await this.docenteRepository.save(docente);
