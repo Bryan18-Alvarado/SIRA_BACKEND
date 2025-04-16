@@ -2,6 +2,8 @@ import { Module } from '@nestjs/common';
 import { EstudiantesModule } from './modules/estudiantes/estudiantes.module';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { CalificacionesService } from './modules/calificaciones/services/calificaciones.service';
+import { CalificacionesController } from './modules/calificaciones/controllers/calificaciones.controller';
 
 @Module({
   imports: [
@@ -19,7 +21,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       synchronize: true, //Si se establece en true, TypeORM sincronizará automáticamente la estructura de la base de datos con las entidades definidas en el código cada vez que se inicie la aplicación.
     }),
   ],
-  controllers: [],
-  providers: [],
+  controllers: [CalificacionesController],
+  providers: [CalificacionesService],
 })
 export class AppModule {}
