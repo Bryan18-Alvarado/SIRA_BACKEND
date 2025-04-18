@@ -11,6 +11,11 @@ export enum EstadoCivil {
   SOLTERO = 'soltero',
   CASADO = 'casado',
 }
+
+export enum Genero {
+  MASCULINO = 'masculino',
+  FEMENINO = 'femenino',
+}
 @Entity()
 export class Docente {
   @PrimaryGeneratedColumn('increment', { type: 'int4' })
@@ -24,6 +29,12 @@ export class Docente {
 
   @Column({ type: 'int' })
   edad: number;
+
+  @Column({
+    type: 'enum',
+    enum: Genero,
+  })
+  genero: Genero;
 
   @Column({ type: 'int' })
   codigo_laboral: number;

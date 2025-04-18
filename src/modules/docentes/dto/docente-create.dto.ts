@@ -5,17 +5,14 @@ import {
   IsDate,
   IsEmail,
   IsEnum,
+  // IsEnum,
   IsNumber,
   IsOptional,
   IsString,
   Min,
   MinLength,
 } from 'class-validator';
-
-export enum EstadoCivil {
-  SOLTERO = 'soltero/a',
-  CASADO = 'casado/a',
-}
+import { EstadoCivil, Genero } from '../entities/docentes.entity';
 
 export class CreateDocenteDto {
   @IsOptional()
@@ -36,6 +33,13 @@ export class CreateDocenteDto {
   @IsNumber()
   @ApiProperty()
   edad: number;
+
+  @IsEnum(Genero)
+  @ApiProperty({
+    enum: Genero,
+    description: 'Genero del docente (masculino o femenino)',
+  })
+  genero: Genero;
 
   @IsNumber()
   @ApiProperty()
@@ -74,7 +78,7 @@ export class CreateDocenteDto {
   @IsEnum(EstadoCivil)
   @ApiProperty({
     enum: EstadoCivil,
-    description: 'Estado civil del docente (soltero o casado)',
+    description: 'Estado civil del docente (casado o soltero)',
   })
   estado_civil: EstadoCivil;
 
