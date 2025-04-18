@@ -13,8 +13,8 @@ import {
 } from 'class-validator';
 
 export enum EstadoCivil {
-  SOLTERO = 'soltero',
-  CASADO = 'casado',
+  SOLTERO = 'soltero/a',
+  CASADO = 'casado/a',
 }
 
 export class CreateDocenteDto {
