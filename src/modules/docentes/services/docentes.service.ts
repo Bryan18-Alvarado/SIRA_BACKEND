@@ -7,7 +7,8 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Docente } from '../entities/docentes.entity';
-import { CreateDocenteDto } from '../dto/docente-create.dto';
+import { CreateDocenteDto, UpdateDocenteDto } from '../dto/docente-create.dto';
+import { PaginationDto } from 'src/common/dto/pagination.dto';
 
 @Injectable()
 export class DocentesService {
@@ -18,8 +19,12 @@ export class DocentesService {
     private readonly docenteRepository: Repository<Docente>,
   ) {}
 
-  findAll() {
-    return this.docenteRepository.find({});
+  findAll(paginationDto: PaginationDto) {
+    const { limit = 3, offset = 0 } = paginationDto;
+    return this.docenteRepository.find({
+      take: limit,
+      skip: offset,
+    });
   }
 
   async create(createDocenteDto: CreateDocenteDto) {
@@ -34,9 +39,39 @@ export class DocentesService {
       this.handleDBException(error);
     }
   }
+  // async remove(id: number) {
+  //   const docente = await this.findOne(id);
+  //   await this.docenteRepository.remove(docente);
+  // }
+
+  async update(id: number, updateDocenteDto: UpdateDocenteDto) {
+    const docente = await this.docenteRepository.findOne({ where: { id } });
+
+    if (!docente) {
+      throw new NotFoundException(`docente con id ${id} no encontrado`);
+    }
+    try {
+      this.docenteRepository.merge(docente, updateDocenteDto);
+      await this.docenteRepository.save(docente);
+      return {
+        message: 'registro actualizado con exito',
+        data: docente,
+      };
+    } catch (error) {
+      this.handleDBException(error);
+    }
+  }
+
   async remove(id: number) {
-    const docente = await this.findOne(id);
-    await this.docenteRepository.remove(docente);
+    const exists = await this.docenteRepository.existsBy({ id });
+    if (!exists) {
+      throw new NotFoundException(`docente con id ${id} no encontrado`);
+    }
+    await this.docenteRepository.softDelete({ id });
+    return {
+      message: `Docente con id ${id} eliminado con exito`,
+      deleteAt: new Date(),
+    };
   }
 
   async findOne(id: number) {

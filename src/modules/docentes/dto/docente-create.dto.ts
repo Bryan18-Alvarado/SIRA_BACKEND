@@ -4,12 +4,18 @@ import {
   IsBoolean,
   IsDate,
   IsEmail,
+  IsEnum,
   IsNumber,
   IsOptional,
   IsString,
   Min,
   MinLength,
 } from 'class-validator';
+
+export enum EstadoCivil {
+  SOLTERO = 'soltero',
+  CASADO = 'casado',
+}
 
 export class CreateDocenteDto {
   @IsOptional()
@@ -43,7 +49,7 @@ export class CreateDocenteDto {
   @IsString()
   @ApiProperty()
   @IsOptional()
-  direccion: string;
+  direccion?: string;
 
   @Transform(({ value }) => new Date(value))
   @IsDate()
@@ -58,16 +64,19 @@ export class CreateDocenteDto {
   @IsString()
   @ApiProperty()
   @IsOptional()
-  telefono: string;
+  telefono?: string;
 
   @IsEmail()
   @ApiProperty()
   @IsOptional()
-  email: string;
+  email?: string;
 
-  @IsBoolean()
-  @ApiProperty()
-  estado: boolean;
+  @IsEnum(EstadoCivil)
+  @ApiProperty({
+    enum: EstadoCivil,
+    description: 'Estado civil del docente (soltero o casado)',
+  })
+  estado_civil: EstadoCivil;
 
   @IsBoolean()
   @ApiProperty()

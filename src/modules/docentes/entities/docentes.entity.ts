@@ -1,5 +1,9 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
+export enum EstadoCivil {
+  SOLTERO = 'soltero',
+  CASADO = 'casado',
+}
 @Entity()
 export class Docente {
   @PrimaryGeneratedColumn('increment', { type: 'int4' })
@@ -35,8 +39,11 @@ export class Docente {
   @Column({ type: 'varchar', length: 100, unique: true, nullable: true })
   email: string;
 
-  @Column({ type: 'bool', default: true })
-  estado: boolean;
+  @Column({
+    type: 'enum',
+    enum: EstadoCivil,
+  })
+  estado_civil: EstadoCivil;
 
   @Column({ type: 'bool', default: true })
   isAvailable: boolean;

@@ -10,6 +10,7 @@ import { EstudiantesController } from './modules/estudiantes/controllers/estudia
 import { DocentesService } from './modules/docentes/services/docentes.service';
 import { CategoriesService } from './modules/categories/services/categories.service';
 import { EstudiantesService } from './modules/estudiantes/services/estudiantes.service';
+import { CommonModule } from './common/common.module';
 
 @Module({
   imports: [
@@ -28,6 +29,8 @@ import { EstudiantesService } from './modules/estudiantes/services/estudiantes.s
       autoLoadEntities: true, //Si se establece en true, TypeORM cargará automáticamente todas las entidades que estén registradas en los módulos de la aplicación.
       synchronize: true, //Si se establece en true, TypeORM sincronizará automáticamente la estructura de la base de datos con las entidades definidas en el código cada vez que se inicie la aplicación.
     }),
+
+    CommonModule,
   ],
   controllers: [
     DocentesController,
