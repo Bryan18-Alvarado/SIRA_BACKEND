@@ -37,7 +37,7 @@ export class DocentesController {
   }
 
   @Delete(':id')
-  remove(@Param(':id') id: number) {
+  remove(@Param('id') id: number) {
     return this.docentesService.remove(id);
   }
 }
