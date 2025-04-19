@@ -1,8 +1,8 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { StudentCourse } from '../entities/student-course.entity';
-import { CreateStudentCourseDto } from '../dto/create-student-course.dto';
+import { StudentCourse } from '../entities/studentcourse.entity';
+import { CreateStudentCourseDto } from '../dto/studentcourse.dto';
 
 @Injectable()
 export class StudentCoursesService {

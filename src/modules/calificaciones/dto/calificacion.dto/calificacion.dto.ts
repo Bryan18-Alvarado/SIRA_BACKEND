@@ -1,4 +1,5 @@
 import { ApiProperty, PartialType } from '@nestjs/swagger';
+import { Transform } from 'class-transformer';
 import { IsDate, IsInt, IsOptional, IsString, IsNumber } from 'class-validator';
 
 export class CreateCalificacionDto {
@@ -16,6 +17,7 @@ export class CreateCalificacionDto {
   grade_value: number;
 
   @IsDate()
+  @Transform(({ value }) => new Date(value))
   @ApiProperty()
   grade_date: Date;
 

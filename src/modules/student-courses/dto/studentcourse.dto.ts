@@ -1,4 +1,5 @@
 import { ApiProperty, PartialType } from '@nestjs/swagger';
+import { Transform } from 'class-transformer';
 import { IsDate, IsInt, IsOptional, IsNumber } from 'class-validator';
 
 export class CreateStudentCourseDto {
@@ -15,6 +16,7 @@ export class CreateStudentCourseDto {
   @ApiProperty()
   id_courses: number;
 
+  @Transform(({ value }) => new Date(value))
   @IsDate()
   @ApiProperty()
   enrollment_date: Date;

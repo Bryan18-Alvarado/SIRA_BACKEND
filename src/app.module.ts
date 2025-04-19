@@ -2,11 +2,10 @@ import { Module } from '@nestjs/common';
 import { EstudiantesModule } from './modules/estudiantes/estudiantes.module';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { CalificacionesModule } from './modules/calificaciones/calificaciones.module';
 import { CalificacionesService } from './modules/calificaciones/services/calificaciones.service';
 import { CalificacionesController } from './modules/calificaciones/controllers/calificaciones.controller';
-import { StudentCoursesModule } from './modules/student-courses.module';
 import { StudentCoursesModule } from './modules/student-courses/student-courses.module';
-
 @Module({
   imports: [
     EstudiantesModule,
@@ -24,6 +23,7 @@ import { StudentCoursesModule } from './modules/student-courses/student-courses.
     }),
 
     StudentCoursesModule,
+    CalificacionesModule,
   ],
   controllers: [CalificacionesController],
   providers: [CalificacionesService],

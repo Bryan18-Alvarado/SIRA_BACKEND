@@ -1,8 +1,8 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
-import { CreateStudentCourseDto } from '../dto/create-student-course.dto';
-import { StudentCoursesService } from '../services/student-courses.service';
+import { CreateStudentCourseDto } from '../dto/studentcourse.dto';
+import { StudentCoursesService } from '../services/studentcourses.service';
 
-@Controller('student-courses')
+@Controller('studentcourses')
 export class StudentCoursesController {
   constructor(private readonly studentCoursesService: StudentCoursesService) {}
 
