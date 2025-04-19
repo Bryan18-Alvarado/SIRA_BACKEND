@@ -4,6 +4,8 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CalificacionesService } from './modules/calificaciones/services/calificaciones.service';
 import { CalificacionesController } from './modules/calificaciones/controllers/calificaciones.controller';
+import { StudentCoursesModule } from './modules/student-courses.module';
+import { StudentCoursesModule } from './modules/student-courses/student-courses.module';
 
 @Module({
   imports: [
@@ -20,6 +22,8 @@ import { CalificacionesController } from './modules/calificaciones/controllers/c
       autoLoadEntities: true, //Si se establece en true, TypeORM cargará automáticamente todas las entidades que estén registradas en los módulos de la aplicación.
       synchronize: true, //Si se establece en true, TypeORM sincronizará automáticamente la estructura de la base de datos con las entidades definidas en el código cada vez que se inicie la aplicación.
     }),
+
+    StudentCoursesModule,
   ],
   controllers: [CalificacionesController],
   providers: [CalificacionesService],
