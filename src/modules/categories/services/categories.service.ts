@@ -7,7 +7,11 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Categories } from '../entities/categories.entity';
 import { Repository } from 'typeorm';
-import { CreateCategoriesDto } from '../dto/categories.dto';
+import { PaginationDto } from 'src/common/dto/pagination.dto';
+import {
+  CreateCategoriesDto,
+  UpdateCategoriesDto,
+} from '../dto/categories.dto';
 
 @Injectable()
 export class CategoriesService {
@@ -18,8 +22,12 @@ export class CategoriesService {
     private readonly categoriesRepository: Repository<Categories>,
   ) {}
 
-  findAll() {
-    return this.categoriesRepository.find({});
+  findAll(paginationDto: PaginationDto) {
+    const { limit = 3, offset = 0 } = paginationDto;
+    return this.categoriesRepository.find({
+      take: limit,
+      skip: offset,
+    });
   }
 
   async create(createCategoriesDto: CreateCategoriesDto) {
@@ -33,9 +41,35 @@ export class CategoriesService {
     }
   }
 
+  async update(id: number, updateCategoriesDto: UpdateCategoriesDto) {
+    const categories = await this.categoriesRepository.findOne({
+      where: { id },
+    });
+    if (!categories) {
+      throw new NotFoundException(`categoria con id ${id} no encontrado`);
+    }
+    try {
+      this.categoriesRepository.merge(categories, updateCategoriesDto);
+      await this.categoriesRepository.save(categories);
+      return {
+        message: 'registro actualizado con exito',
+        data: categories,
+      };
+    } catch (error) {
+      this.handleDBException(error);
+    }
+  }
+
   async remove(id: number) {
-    const categories = await this.findOne(id);
-    await this.categoriesRepository.remove(categories);
+    const exists = await this.categoriesRepository.existsBy({ id });
+    if (!exists) {
+      throw new NotFoundException(`categoria con id ${id} no encontrada`);
+    }
+    await this.categoriesRepository.softDelete({ id });
+    return {
+      message: `Categoria con ${id} eliminado con exito`,
+      deleteAt: new Date(),
+    };
   }
 
   async findOne(id: number) {

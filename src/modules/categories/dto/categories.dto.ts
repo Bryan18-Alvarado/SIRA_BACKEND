@@ -20,24 +20,12 @@ export class CreateCategoriesDto {
 
   @IsString()
   @ApiProperty()
-  @IsOptional()
-  description: string;
+  @MinLength(3)
+  descripcion: string;
 
   @IsBoolean()
   @ApiProperty()
   @IsOptional()
   status: boolean;
-
-  // //sirve para saber cuando fue creada la categoria
-  // @Transform(({ value }) => new Date(value))
-  // @IsDate()
-  // @ApiProperty()
-  // created_at: Timestamp;
-
-  // @Transform(({ value }) => new Date(value))
-  // @IsDate()
-  // @ApiProperty()
-  // //sirve para saber cuando fue modificada
-  // updated_at: Timestamp;
 }
 export class UpdateCategoriesDto extends PartialType(CreateCategoriesDto) {}
