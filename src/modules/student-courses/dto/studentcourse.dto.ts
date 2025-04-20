@@ -6,20 +6,20 @@ export class CreateStudentCourseDto {
   @IsOptional()
   @IsInt()
   @ApiProperty()
-  student_courses_id?: number;
+  studentcourseId?: number;
 
   @IsInt()
   @ApiProperty()
-  student_id: number;
+  studentId: number;
 
   @IsInt()
   @ApiProperty()
-  id_courses: number;
+  coursesId: number;
 
   @Transform(({ value }) => new Date(value))
   @IsDate()
   @ApiProperty()
-  enrollment_date: Date;
+  enrollmentDate: Date;
 
   @IsNumber()
   @ApiProperty()

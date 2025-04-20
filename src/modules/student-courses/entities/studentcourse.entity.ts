@@ -3,16 +3,16 @@ import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 @Entity()
 export class StudentCourse {
   @PrimaryGeneratedColumn('increment', { type: 'int4' })
-  student_courses_id: number;
+  studentcourseId: number;
 
   @Column({ type: 'int4' })
-  student_id: number;
+  studentId: number;
 
   @Column({ type: 'int4' })
-  id_courses: number;
+  coursesId: number;
 
   @Column({ type: 'date' })
-  enrollment_date: Date;
+  enrollmentDate: Date;
 
   @Column({ type: 'float' })
   grade: number;

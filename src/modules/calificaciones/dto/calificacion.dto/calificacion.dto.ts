@@ -6,23 +6,23 @@ export class CreateCalificacionDto {
   @IsOptional()
   @IsInt()
   @ApiProperty()
-  grades_id?: number;
+  gradesId?: number;
 
   @IsInt()
   @ApiProperty()
-  student_courses_id: number;
+  studentcoursesId: number;
 
   @IsNumber()
   @ApiProperty()
-  grade_value: number;
+  grade: number;
 
   @IsDate()
   @Transform(({ value }) => new Date(value))
   @ApiProperty()
-  grade_date: Date;
+  gradeDate: Date;
 
   @IsString()
   @ApiProperty()
-  grade_type: string;
+  gradeType: string;
 }
 export class UpdateCalificacionDto extends PartialType(CreateCalificacionDto) {}

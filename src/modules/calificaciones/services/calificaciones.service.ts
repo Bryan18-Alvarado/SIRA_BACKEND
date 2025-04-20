@@ -47,7 +47,7 @@ export class CalificacionesService {
 
   async update(id: number, updateCalificacionDto: UpdateCalificacionDto) {
     const calificacion = await this.calificacionRepository.findOne({
-      where: { grades_id: id },
+      where: { gradesId: id },
     });
 
     if (!calificacion) {
@@ -67,12 +67,12 @@ export class CalificacionesService {
 
   async remove(id: number) {
     const exists = await this.calificacionRepository.existsBy({
-      grades_id: id,
+      gradesId: id,
     });
     if (!exists) {
       throw new NotFoundException(`Calificación con id ${id} no encontrada`);
     }
-    await this.calificacionRepository.softDelete({ grades_id: id }); // Soft delete deja fecha de eliminacion
+    await this.calificacionRepository.softDelete({ gradesId: id }); // Soft delete deja fecha de eliminacion
     return {
       message: `Calificación con ID ${id} eliminada con éxito`,
       deletedAt: new Date(),
@@ -81,7 +81,7 @@ export class CalificacionesService {
 
   async findOne(id: number) {
     const calificacion = await this.calificacionRepository.findOneBy({
-      grades_id: id,
+      gradesId: id,
     });
     if (!calificacion) {
       throw new NotFoundException(`Calificación con id ${id} no encontrada`);
