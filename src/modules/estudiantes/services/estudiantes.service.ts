@@ -59,9 +59,7 @@ export class EstudiantesService {
   }
 
   async remove(id: number) {
-    const exists = await this.estudianteRepository.exist({
-      where: { id },
-    });
+    const exists = await this.estudianteRepository.existsBy({ id });
     if (!exists) {
       throw new NotFoundException(`Estudiante con id ${id} no encontrado`);
     }

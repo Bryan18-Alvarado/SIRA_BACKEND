@@ -1,4 +1,4 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity()
 export class Estudiante {
@@ -22,6 +22,14 @@ export class Estudiante {
 
   @Column({ type: 'text', nullable: true })
   direccion: string;
+  @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  createdAt: Date;
+
+  @UpdateDateColumn({ type: 'timestamp', nullable: true })
+  updateAt: Date;
+
+  @DeleteDateColumn({ type: 'timestamp', nullable: true })
+  deleteAt: Date;
 
   @Column({ type: 'bool', default: true })
   isAvailable: boolean;
