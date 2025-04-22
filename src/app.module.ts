@@ -2,6 +2,10 @@ import { Module } from '@nestjs/common';
 import { EstudiantesModule } from './modules/estudiantes/estudiantes.module';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { CalificacionesModule } from './modules/calificaciones/calificaciones.module';
+import { CalificacionesService } from './modules/calificaciones/services/calificaciones.service';
+import { CalificacionesController } from './modules/calificaciones/controllers/calificaciones.controller';
+import { StudentCoursesModule } from './modules/student-courses/student-courses.module';
 import { DocentesModule } from './modules/docentes/docentes.module';
 import { CategoriesModule } from './modules/categories/categories.module';
 import { DocentesController } from './modules/docentes/controllers/docentes.controller';
@@ -34,7 +38,12 @@ import { CoursesModule } from './modules/courses/courses.module';
       synchronize: true, //Si se establece en true, TypeORM sincronizará automáticamente la estructura de la base de datos con las entidades definidas en el código cada vez que se inicie la aplicación.
     }),
 
-    CommonModule,
+    StudentCoursesModule,
+    CalificacionesModule,
+  ],
+  controllers: [CalificacionesController],
+  providers: [CalificacionesService],
+  CommonModule,
   ],
   controllers: [
     DocentesController,

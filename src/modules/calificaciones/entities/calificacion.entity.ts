@@ -1,27 +1,22 @@
 import { Column, CreateDateColumn, DeleteDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity()
-export class Estudiante {
+export class Calificacion {
   @PrimaryGeneratedColumn('increment', { type: 'int4' })
-  id: number;
+  gradesId: number;
 
-  @Column({ type: 'varchar', length: 100 })
-  nombre: string;
+  @Column({ type: 'int4' })
+  studentcoursesId: number;
 
-  @Column({ type: 'varchar', length: 100 })
-  apellido: string;
+  @Column({ type: 'float' })
+  grade: number;
 
   @Column({ type: 'date' })
-  fechaNacimiento: Date;
+  gradeDate: Date;
 
-  @Column({ type: 'varchar', length: 20, nullable: true })
-  telefono: string;
+  @Column({ type: 'varchar', length: 50 })
+  gradeType: string;
 
-  @Column({ type: 'varchar', length: 100, unique: true, nullable: true })
-  correoElectronico: string;
-
-  @Column({ type: 'text', nullable: true })
-  direccion: string;
   @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
 
