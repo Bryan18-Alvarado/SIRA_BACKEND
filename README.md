@@ -27,6 +27,8 @@
 
 ## Project setup
 
+<!-- Welcome to SIRA -->
+
 ```bash
 1. Clonar proyecto
 2. `npm install`

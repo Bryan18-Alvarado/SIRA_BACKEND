@@ -6,9 +6,25 @@ import { CalificacionesModule } from './modules/calificaciones/calificaciones.mo
 import { CalificacionesService } from './modules/calificaciones/services/calificaciones.service';
 import { CalificacionesController } from './modules/calificaciones/controllers/calificaciones.controller';
 import { StudentCoursesModule } from './modules/student-courses/student-courses.module';
+import { DocentesModule } from './modules/docentes/docentes.module';
+import { CategoriesModule } from './modules/categories/categories.module';
+import { DocentesController } from './modules/docentes/controllers/docentes.controller';
+import { CategoriesController } from './modules/categories/controllers/categories.controller';
+import { EstudiantesController } from './modules/estudiantes/controllers/estudiantes.controller';
+import { DocentesService } from './modules/docentes/services/docentes.service';
+import { CategoriesService } from './modules/categories/services/categories.service';
+import { EstudiantesService } from './modules/estudiantes/services/estudiantes.service';
+import { CommonModule } from './common/common.module';
+import { CoursesController } from './modules/courses/controllers/courses.controller';
+import { CoursesService } from './modules/courses/services/courses.service';
+import { CoursesModule } from './modules/courses/courses.module';
+
 @Module({
   imports: [
     EstudiantesModule,
+    DocentesModule,
+    CategoriesModule,
+    CoursesModule,
     ConfigModule.forRoot(),
 
     TypeOrmModule.forRoot({
@@ -27,5 +43,19 @@ import { StudentCoursesModule } from './modules/student-courses/student-courses.
   ],
   controllers: [CalificacionesController],
   providers: [CalificacionesService],
+  CommonModule,
+  ],
+  controllers: [
+    DocentesController,
+    CategoriesController,
+    EstudiantesController,
+    CoursesController,
+  ],
+  providers: [
+    DocentesService,
+    CategoriesService,
+    EstudiantesService,
+    CoursesService,
+  ],
 })
 export class AppModule {}

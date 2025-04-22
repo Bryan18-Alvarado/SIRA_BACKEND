@@ -8,7 +8,9 @@ export class PaginationDto {
   limit?: number;
 
   @IsOptional()
+
   // @IsPositive()
+
   @Min(0)
   @Type(() => Number)
   offset?: number;
