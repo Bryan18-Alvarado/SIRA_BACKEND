@@ -18,6 +18,8 @@ import { CommonModule } from './common/common.module';
 import { CoursesController } from './modules/courses/controllers/courses.controller';
 import { CoursesService } from './modules/courses/services/courses.service';
 import { CoursesModule } from './modules/courses/courses.module';
+import { StudentCoursesController } from './modules/student-courses/controllers/studentcourses.controller';
+import { StudentCoursesService } from './modules/student-courses/services/studentcourses.service';
 
 @Module({
   imports: [
@@ -25,6 +27,8 @@ import { CoursesModule } from './modules/courses/courses.module';
     DocentesModule,
     CategoriesModule,
     CoursesModule,
+    StudentCoursesModule,
+    CalificacionesModule,
     ConfigModule.forRoot(),
 
     TypeOrmModule.forRoot({
@@ -37,25 +41,23 @@ import { CoursesModule } from './modules/courses/courses.module';
       autoLoadEntities: true, //Si se establece en true, TypeORM cargará automáticamente todas las entidades que estén registradas en los módulos de la aplicación.
       synchronize: true, //Si se establece en true, TypeORM sincronizará automáticamente la estructura de la base de datos con las entidades definidas en el código cada vez que se inicie la aplicación.
     }),
-
-    StudentCoursesModule,
-    CalificacionesModule,
-  ],
-  controllers: [CalificacionesController],
-  providers: [CalificacionesService],
-  CommonModule,
+    CommonModule,
   ],
   controllers: [
     DocentesController,
+    CalificacionesController,
     CategoriesController,
     EstudiantesController,
     CoursesController,
+    StudentCoursesController,
   ],
   providers: [
     DocentesService,
     CategoriesService,
     EstudiantesService,
     CoursesService,
+    CalificacionesService,
+    StudentCoursesService,
   ],
 })
 export class AppModule {}
