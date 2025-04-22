@@ -11,12 +11,16 @@ import { DocentesService } from './modules/docentes/services/docentes.service';
 import { CategoriesService } from './modules/categories/services/categories.service';
 import { EstudiantesService } from './modules/estudiantes/services/estudiantes.service';
 import { CommonModule } from './common/common.module';
+import { CoursesController } from './modules/courses/controllers/courses.controller';
+import { CoursesService } from './modules/courses/services/courses.service';
+import { CoursesModule } from './modules/courses/courses.module';
 
 @Module({
   imports: [
     EstudiantesModule,
     DocentesModule,
     CategoriesModule,
+    CoursesModule,
     ConfigModule.forRoot(),
 
     TypeOrmModule.forRoot({
@@ -36,7 +40,13 @@ import { CommonModule } from './common/common.module';
     DocentesController,
     CategoriesController,
     EstudiantesController,
+    CoursesController,
   ],
-  providers: [DocentesService, CategoriesService, EstudiantesService],
+  providers: [
+    DocentesService,
+    CategoriesService,
+    EstudiantesService,
+    CoursesService,
+  ],
 })
 export class AppModule {}
