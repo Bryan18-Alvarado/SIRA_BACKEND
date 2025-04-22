@@ -4,14 +4,16 @@ import {
   IsBoolean,
   IsDate,
   IsEmail,
+  IsEnum,
   IsNumber,
   IsOptional,
   IsString,
   Min,
   MinLength,
 } from 'class-validator';
+import { EstadoCivil, Genero } from '../entities/docentes.entity';
 
-export class createDocenteDto {
+export class CreateDocenteDto {
   @IsOptional()
   @IsNumber()
   @ApiProperty()
@@ -31,6 +33,13 @@ export class createDocenteDto {
   @ApiProperty()
   edad: number;
 
+  @IsEnum(Genero)
+  @ApiProperty({
+    enum: Genero,
+    description: 'Genero del docente (masculino o femenino)',
+  })
+  genero: Genero;
+
   @IsNumber()
   @ApiProperty()
   @Min(5)
@@ -43,7 +52,7 @@ export class createDocenteDto {
   @IsString()
   @ApiProperty()
   @IsOptional()
-  direccion: string;
+  direccion?: string;
 
   @Transform(({ value }) => new Date(value))
   @IsDate()
@@ -58,16 +67,19 @@ export class createDocenteDto {
   @IsString()
   @ApiProperty()
   @IsOptional()
-  telefono: string;
+  telefono?: string;
 
   @IsEmail()
   @ApiProperty()
   @IsOptional()
-  email: string;
+  email?: string;
 
-  @IsBoolean()
-  @ApiProperty()
-  estado: boolean;
+  @IsEnum(EstadoCivil)
+  @ApiProperty({
+    enum: EstadoCivil,
+    description: 'Estado civil del docente (casado o soltero)',
+  })
+  estado_civil: EstadoCivil;
 
   @IsBoolean()
   @ApiProperty()
@@ -75,4 +87,4 @@ export class createDocenteDto {
   isAvailable: boolean;
 }
 
-export class UpdateDocenteDto extends PartialType(createDocenteDto) {}
+export class UpdateDocenteDto extends PartialType(CreateDocenteDto) {}

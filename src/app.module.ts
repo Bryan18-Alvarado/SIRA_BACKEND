@@ -3,11 +3,24 @@ import { EstudiantesModule } from './modules/estudiantes/estudiantes.module';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DocentesModule } from './modules/docentes/docentes.module';
+import { CategoriesModule } from './modules/categories/categories.module';
+import { DocentesController } from './modules/docentes/controllers/docentes.controller';
+import { CategoriesController } from './modules/categories/controllers/categories.controller';
+import { EstudiantesController } from './modules/estudiantes/controllers/estudiantes.controller';
+import { DocentesService } from './modules/docentes/services/docentes.service';
+import { CategoriesService } from './modules/categories/services/categories.service';
+import { EstudiantesService } from './modules/estudiantes/services/estudiantes.service';
+import { CommonModule } from './common/common.module';
+import { CoursesController } from './modules/courses/controllers/courses.controller';
+import { CoursesService } from './modules/courses/services/courses.service';
+import { CoursesModule } from './modules/courses/courses.module';
 
 @Module({
   imports: [
     EstudiantesModule,
     DocentesModule,
+    CategoriesModule,
+    CoursesModule,
     ConfigModule.forRoot(),
 
     TypeOrmModule.forRoot({
@@ -20,8 +33,20 @@ import { DocentesModule } from './modules/docentes/docentes.module';
       autoLoadEntities: true, //Si se establece en true, TypeORM cargará automáticamente todas las entidades que estén registradas en los módulos de la aplicación.
       synchronize: true, //Si se establece en true, TypeORM sincronizará automáticamente la estructura de la base de datos con las entidades definidas en el código cada vez que se inicie la aplicación.
     }),
+
+    CommonModule,
   ],
-  controllers: [],
-  providers: [],
+  controllers: [
+    DocentesController,
+    CategoriesController,
+    EstudiantesController,
+    CoursesController,
+  ],
+  providers: [
+    DocentesService,
+    CategoriesService,
+    EstudiantesService,
+    CoursesService,
+  ],
 })
 export class AppModule {}
