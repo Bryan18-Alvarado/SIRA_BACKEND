@@ -38,8 +38,8 @@ export class Courses {
   @Column({ type: 'int' })
   cupos_disponibles: number;
 
-  @Column({ type: 'varchar', length: 100 })
-  nivel: string;
+  // @Column({ type: 'varchar', length: 100 })
+  // nivel: string;
 
   @Column({ type: 'boolean', default: true })
   status: boolean;

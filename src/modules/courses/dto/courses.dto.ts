@@ -10,16 +10,16 @@ import {
   Min,
 } from 'class-validator';
 
-export enum Nivel {
-  A1 = 'A1',
-  A2 = 'A2',
-  B1 = 'B1',
-  B2 = 'B2',
-  C1 = 'C1',
-  C2 = 'C2',
-  BASICO_COMPUTACION = 'computación básico',
-  PINTURA = 'pintura',
-}
+// export enum Nivel {
+//   A1 = 'A1',
+//   A2 = 'A2',
+//   B1 = 'B1',
+//   B2 = 'B2',
+//   C1 = 'C1',
+//   C2 = 'C2',
+//   BASICO_COMPUTACION = 'computación básico',
+//   PINTURA = 'pintura',
+// }
 
 export class CreateCoursesDto {
   @IsOptional()
@@ -81,9 +81,9 @@ export class CreateCoursesDto {
   @ApiProperty({ default: true })
   status: boolean;
 
-  @IsString()
-  @ApiProperty({ enum: Nivel })
-  nivel: Nivel;
+  // @IsString()
+  // @ApiProperty({ enum: Nivel })
+  // nivel: Nivel;
 
   @IsString()
   @ApiProperty()
