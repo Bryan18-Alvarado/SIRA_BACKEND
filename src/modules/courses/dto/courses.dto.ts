@@ -1,25 +1,14 @@
 import { ApiProperty, PartialType } from '@nestjs/swagger';
+import { IsNotEmpty, IsOptional, IsPositive } from 'class-validator';
 import {
   IsString,
   IsNumber,
-  IsOptional,
   IsDateString,
   IsInt,
   MinLength,
   IsBoolean,
   Min,
 } from 'class-validator';
-
-// export enum Nivel {
-//   A1 = 'A1',
-//   A2 = 'A2',
-//   B1 = 'B1',
-//   B2 = 'B2',
-//   C1 = 'C1',
-//   C2 = 'C2',
-//   BASICO_COMPUTACION = 'computación básico',
-//   PINTURA = 'pintura',
-// }
 
 export class CreateCoursesDto {
   @IsOptional()
@@ -81,6 +70,12 @@ export class CreateCoursesDto {
   @ApiProperty({ default: true })
   status: boolean;
 
+  @IsNumber()
+  @IsOptional()
+  @ApiProperty()
+  @IsNotEmpty()
+  readonly categories_id: number;
+
   // @IsString()
   // @ApiProperty({ enum: Nivel })
   // nivel: Nivel;
@@ -96,3 +91,16 @@ export class CreateCoursesDto {
 }
 
 export class UpdateCoursesDto extends PartialType(CreateCoursesDto) {}
+
+export class FilterCoursesDto {
+  @IsOptional()
+  @IsPositive()
+  limit: number;
+
+  @IsOptional()
+  @Min(0)
+  offset: number;
+
+  @IsOptional()
+  description: string;
+}

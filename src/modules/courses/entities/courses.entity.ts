@@ -1,8 +1,11 @@
+import { Categories } from 'src/modules/categories/entities/categories.entity';
 import {
   Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  JoinColumn,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -11,6 +14,9 @@ import {
 export class Courses {
   @PrimaryGeneratedColumn('increment', { type: 'int4' })
   id: number;
+
+  @Column({ type: 'int4', nullable: false })
+  categories_id: number;
 
   @Column({ type: 'varchar', length: 100, unique: true })
   codigo: string;
@@ -38,11 +44,12 @@ export class Courses {
   @Column({ type: 'int' })
   cupos_disponibles: number;
 
-  // @Column({ type: 'varchar', length: 100 })
-  // nivel: string;
-
   @Column({ type: 'boolean', default: true })
   status: boolean;
+
+  @ManyToOne(() => Categories)
+  @JoinColumn({ name: 'categories_id', referencedColumnName: 'id' })
+  categories: Categories;
 
   @Column({ type: 'varchar', length: 100 })
   requisitos: string;
