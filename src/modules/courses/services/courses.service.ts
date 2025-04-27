@@ -14,6 +14,7 @@ import {
   UpdateCoursesDto,
 } from '../dto/courses.dto';
 import { Categories } from 'src/modules/categories/entities/categories.entity';
+import { Docente } from 'src/modules/docentes/entities/docentes.entity';
 
 @Injectable()
 export class CoursesService {
@@ -24,6 +25,9 @@ export class CoursesService {
 
     @InjectRepository(Categories)
     private readonly brandRepository: Repository<Categories>,
+
+    @InjectRepository(Docente)
+    private readonly docenteRepository: Repository<Docente>,
   ) {}
 
   findAll(params?: FilterCoursesDto) {
@@ -41,6 +45,7 @@ export class CoursesService {
       skip: offset,
       relations: {
         categories: true,
+        docentes: true,
       },
     });
   }
@@ -61,6 +66,7 @@ export class CoursesService {
       where: { id: id },
       relations: {
         categories: true,
+        docentes: true,
       },
     });
 
@@ -75,7 +81,7 @@ export class CoursesService {
   async update(id: number, changes: UpdateCoursesDto) {
     const courses = await this.coursesRepository.findOne({
       where: { id },
-      relations: { categories: true },
+      relations: { categories: true, docentes: true },
     });
 
     if (!courses) {
@@ -83,17 +89,29 @@ export class CoursesService {
     }
 
     if (changes.categories_id) {
-      const categories = await this.brandRepository.findOneBy({
+      const category = await this.brandRepository.findOneBy({
         id: changes.categories_id,
       });
-
-      if (!categories) {
+      if (!category) {
         throw new NotFoundException(
-          `la categoria con id ${changes.categories_id} no fue encontrado`,
+          `la categoria con id ${changes.categories_id} no fue encontrada`,
         );
       }
-      courses.categories = categories;
+      courses.categories = category;
     }
+
+    if (changes.docentes_id) {
+      const docente = await this.docenteRepository.findOneBy({
+        id: changes.docentes_id,
+      });
+      if (!docente) {
+        throw new NotFoundException(
+          `el docente con id ${changes.docentes_id} no fue encontrado`,
+        );
+      }
+      courses.docentes = docente;
+    }
+
     this.coursesRepository.merge(courses, changes);
     const updated = await this.coursesRepository.save(courses);
 
