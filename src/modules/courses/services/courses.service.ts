@@ -1,14 +1,19 @@
 import {
   BadRequestException,
   Injectable,
+  InternalServerErrorException,
   Logger,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Courses } from '../entities/courses.entity';
-import { Repository } from 'typeorm';
-import { PaginationDto } from 'src/common/dto/pagination.dto';
-import { CreateCoursesDto, UpdateCoursesDto } from '../dto/courses.dto';
+import { FindOptionsWhere, ILike, Repository } from 'typeorm';
+import {
+  CreateCoursesDto,
+  FilterCoursesDto,
+  UpdateCoursesDto,
+} from '../dto/courses.dto';
+import { Categories } from 'src/modules/categories/entities/categories.entity';
 
 @Injectable()
 export class CoursesService {
@@ -16,13 +21,27 @@ export class CoursesService {
   constructor(
     @InjectRepository(Courses)
     private readonly coursesRepository: Repository<Courses>,
+
+    @InjectRepository(Categories)
+    private readonly brandRepository: Repository<Categories>,
   ) {}
 
-  findAll(paginationDto: PaginationDto) {
-    const { limit = 3, offset = 0 } = paginationDto;
+  findAll(params?: FilterCoursesDto) {
+    const { limit, offset, description } = params || {};
+    const where: FindOptionsWhere<Courses> = {};
+
+    if (description) {
+      where.descripcion = ILike(`%${description}%`);
+    }
+
     return this.coursesRepository.find({
+      order: { id: 'ASC' },
+      where,
       take: limit,
       skip: offset,
+      relations: {
+        categories: true,
+      },
     });
   }
 
@@ -37,24 +56,53 @@ export class CoursesService {
     }
   }
 
-  async update(id: number, updateCoursesDto: UpdateCoursesDto) {
+  async findOne(id: number) {
+    const courses = await this.coursesRepository.findOne({
+      where: { id: id },
+      relations: {
+        categories: true,
+      },
+    });
+
+    if (!courses) {
+      throw new NotFoundException(
+        `curso con id ${id} no fue encontrado en la base de datos`,
+      );
+    }
+    return courses;
+  }
+
+  async update(id: number, changes: UpdateCoursesDto) {
     const courses = await this.coursesRepository.findOne({
       where: { id },
+      relations: { categories: true },
     });
+
     if (!courses) {
       throw new NotFoundException(`curso con id ${id} no encontrado`);
     }
-    try {
-      this.coursesRepository.merge(courses, updateCoursesDto);
-      await this.coursesRepository.save(courses);
-      return {
-        message: 'registro actualizado con exito',
-        data: courses,
-      };
-    } catch (error) {
-      this.handleDBException(error);
+
+    if (changes.categories_id) {
+      const categories = await this.brandRepository.findOneBy({
+        id: changes.categories_id,
+      });
+
+      if (!categories) {
+        throw new NotFoundException(
+          `la categoria con id ${changes.categories_id} no fue encontrado`,
+        );
+      }
+      courses.categories = categories;
     }
+    this.coursesRepository.merge(courses, changes);
+    const updated = await this.coursesRepository.save(courses);
+
+    return {
+      message: 'curso actualizado correctamente',
+      data: updated,
+    };
   }
+
   // revisar este metodo con el profesor
   // async remove(id: number) {
   //   const exists = await this.coursesRepository.existsBy({ id });
@@ -84,16 +132,22 @@ export class CoursesService {
     };
   }
 
-  async findOne(id: number) {
-    const courses = await this.coursesRepository.findOneBy({ id });
-    if (!courses) {
-      throw new NotFoundException(`curso con id ${id} no fue encontrado`);
+  async deleteAllCars() {
+    const query = this.coursesRepository.createQueryBuilder('courses');
+    try {
+      return await query.delete().where({}).execute();
+    } catch (error) {
+      this.handleDBException(error);
     }
-    return courses;
   }
+
   private handleDBException(error: any) {
     if (error.code === '23505') throw new BadRequestException(error.detail);
 
     this.logger.error(error);
+
+    throw new InternalServerErrorException(
+      'Error inesperado, verifique los registros del servidor',
+    );
   }
 }
