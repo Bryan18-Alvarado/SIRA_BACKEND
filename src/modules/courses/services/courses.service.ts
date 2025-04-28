@@ -24,7 +24,7 @@ export class CoursesService {
     private readonly coursesRepository: Repository<Courses>,
 
     @InjectRepository(Categories)
-    private readonly brandRepository: Repository<Categories>,
+    private readonly categoryRepository: Repository<Categories>,
 
     @InjectRepository(Docente)
     private readonly docenteRepository: Repository<Docente>,
@@ -89,7 +89,7 @@ export class CoursesService {
     }
 
     if (changes.categories_id) {
-      const category = await this.brandRepository.findOneBy({
+      const category = await this.categoryRepository.findOneBy({
         id: changes.categories_id,
       });
       if (!category) {

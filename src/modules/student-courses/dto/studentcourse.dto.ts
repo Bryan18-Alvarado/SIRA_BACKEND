@@ -6,7 +6,7 @@ export class CreateStudentCourseDto {
   @IsOptional()
   @IsInt()
   @ApiProperty()
-  studentcourseId?: number;
+  studentcoursesId?: number;
 
   @IsInt()
   @ApiProperty()

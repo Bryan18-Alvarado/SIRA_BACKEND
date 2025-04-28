@@ -1,5 +1,6 @@
 import { Categories } from 'src/modules/categories/entities/categories.entity';
 import { Docente } from 'src/modules/docentes/entities/docentes.entity';
+import { StudentCourse } from 'src/modules/student-courses/entities/studentcourse.entity';
 import {
   Column,
   CreateDateColumn,
@@ -58,6 +59,13 @@ export class Courses {
   @ManyToOne(() => Docente)
   @JoinColumn({ name: 'docentes_id', referencedColumnName: 'id' })
   docentes: Docente;
+
+  @ManyToOne(() => StudentCourse)
+  @JoinColumn({
+    name: 'studentcoursesId',
+    referencedColumnName: 'studentcoursesId',
+  })
+  studentCourse: StudentCourse;
 
   @Column({ type: 'varchar', length: 100 })
   requisitos: string;

@@ -42,7 +42,7 @@ export class StudentCoursesService {
 
   async update(id: number, updateDto: Partial<CreateStudentCourseDto>) {
     const studentCourse = await this.studentCourseRepository.findOne({
-      where: { studentcourseId: id },
+      where: { studentcoursesId: id },
     });
 
     if (!studentCourse) {
@@ -62,12 +62,12 @@ export class StudentCoursesService {
 
   async remove(id: number) {
     const exists = await this.studentCourseRepository.existsBy({
-      studentcourseId: id,
+      studentcoursesId: id,
     });
     if (!exists) {
       throw new NotFoundException(`Registro con id ${id} no encontrado`);
     }
-    await this.studentCourseRepository.softDelete({ studentcourseId: id });
+    await this.studentCourseRepository.softDelete({ studentcoursesId: id });
     return {
       message: `Registro con ID ${id} eliminado con éxito`,
       deletedAt: new Date(),
@@ -76,7 +76,7 @@ export class StudentCoursesService {
 
   async findOne(id: number) {
     const studentCourse = await this.studentCourseRepository.findOneBy({
-      studentcourseId: id,
+      studentcoursesId: id,
     });
     if (!studentCourse) {
       throw new NotFoundException(`Registro con id ${id} no encontrado`);

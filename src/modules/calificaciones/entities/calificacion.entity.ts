@@ -1,12 +1,22 @@
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
-
+import {
+  Column,
+  CreateDateColumn,
+  DeleteDateColumn,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
+import { StudentCourse } from 'src/modules/student-courses/entities/studentcourse.entity';
 @Entity()
 export class Calificacion {
   @PrimaryGeneratedColumn('increment', { type: 'int4' })
   gradesId: number;
 
-  @Column({ type: 'int4' })
-  studentcoursesId: number;
+  @ManyToOne(() => StudentCourse, (studentCourse) => studentCourse.grade)
+  @JoinColumn({ name: 'studentcoursesId' })
+  studentCourse: StudentCourse;
 
   @Column({ type: 'float' })
   grade: number;

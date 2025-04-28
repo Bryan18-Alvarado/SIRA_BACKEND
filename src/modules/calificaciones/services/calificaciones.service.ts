@@ -13,6 +13,7 @@ import {
   UpdateCalificacionDto,
 } from '../dto/calificacion.dto/calificacion.dto';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
+import { StudentCourse } from 'src/modules/student-courses/entities/studentcourse.entity';
 
 @Injectable()
 export class CalificacionesService {
@@ -21,6 +22,9 @@ export class CalificacionesService {
   constructor(
     @InjectRepository(Calificacion)
     private readonly calificacionRepository: Repository<Calificacion>,
+
+    @InjectRepository(StudentCourse)
+    private readonly studentcoursesRepository: Repository<StudentCourse>,
   ) {}
 
   async findAll(paginationDto: PaginationDto) {
@@ -33,14 +37,25 @@ export class CalificacionesService {
 
   async create(createCalificacionDto: CreateCalificacionDto) {
     try {
-      const calificacion = this.calificacionRepository.create(
-        createCalificacionDto,
-      );
+      // Buscar el registro de StudentCourses que tenga el studentcoursesId
+      const studentCourse = await this.studentcoursesRepository.findOne({
+        where: { studentcoursesId: createCalificacionDto.studentcoursesId },
+      });
+
+      if (!studentCourse) {
+        throw new NotFoundException('StudentCourse no encontrado');
+      }
+
+      // Crear la calificación con la relación
+      const calificacion = this.calificacionRepository.create({
+        ...createCalificacionDto,
+        studentCourse: studentCourse, // Asociar StudentCourses
+      });
+
       await this.calificacionRepository.save(calificacion);
+
       return calificacion;
     } catch (error) {
-      //   console.error(error);
-      //   throw new InternalServerErrorException('Ayuda!');
       this.handleDBException(error);
     }
   }
