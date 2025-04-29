@@ -5,24 +5,35 @@ import { IsDate, IsInt, IsOptional, IsString, IsNumber } from 'class-validator';
 export class CreateCalificacionDto {
   @IsOptional()
   @IsInt()
-  @ApiProperty()
+  @ApiProperty({ description: 'ID opcional de la calificación (autogenerado)' })
   gradesId?: number;
 
   @IsInt()
-  @ApiProperty()
-  studentcoursesId: number;
+  @ApiProperty({ description: 'ID del estudiante relacionado' })
+  studentId: number;
+
+  @IsInt()
+  @ApiProperty({ description: 'ID del curso relacionado' })
+  courseId: number;
 
   @IsNumber()
-  @ApiProperty()
+  @ApiProperty({ description: 'Nota o puntaje de la calificación' })
   grade: number;
 
   @IsDate()
   @Transform(({ value }) => new Date(value))
-  @ApiProperty()
+  @ApiProperty({
+    description: 'Fecha en que se asignó la calificación',
+    type: String,
+    format: 'date',
+  })
   gradeDate: Date;
 
   @IsString()
-  @ApiProperty()
+  @ApiProperty({
+    description: 'Tipo de calificación (por ejemplo: examen, tarea)',
+  })
   gradeType: string;
 }
+
 export class UpdateCalificacionDto extends PartialType(CreateCalificacionDto) {}

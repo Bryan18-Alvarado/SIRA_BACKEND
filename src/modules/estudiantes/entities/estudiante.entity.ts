@@ -1,4 +1,14 @@
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  DeleteDateColumn,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
+import { StudentCourse } from '../../student-courses/entities/studentcourse.entity';
+import { Calificacion } from '../../calificaciones/entities/calificacion.entity';
 
 @Entity()
 export class Estudiante {
@@ -22,6 +32,13 @@ export class Estudiante {
 
   @Column({ type: 'text', nullable: true })
   direccion: string;
+
+  @OneToMany(() => Calificacion, (calificacion) => calificacion.estudiante)
+  calificaciones: Calificacion[];
+
+  @OneToMany(() => StudentCourse, (studentCourse) => studentCourse.estudiante)
+  studentCourses: StudentCourse[];
+
   @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
 

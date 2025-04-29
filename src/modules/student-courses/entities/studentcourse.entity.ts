@@ -1,21 +1,33 @@
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  DeleteDateColumn,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
+import { Estudiante } from 'src/modules/estudiantes/entities/estudiante.entity';
+import { Courses } from 'src/modules/courses/entities/courses.entity';
+import { Calificacion } from 'src/modules/calificaciones/entities/calificacion.entity';
 @Entity()
 export class StudentCourse {
   @PrimaryGeneratedColumn('increment', { type: 'int4' })
-  studentcourseId: number;
+  studentcoursesId: number;
 
-  @Column({ type: 'int4' })
-  studentId: number;
+  @ManyToOne(() => Estudiante, (estudiante) => estudiante.studentCourses)
+  @JoinColumn({ name: 'estudianteId' })
+  estudiante: Estudiante;
 
-  @Column({ type: 'int4' })
-  coursesId: number;
+  @ManyToOne(() => Courses, (courses) => courses.studentCourses)
+  @JoinColumn({ name: 'coursesId' }) // La columna 'coursesId' es la clave foránea que apunta a 'Courses'
+  courses: Courses;
 
   @Column({ type: 'date' })
   enrollmentDate: Date;
-
-  @Column({ type: 'float' })
-  grade: number;
 
   @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
