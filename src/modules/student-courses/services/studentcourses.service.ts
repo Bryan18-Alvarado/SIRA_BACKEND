@@ -77,17 +77,41 @@ export class StudentCoursesService {
   async update(id: number, updateDto: Partial<CreateStudentCourseDto>) {
     const studentCourse = await this.studentCourseRepository.findOne({
       where: { studentcoursesId: id },
+      relations: ['estudiante', 'courses'],
     });
 
     if (!studentCourse) {
       throw new NotFoundException(`Registro con id ${id} no encontrado`);
     }
+
     try {
-      this.studentCourseRepository.merge(studentCourse, updateDto);
-      await this.studentCourseRepository.save(studentCourse);
+      if (updateDto.studentId) {
+        const estudiante = await this.estudianteRepository.findOneBy({
+          id: updateDto.studentId,
+        });
+        if (!estudiante)
+          throw new NotFoundException('Estudiante no encontrado');
+
+        studentCourse.estudiante = estudiante;
+      }
+
+      if (updateDto.coursesId) {
+        const curso = await this.coursesRepository.findOneBy({
+          id: updateDto.coursesId,
+        });
+        if (!curso) throw new NotFoundException('Curso no encontrado');
+        studentCourse.courses = curso;
+      }
+
+      if (updateDto.enrollmentDate) {
+        studentCourse.enrollmentDate = updateDto.enrollmentDate;
+      }
+
+      const updated = await this.studentCourseRepository.save(studentCourse);
+
       return {
         message: 'Registro actualizado con éxito',
-        data: studentCourse,
+        data: updated,
       };
     } catch (error) {
       this.handleDBException(error);

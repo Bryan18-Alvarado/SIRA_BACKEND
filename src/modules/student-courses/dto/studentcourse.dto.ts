@@ -1,7 +1,6 @@
 import { ApiProperty, PartialType } from '@nestjs/swagger';
-import { Transform, Type } from 'class-transformer';
-import { IsDate, IsInt, IsOptional, IsNumber, IsArray, ValidateNested } from 'class-validator';
-import { CreateCalificacionDto } from 'src/modules/calificaciones/dto/calificacion.dto/calificacion.dto';
+import { Transform } from 'class-transformer';
+import { IsDate, IsInt, IsOptional } from 'class-validator';
 
 export class CreateStudentCourseDto {
   @IsOptional()

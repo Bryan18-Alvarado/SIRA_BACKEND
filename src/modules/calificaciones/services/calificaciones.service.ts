@@ -53,6 +53,21 @@ export class CalificacionesService {
     return calificacion;
   }
 
+  async findByEstudiante(estudianteId: number) {
+    const calificaciones = await this.calificacionRepository.find({
+      where: { estudiante: { id: estudianteId } },
+      relations: ['course'], // Aquí puedes cargar también los cursos relacionados si lo deseas
+    });
+
+    if (!calificaciones || calificaciones.length === 0) {
+      throw new NotFoundException(
+        `No se encontraron calificaciones para el estudiante con ID ${estudianteId}`,
+      );
+    }
+
+    return calificaciones;
+  }
+
   async create(createCalificacionDto: CreateCalificacionDto) {
     const { studentId, courseId, ...rest } = createCalificacionDto;
 
