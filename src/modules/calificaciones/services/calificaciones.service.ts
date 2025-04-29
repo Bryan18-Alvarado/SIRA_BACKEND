@@ -13,7 +13,8 @@ import {
   UpdateCalificacionDto,
 } from '../dto/calificacion.dto/calificacion.dto';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
-import { StudentCourse } from 'src/modules/student-courses/entities/studentcourse.entity';
+import { Estudiante } from 'src/modules/estudiantes/entities/estudiante.entity';
+import { Courses } from 'src/modules/courses/entities/courses.entity';
 
 @Injectable()
 export class CalificacionesService {
@@ -23,8 +24,11 @@ export class CalificacionesService {
     @InjectRepository(Calificacion)
     private readonly calificacionRepository: Repository<Calificacion>,
 
-    @InjectRepository(StudentCourse)
-    private readonly studentcoursesRepository: Repository<StudentCourse>,
+    @InjectRepository(Estudiante)
+    private readonly estudianteRepository: Repository<Estudiante>,
+
+    @InjectRepository(Courses)
+    private readonly coursesRepository: Repository<Courses>,
   ) {}
 
   async findAll(paginationDto: PaginationDto) {
@@ -32,28 +36,46 @@ export class CalificacionesService {
     return this.calificacionRepository.find({
       take: limit,
       skip: offset,
+      relations: ['estudiante', 'course'],
     });
   }
 
+  async findOne(id: number) {
+    const calificacion = await this.calificacionRepository.findOne({
+      where: { gradesId: id },
+      relations: ['estudiante', 'course'],
+    });
+
+    if (!calificacion) {
+      throw new NotFoundException(`Calificación con id ${id} no encontrada`);
+    }
+
+    return calificacion;
+  }
+
   async create(createCalificacionDto: CreateCalificacionDto) {
+    const { studentId, courseId, ...rest } = createCalificacionDto;
+
+    const estudiante = await this.estudianteRepository.findOneBy({
+      id: studentId,
+    });
+
+    if (!estudiante) {
+      throw new NotFoundException('Estudiante no encontrado');
+    }
+    if (!estudiante) throw new NotFoundException('Estudiante no encontrado');
+
+    const course = await this.coursesRepository.findOneBy({ id: courseId });
+    if (!course) throw new NotFoundException('Curso no encontrado');
+
+    const calificacion = this.calificacionRepository.create({
+      ...rest,
+      estudiante,
+      course,
+    });
+
     try {
-      // Buscar el registro de StudentCourses que tenga el studentcoursesId
-      const studentCourse = await this.studentcoursesRepository.findOne({
-        where: { studentcoursesId: createCalificacionDto.studentcoursesId },
-      });
-
-      if (!studentCourse) {
-        throw new NotFoundException('StudentCourse no encontrado');
-      }
-
-      // Crear la calificación con la relación
-      const calificacion = this.calificacionRepository.create({
-        ...createCalificacionDto,
-        studentCourse: studentCourse, // Asociar StudentCourses
-      });
-
       await this.calificacionRepository.save(calificacion);
-
       return calificacion;
     } catch (error) {
       this.handleDBException(error);
@@ -61,18 +83,36 @@ export class CalificacionesService {
   }
 
   async update(id: number, updateCalificacionDto: UpdateCalificacionDto) {
-    const calificacion = await this.calificacionRepository.findOne({
-      where: { gradesId: id },
+    const calificacion = await this.calificacionRepository.findOneBy({
+      gradesId: id,
     });
 
     if (!calificacion) {
       throw new NotFoundException(`Calificación con id ${id} no encontrada`);
     }
+
+    const { studentId, courseId, ...rest } = updateCalificacionDto;
+
+    if (studentId) {
+      const estudiante = await this.estudianteRepository.findOneBy({
+        id: studentId,
+      });
+      if (!estudiante) throw new NotFoundException('Estudiante no encontrado');
+      calificacion.estudiante = estudiante;
+    }
+
+    if (courseId) {
+      const course = await this.coursesRepository.findOneBy({ id: courseId });
+      if (!course) throw new NotFoundException('Curso no encontrado');
+      calificacion.course = course;
+    }
+
+    Object.assign(calificacion, rest);
+
     try {
-      this.calificacionRepository.merge(calificacion, updateCalificacionDto);
       await this.calificacionRepository.save(calificacion);
       return {
-        message: 'Registro actualizado con éxito',
+        message: 'Calificación actualizada correctamente',
         data: calificacion,
       };
     } catch (error) {
@@ -81,27 +121,18 @@ export class CalificacionesService {
   }
 
   async remove(id: number) {
-    const exists = await this.calificacionRepository.existsBy({
-      gradesId: id,
-    });
+    const exists = await this.calificacionRepository.existsBy({ gradesId: id });
+
     if (!exists) {
       throw new NotFoundException(`Calificación con id ${id} no encontrada`);
     }
-    await this.calificacionRepository.softDelete({ gradesId: id }); // Soft delete deja fecha de eliminacion
+
+    await this.calificacionRepository.softDelete({ gradesId: id });
+
     return {
-      message: `Calificación con ID ${id} eliminada con éxito`,
+      message: `Calificación con ID ${id} eliminada correctamente`,
       deletedAt: new Date(),
     };
-  }
-
-  async findOne(id: number) {
-    const calificacion = await this.calificacionRepository.findOneBy({
-      gradesId: id,
-    });
-    if (!calificacion) {
-      throw new NotFoundException(`Calificación con id ${id} no encontrada`);
-    }
-    return calificacion;
   }
 
   private handleDBException(error: any) {

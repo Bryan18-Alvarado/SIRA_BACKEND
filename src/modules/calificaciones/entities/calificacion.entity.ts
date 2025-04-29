@@ -8,15 +8,21 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { StudentCourse } from 'src/modules/student-courses/entities/studentcourse.entity';
+
+import { Courses } from '../../courses/entities/courses.entity';
+import { Estudiante } from '../../estudiantes/entities/estudiante.entity';
 @Entity()
 export class Calificacion {
   @PrimaryGeneratedColumn('increment', { type: 'int4' })
   gradesId: number;
 
-  @ManyToOne(() => StudentCourse, (studentCourse) => studentCourse.grade)
-  @JoinColumn({ name: 'studentcoursesId' })
-  studentCourse: StudentCourse;
+  @ManyToOne(() => Estudiante, (estudiante) => estudiante.calificaciones) // Relación con Estudiante
+  @JoinColumn({ name: 'studentId' }) // Utiliza la clave foránea 'studentId'
+  estudiante: Estudiante;
+
+  @ManyToOne(() => Courses)
+  @JoinColumn({ name: 'courseId' })
+  course: Courses;
 
   @Column({ type: 'float' })
   grade: number;

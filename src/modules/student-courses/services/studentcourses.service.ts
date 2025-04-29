@@ -10,6 +10,8 @@ import { Repository } from 'typeorm';
 import { StudentCourse } from '../entities/studentcourse.entity';
 import { CreateStudentCourseDto } from '../dto/studentcourse.dto';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
+import { Estudiante } from 'src/modules/estudiantes/entities/estudiante.entity';
+import { Courses } from 'src/modules/courses/entities/courses.entity';
 
 @Injectable()
 export class StudentCoursesService {
@@ -18,6 +20,12 @@ export class StudentCoursesService {
   constructor(
     @InjectRepository(StudentCourse)
     private readonly studentCourseRepository: Repository<StudentCourse>,
+
+    @InjectRepository(Estudiante)
+    private readonly estudianteRepository: Repository<Estudiante>,
+
+    @InjectRepository(Courses)
+    private readonly coursesRepository: Repository<Courses>,
   ) {}
 
   async findAll(paginationDto: PaginationDto) {
@@ -25,16 +33,42 @@ export class StudentCoursesService {
     return this.studentCourseRepository.find({
       take: limit,
       skip: offset,
+      relations: ['estudiante', 'courses'],
     });
   }
 
   async create(createStudentCourseDto: CreateStudentCourseDto) {
+    const { studentId, coursesId, enrollmentDate } = createStudentCourseDto;
+
     try {
-      const studentCourse = this.studentCourseRepository.create(
-        createStudentCourseDto,
-      );
-      await this.studentCourseRepository.save(studentCourse);
-      return studentCourse;
+      const estudiante = await this.estudianteRepository.findOne({
+        where: { id: studentId },
+      });
+      if (!estudiante) {
+        throw new NotFoundException(
+          `Estudiante con ID ${studentId} no encontrado`,
+        );
+      }
+
+      const curso = await this.coursesRepository.findOne({
+        where: { id: coursesId },
+      });
+      if (!curso) {
+        throw new NotFoundException(`Curso con ID ${coursesId} no encontrado`);
+      }
+
+      const studentCourse = this.studentCourseRepository.create({
+        estudiante,
+        courses: curso,
+        enrollmentDate,
+      });
+
+      const saved = await this.studentCourseRepository.save(studentCourse);
+
+      return {
+        message: 'Estudiante inscrito correctamente',
+        data: saved,
+      };
     } catch (error) {
       this.handleDBException(error);
     }
@@ -75,8 +109,9 @@ export class StudentCoursesService {
   }
 
   async findOne(id: number) {
-    const studentCourse = await this.studentCourseRepository.findOneBy({
-      studentcoursesId: id,
+    const studentCourse = await this.studentCourseRepository.findOne({
+      where: { studentcoursesId: id },
+      relations: ['estudiante', 'courses', 'grade'], // 👈 relaciones relacionadas
     });
     if (!studentCourse) {
       throw new NotFoundException(`Registro con id ${id} no encontrado`);

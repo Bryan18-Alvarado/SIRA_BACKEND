@@ -8,6 +8,7 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -60,12 +61,8 @@ export class Courses {
   @JoinColumn({ name: 'docentes_id', referencedColumnName: 'id' })
   docentes: Docente;
 
-  @ManyToOne(() => StudentCourse)
-  @JoinColumn({
-    name: 'studentcoursesId',
-    referencedColumnName: 'studentcoursesId',
-  })
-  studentCourse: StudentCourse;
+  @OneToMany(() => StudentCourse, (studentCourse) => studentCourse.courses)
+  studentCourses: StudentCourse[];
 
   @Column({ type: 'varchar', length: 100 })
   requisitos: string;
