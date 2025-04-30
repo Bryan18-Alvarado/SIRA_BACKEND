@@ -20,6 +20,7 @@ import { CoursesService } from './modules/courses/services/courses.service';
 import { CoursesModule } from './modules/courses/courses.module';
 import { StudentCoursesController } from './modules/student-courses/controllers/studentcourses.controller';
 import { StudentCoursesService } from './modules/student-courses/services/studentcourses.service';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -42,6 +43,7 @@ import { StudentCoursesService } from './modules/student-courses/services/studen
       synchronize: true, //Si se establece en true, TypeORM sincronizará automáticamente la estructura de la base de datos con las entidades definidas en el código cada vez que se inicie la aplicación.
     }),
     CommonModule,
+    AuthModule,
   ],
   controllers: [
     DocentesController,
