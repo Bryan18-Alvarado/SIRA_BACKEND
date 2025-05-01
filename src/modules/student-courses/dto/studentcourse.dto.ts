@@ -1,12 +1,12 @@
 import { ApiProperty, PartialType } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
-import { IsDate, IsInt, IsOptional, IsNumber } from 'class-validator';
+import { IsDate, IsInt, IsOptional } from 'class-validator';
 
 export class CreateStudentCourseDto {
   @IsOptional()
   @IsInt()
   @ApiProperty()
-  studentcourseId?: number;
+  studentcoursesId?: number;
 
   @IsInt()
   @ApiProperty()
@@ -20,10 +20,6 @@ export class CreateStudentCourseDto {
   @IsDate()
   @ApiProperty()
   enrollmentDate: Date;
-
-  @IsNumber()
-  @ApiProperty()
-  grade: number;
 }
 
 export class UpdateStudentCourseDto extends PartialType(

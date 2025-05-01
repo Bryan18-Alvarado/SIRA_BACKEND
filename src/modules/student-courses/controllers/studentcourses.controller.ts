@@ -4,8 +4,8 @@ import {
   Delete,
   Get,
   Param,
-  Patch,
   Post,
+  Put,
   Query,
 } from '@nestjs/common';
 import { CreateStudentCourseDto } from '../dto/studentcourse.dto';
@@ -31,7 +31,7 @@ export class StudentCoursesController {
     return this.studentCoursesService.create(createStudentCourseDto);
   }
 
-  @Patch(':id')
+  @Put(':id')
   update(
     @Param('id') id: number,
     @Body() updateDto: CreateStudentCourseDto, // actualizar el dto

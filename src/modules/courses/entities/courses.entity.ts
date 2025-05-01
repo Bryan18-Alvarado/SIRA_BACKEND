@@ -1,4 +1,6 @@
 import { Categories } from 'src/modules/categories/entities/categories.entity';
+import { Docente } from 'src/modules/docentes/entities/docentes.entity';
+import { StudentCourse } from 'src/modules/student-courses/entities/studentcourse.entity';
 import {
   Column,
   CreateDateColumn,
@@ -6,6 +8,7 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -17,6 +20,9 @@ export class Courses {
 
   @Column({ type: 'int4', nullable: false })
   categories_id: number;
+
+  @Column({ type: 'int4', nullable: false })
+  docentes_id: number;
 
   @Column({ type: 'varchar', length: 100, unique: true })
   codigo: string;
@@ -50,6 +56,13 @@ export class Courses {
   @ManyToOne(() => Categories)
   @JoinColumn({ name: 'categories_id', referencedColumnName: 'id' })
   categories: Categories;
+
+  @ManyToOne(() => Docente)
+  @JoinColumn({ name: 'docentes_id', referencedColumnName: 'id' })
+  docentes: Docente;
+
+  @OneToMany(() => StudentCourse, (studentCourse) => studentCourse.courses)
+  studentCourses: StudentCourse[];
 
   @Column({ type: 'varchar', length: 100 })
   requisitos: string;

@@ -7,6 +7,7 @@ import {
   Patch,
   Post,
   Query,
+  Put,
 } from '@nestjs/common';
 import { CalificacionesService } from '../services/calificaciones.service';
 import {
@@ -34,12 +35,17 @@ export class CalificacionesController {
     return this.calificacionesService.findOne(id);
   }
 
-  @Patch(':id')
+  @Get('estudiante/:id')
+  async findByEstudiante(@Param('id') id: number) {
+    return await this.calificacionesService.findByEstudiante(id);
+  }
+
+  @Put(':id')
   update(
-    @Param('id') id: number,
-    @Body() updatecalificacionDto: UpdateCalificacionDto, // O puedes crear un UpdateCalificacionDto
+    @Param('id') id: string,
+    @Body() updateCalificacionDto: UpdateCalificacionDto,
   ) {
-    return this.calificacionesService.update(id, updatecalificacionDto);
+    return this.calificacionesService.update(+id, updateCalificacionDto);
   }
 
   @Delete(':id')
