@@ -14,6 +14,7 @@ import {
   UpdateCoursesDto,
 } from '../dto/courses.dto';
 import { Categories } from 'src/modules/categories/entities/categories.entity';
+import { Level } from 'src/modules/level/entities/level.entity';
 
 @Injectable()
 export class CoursesService {
@@ -24,6 +25,9 @@ export class CoursesService {
 
     @InjectRepository(Categories)
     private readonly brandRepository: Repository<Categories>,
+
+    @InjectRepository(Level)
+    private readonly levelRepository: Repository<Level>,
   ) {}
 
   findAll(params?: FilterCoursesDto) {
@@ -41,6 +45,7 @@ export class CoursesService {
       skip: offset,
       relations: {
         categories: true,
+        nivel: true,
       },
     });
   }
@@ -61,6 +66,7 @@ export class CoursesService {
       where: { id: id },
       relations: {
         categories: true,
+        nivel: true,
       },
     });
 
@@ -75,7 +81,7 @@ export class CoursesService {
   async update(id: number, changes: UpdateCoursesDto) {
     const courses = await this.coursesRepository.findOne({
       where: { id },
-      relations: { categories: true },
+      relations: { categories: true, nivel: true },
     });
 
     if (!courses) {
@@ -93,6 +99,20 @@ export class CoursesService {
         );
       }
       courses.categories = categories;
+
+      // Verifica si el nivel existe/
+      if (changes.nivel_id) {
+        const nivel = await this.levelRepository.findOneBy({
+          id: changes.nivel_id,
+        });
+
+        if (!nivel) {
+          throw new NotFoundException(
+            `el nivel con id ${changes.nivel_id} no fue encontrado`,
+          );
+        }
+        courses.nivel = nivel;
+      }
     }
     this.coursesRepository.merge(courses, changes);
     const updated = await this.coursesRepository.save(courses);

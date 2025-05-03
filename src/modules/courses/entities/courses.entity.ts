@@ -1,4 +1,5 @@
 import { Categories } from 'src/modules/categories/entities/categories.entity';
+import { Level } from 'src/modules/level/entities/level.entity';
 import {
   Column,
   CreateDateColumn,
@@ -17,6 +18,9 @@ export class Courses {
 
   @Column({ type: 'int4', nullable: false })
   categories_id: number;
+
+  @Column({ type: 'int4', nullable: false })
+  level_id: number;
 
   @Column({ type: 'varchar', length: 100, unique: true })
   codigo: string;
@@ -50,6 +54,10 @@ export class Courses {
   @ManyToOne(() => Categories)
   @JoinColumn({ name: 'categories_id', referencedColumnName: 'id' })
   categories: Categories;
+
+  @ManyToOne(() => Level)
+  @JoinColumn({ name: 'level_id', referencedColumnName: 'id' })
+  nivel: Level;
 
   @Column({ type: 'varchar', length: 100 })
   requisitos: string;

@@ -76,6 +76,12 @@ export class CreateCoursesDto {
   @IsNotEmpty()
   readonly categories_id: number;
 
+  @IsNumber()
+  @IsOptional()
+  @ApiProperty()
+  @IsNotEmpty()
+  readonly nivel_id: number;
+
   // @IsString()
   // @ApiProperty({ enum: Nivel })
   // nivel: Nivel;

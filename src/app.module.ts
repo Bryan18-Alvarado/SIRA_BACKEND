@@ -21,6 +21,9 @@ import { CoursesModule } from './modules/courses/courses.module';
 import { StudentCoursesController } from './modules/student-courses/controllers/studentcourses.controller';
 import { StudentCoursesService } from './modules/student-courses/services/studentcourses.service';
 import { AuthModule } from './auth/auth.module';
+import { LevelController } from './modules/level/controllers/level.controller';
+import { LevelService } from './modules/level/services/level.service';
+import { LevelModule } from './modules/level/level.module';
 
 @Module({
   imports: [
@@ -30,6 +33,7 @@ import { AuthModule } from './auth/auth.module';
     CoursesModule,
     StudentCoursesModule,
     CalificacionesModule,
+    LevelModule,
     ConfigModule.forRoot(),
 
     TypeOrmModule.forRoot({
@@ -52,6 +56,7 @@ import { AuthModule } from './auth/auth.module';
     EstudiantesController,
     CoursesController,
     StudentCoursesController,
+    LevelController,
   ],
   providers: [
     DocentesService,
@@ -60,6 +65,7 @@ import { AuthModule } from './auth/auth.module';
     CoursesService,
     CalificacionesService,
     StudentCoursesService,
+    LevelService,
   ],
 })
 export class AppModule {}
