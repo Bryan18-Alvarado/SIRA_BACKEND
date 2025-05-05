@@ -138,6 +138,15 @@ export class CoursesService {
   //   }
   // }
 
+  async deleteAllCourses() {
+    const query = this.coursesRepository.createQueryBuilder('courses');
+    try {
+      return await query.delete().where({}).execute();
+    } catch (error) {
+      this.handleDBException(error);
+    }
+  }
+
   async remove(id: number) {
     const exists = await this.coursesRepository.existsBy({ id });
     if (!exists) {

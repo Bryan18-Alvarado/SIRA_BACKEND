@@ -58,6 +58,15 @@ export class EstudiantesService {
     }
   }
 
+  async deleteAllEstudiantes() {
+    const query = this.estudianteRepository.createQueryBuilder('estudiante');
+    try {
+      return await query.delete().where({}).execute();
+    } catch (error) {
+      this.handleDBException(error);
+    }
+  }
+
   async remove(id: number) {
     const exists = await this.estudianteRepository.existsBy({ id });
     if (!exists) {

@@ -135,6 +135,17 @@ export class CalificacionesService {
     }
   }
 
+  async deleteAllCalificaciones() {
+    const query =
+      this.calificacionRepository.createQueryBuilder('calificacion');
+
+    try {
+      return await query.delete().where({}).execute();
+    } catch (error) {
+      this.handleDBException(error);
+    }
+  }
+
   async remove(id: number) {
     const exists = await this.calificacionRepository.existsBy({ gradesId: id });
 

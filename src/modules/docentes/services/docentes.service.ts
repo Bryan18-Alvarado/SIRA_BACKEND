@@ -62,6 +62,16 @@ export class DocentesService {
     }
   }
 
+  async deleteAllDocentes() {
+    const query = this.docenteRepository.createQueryBuilder('docente');
+
+    try {
+      return await query.delete().where({}).execute();
+    } catch (error) {
+      this.handleDBException(error);
+    }
+  }
+
   async remove(id: number) {
     const exists = await this.docenteRepository.existsBy({ id });
     if (!exists) {
