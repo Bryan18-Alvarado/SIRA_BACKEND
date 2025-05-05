@@ -1,5 +1,7 @@
 import { Categories } from 'src/modules/categories/entities/categories.entity';
 import { Level } from 'src/modules/level/entities/level.entity';
+import { Docente } from 'src/modules/docentes/entities/docentes.entity';
+import { StudentCourse } from 'src/modules/student-courses/entities/studentcourse.entity';
 import {
   Column,
   CreateDateColumn,
@@ -7,6 +9,7 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -22,6 +25,9 @@ export class Courses {
   @Column({ type: 'int4', nullable: false })
   level_id: number;
 
+  @Column({ type: 'int4', nullable: false })
+  docentes_id: number;
+
   @Column({ type: 'varchar', length: 100, unique: true })
   codigo: string;
 
@@ -33,8 +39,6 @@ export class Courses {
 
   @Column({ type: 'varchar', length: 100 })
   duracion: string;
-
-  //CATEGORIA
 
   @Column({ type: 'varchar', length: 100, unique: true })
   horario: string;
@@ -51,14 +55,6 @@ export class Courses {
   @Column({ type: 'boolean', default: true })
   status: boolean;
 
-  @ManyToOne(() => Categories)
-  @JoinColumn({ name: 'categories_id', referencedColumnName: 'id' })
-  categories: Categories;
-
-  @ManyToOne(() => Level)
-  @JoinColumn({ name: 'level_id', referencedColumnName: 'id' })
-  nivel: Level;
-
   @Column({ type: 'varchar', length: 100 })
   requisitos: string;
 
@@ -73,4 +69,21 @@ export class Courses {
 
   @DeleteDateColumn({ type: 'timestamp', nullable: true })
   deleteAt: Date;
+
+  // Relaciones
+
+  @ManyToOne(() => Categories)
+  @JoinColumn({ name: 'categories_id', referencedColumnName: 'id' })
+  categories: Categories;
+
+  @ManyToOne(() => Level)
+  @JoinColumn({ name: 'level_id', referencedColumnName: 'id' })
+  nivel: Level;
+
+  @ManyToOne(() => Docente)
+  @JoinColumn({ name: 'docentes_id', referencedColumnName: 'id' })
+  docentes: Docente;
+
+  @OneToMany(() => StudentCourse, (studentCourse) => studentCourse.courses)
+  studentCourses: StudentCourse[];
 }
