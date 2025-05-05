@@ -72,19 +72,19 @@ export class CreateCoursesDto {
   @IsOptional()
   @ApiProperty()
   @IsNotEmpty()
-  readonly categories_id: number;
+  readonly categories_id?: number;
 
   @IsNumber()
   @IsOptional()
   @ApiProperty()
   @IsNotEmpty()
-  readonly nivel_id: number;
+  readonly nivel_id?: number;
 
   @IsNumber()
   @IsOptional()
   @ApiProperty()
   @IsNotEmpty()
-  readonly docentes_id: number;
+  readonly docentes_id?: number;
 
   @IsString()
   @ApiProperty()

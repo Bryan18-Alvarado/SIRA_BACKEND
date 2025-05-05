@@ -59,6 +59,7 @@ export class StudentCoursesService {
 
       const studentCourse = this.studentCourseRepository.create({
         estudiante,
+        level: curso.nivel,
         courses: curso,
         enrollmentDate,
       });

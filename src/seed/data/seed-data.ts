@@ -76,6 +76,11 @@ interface Seedcategories {
   isAvailable: boolean;
 }
 
+interface SeedLevel {
+  id?: number;
+  level_course: string;
+}
+
 interface SeedData {
   estudiantes: SeedEstudiante[];
   calificaciones: SeedCalificacion[];
@@ -83,6 +88,7 @@ interface SeedData {
   studentCourses: SeedStudentCourse[];
   docentes: SeedDocente[];
   categories: Seedcategories[];
+  levels: SeedLevel[];
 }
 
 export const initialData: SeedData = {
@@ -273,6 +279,20 @@ export const initialData: SeedData = {
       status: true,
       createdAt: new Date(),
       isAvailable: true,
+    },
+  ],
+  levels: [
+    {
+      id: 1,
+      level_course: 'A1 - Principiante',
+    },
+    {
+      id: 2,
+      level_course: 'C1 - Avanzado',
+    },
+    {
+      id: 3,
+      level_course: 'Nivel Básico de Computación',
     },
   ],
 };

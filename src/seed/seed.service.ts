@@ -12,6 +12,8 @@ import { DocentesService } from 'src/modules/docentes/services/docentes.service'
 import { Docente } from 'src/modules/docentes/entities/docentes.entity';
 import { CategoriesService } from 'src/modules/categories/services/categories.service';
 import { Categories } from '../modules/categories/entities/categories.entity';
+import { Level } from 'src/modules/level/entities/level.entity';
+import { LevelService } from 'src/modules/level/services/level.service';
 
 @Injectable()
 export class SeedService {
@@ -22,6 +24,7 @@ export class SeedService {
     private readonly studentCoursesService: StudentCoursesService,
     private readonly docentesService: DocentesService,
     private readonly categoriesService: CategoriesService,
+    private readonly levelService: LevelService,
   ) {}
 
   async runSeed() {
@@ -39,6 +42,8 @@ export class SeedService {
       console.log('Docentes deleted');
       await this.categoriesService.deleteAllCategories();
       console.log('Categories deleted');
+      await this.levelService.deleteAllLevels();
+      console.log('Levels deleted');
 
       // Luego insertamos las entidades base
       await this.insertNewCategories(); // Primero las categorías
@@ -49,6 +54,8 @@ export class SeedService {
       console.log('Estudiantes inserted');
       await this.insertNewCourses(); // Luego los cursos, ya que dependen de las categorías y docentes
       console.log('Courses inserted');
+      await this.insertNewLevels(); // Luego los niveles
+      console.log('Levels inserted');
 
       // Finalmente insertamos las relaciones
       await this.insertNewCalificacion();
@@ -139,14 +146,26 @@ export class SeedService {
 
     studentCourses.forEach((sc) => {
       insertPromises.push(
-        this.studentCoursesService
-          .create({
-            studentId: sc.studentId,
-            coursesId: sc.coursesId,
-            enrollmentDate: sc.enrollmentDate, // asegúrate de que esta propiedad existe
-          })
-          .then((res) => res?.data), // extrae solo el `StudentCourse`, no el objeto con message
+        this.studentCoursesService.create({
+          studentId: sc.studentId,
+          coursesId: sc.coursesId,
+          enrollmentDate: sc.enrollmentDate,
+        }),
       );
+    });
+
+    await Promise.all(insertPromises);
+    return true;
+  }
+
+  private async insertNewLevels() {
+    await this.levelService.deleteAllLevels();
+
+    const levels = initialData.levels;
+    const insertPromises: Promise<Level | undefined>[] = [];
+
+    levels.forEach((level) => {
+      insertPromises.push(this.levelService.create(level));
     });
 
     await Promise.all(insertPromises);

@@ -12,7 +12,7 @@ export class Level {
   @PrimaryGeneratedColumn('increment', { type: 'int4' })
   id?: number;
 
-  @Column({ type: 'varchar', length: 100 })
+  @Column({ type: 'varchar', length: 100, unique: true })
   level_course: string;
 
   @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })

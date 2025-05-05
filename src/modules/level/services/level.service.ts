@@ -69,6 +69,15 @@ export class LevelService {
     };
   }
 
+  async deleteAllLevels() {
+    const query = this.levelRepository.createQueryBuilder('level');
+    try {
+      return await query.delete().where({}).execute();
+    } catch (error) {
+      this.handleDBException(error);
+    }
+  }
+
   async findOne(id: number) {
     const level = await this.levelRepository.findOneBy({ id });
 
