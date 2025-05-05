@@ -146,11 +146,13 @@ export class SeedService {
 
     studentCourses.forEach((sc) => {
       insertPromises.push(
-        this.studentCoursesService.create({
-          studentId: sc.studentId,
-          coursesId: sc.coursesId,
-          enrollmentDate: sc.enrollmentDate,
-        }),
+        this.studentCoursesService
+          .create({
+            studentId: sc.studentId,
+            coursesId: sc.coursesId,
+            enrollmentDate: sc.enrollmentDate,
+          })
+          .then((res) => (Array.isArray(res?.data) ? res.data[0] : res?.data)),
       );
     });
 
