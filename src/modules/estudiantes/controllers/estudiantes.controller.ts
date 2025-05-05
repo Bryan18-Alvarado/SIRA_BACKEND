@@ -10,8 +10,8 @@ import {
   Delete,
   Get,
   Param,
+  Patch,
   Post,
-  Put,
   Query,
 } from '@nestjs/common';
 
@@ -33,8 +33,8 @@ export class EstudiantesController {
     return this.estudianteService.findOne(id);
   }
 
-  @Put(':id')
-  update(
+  @Patch(':id')
+  updaate(
     @Param('id') id: number,
     @Body() updateEstudianteDto: UpdateEstudianteDto, // O puedes crear un UpdateEstudianteDto
   ) {

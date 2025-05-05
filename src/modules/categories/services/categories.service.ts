@@ -60,6 +60,16 @@ export class CategoriesService {
     }
   }
 
+  async deleteAllCategories() {
+    const query = this.categoriesRepository.createQueryBuilder('categories');
+
+    try {
+      return await query.delete().where({}).execute();
+    } catch (error) {
+      this.handleDBException(error);
+    }
+  }
+
   async remove(id: number) {
     const exists = await this.categoriesRepository.existsBy({ id });
     if (!exists) {

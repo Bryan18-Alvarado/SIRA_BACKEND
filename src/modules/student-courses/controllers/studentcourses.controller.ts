@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  Patch,
   Post,
   Put,
   Query,
@@ -31,7 +32,7 @@ export class StudentCoursesController {
     return this.studentCoursesService.create(createStudentCourseDto);
   }
 
-  @Put(':id')
+  @Patch(':id')
   update(
     @Param('id') id: number,
     @Body() updateDto: CreateStudentCourseDto, // actualizar el dto
