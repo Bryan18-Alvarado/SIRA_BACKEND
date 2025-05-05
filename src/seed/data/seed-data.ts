@@ -3,11 +3,6 @@ import {
   Genero,
 } from 'src/modules/docentes/entities/docentes.entity';
 
-// export enum Genero {
-//   MASCULINO = 'masculino',
-//   FEMENINO = 'femenino',
-// }
-
 interface SeedEstudiante {
   nombre: string;
   apellido: string;
@@ -29,6 +24,7 @@ interface SeedCalificacion {
 interface SeedCourse {
   categories_id: number;
   docentes_id: number;
+  nivel_id: number;
   codigo: string;
   nombre: string;
   descripcion: string;
@@ -49,24 +45,25 @@ interface SeedStudentCourse {
   enrollmentDate: Date;
   isAvailable: boolean;
 }
+
 export interface SeedDocente {
-  id: number; // ID del docente
-  nombre: string; // Nombre del docente
-  apellido: string; // Apellido del docente
-  edad: number; // Edad del docente
-  genero: Genero; // Género del docente (masculino/femenino)
-  codigo_laboral: number; // Código laboral único del docente
-  cursos_asignados: string; // Cursos asignados, como un string (puedes adaptarlo para ser un array si prefieres)
-  direccion?: string; // Dirección opcional del docente
-  fecha_ingreso: Date; // Fecha de ingreso al trabajo
-  fecha_nacimiento: Date; // Fecha de nacimiento del docente
-  telefono?: string; // Teléfono opcional
-  email?: string; // Email opcional
-  estado_civil: EstadoCivil; // Estado civil del docente
-  isAvailable: boolean; // Disponibilidad del docente
-  createdAt: Date; // Fecha de creación
-  updateAt?: Date; // Fecha de última actualización (opcional)
-  deleteAt?: Date; // Fecha de eliminación (opcional)
+  id: number;
+  nombre: string;
+  apellido: string;
+  edad: number;
+  genero: Genero;
+  codigo_laboral: number;
+  cursos_asignados: string;
+  direccion?: string;
+  fecha_ingreso: Date;
+  fecha_nacimiento: Date;
+  telefono?: string;
+  email?: string;
+  estado_civil: EstadoCivil;
+  isAvailable: boolean;
+  createdAt: Date;
+  updateAt?: Date;
+  deleteAt?: Date;
 }
 
 interface Seedcategories {
@@ -84,7 +81,7 @@ interface SeedData {
   calificaciones: SeedCalificacion[];
   courses: SeedCourse[];
   studentCourses: SeedStudentCourse[];
-  docentes: SeedDocente[]; // Opcional, si deseas incluir docentes en los datos iniciales
+  docentes: SeedDocente[];
   categories: Seedcategories[];
 }
 
@@ -112,6 +109,7 @@ export const initialData: SeedData = {
     {
       categories_id: 1,
       docentes_id: 1,
+      nivel_id: 1,
       codigo: 'ENG-A1',
       nombre: 'Inglés A1',
       descripcion: 'Nivel introductorio de inglés',
@@ -128,6 +126,7 @@ export const initialData: SeedData = {
     {
       categories_id: 1,
       docentes_id: 2,
+      nivel_id: 2,
       codigo: 'ENG-C1',
       nombre: 'Inglés C1',
       descripcion: 'Nivel avanzado de inglés',
@@ -144,6 +143,7 @@ export const initialData: SeedData = {
     {
       categories_id: 2,
       docentes_id: 3,
+      nivel_id: 1,
       codigo: 'COMP-101',
       nombre: 'Computación Básica',
       descripcion: 'Fundamentos de informática',
@@ -212,7 +212,7 @@ export const initialData: SeedData = {
       nombre: 'Carlos',
       apellido: 'Rodríguez',
       edad: 45,
-      genero: Genero.MASCULINO, // Genero del docente
+      genero: Genero.MASCULINO,
       codigo_laboral: 1234,
       cursos_asignados: 'Inglés A1',
       direccion: 'Calle Profesor 10',
@@ -220,9 +220,9 @@ export const initialData: SeedData = {
       fecha_nacimiento: new Date(1980, 2, 15),
       telefono: '555-1010',
       email: 'carlos.rodriguez@academia.com',
-      estado_civil: EstadoCivil.CASADO, // Estado civil
+      estado_civil: EstadoCivil.CASADO,
       isAvailable: true,
-      createdAt: new Date(), // Fecha de creación
+      createdAt: new Date(),
     },
     {
       id: 2,
@@ -237,9 +237,9 @@ export const initialData: SeedData = {
       fecha_nacimiento: new Date(1987, 5, 23),
       telefono: '555-2020',
       email: 'maria.lopez@academia.com',
-      estado_civil: EstadoCivil.SOLTERO, // Estado civil
+      estado_civil: EstadoCivil.SOLTERO,
       isAvailable: true,
-      createdAt: new Date(), // Fecha de creación
+      createdAt: new Date(),
     },
     {
       id: 3,
@@ -256,7 +256,7 @@ export const initialData: SeedData = {
       email: 'juan.sanchez@academia.com',
       estado_civil: EstadoCivil.SOLTERO,
       isAvailable: true,
-      createdAt: new Date(), // Fecha de creación
+      createdAt: new Date(),
     },
   ],
   categories: [
