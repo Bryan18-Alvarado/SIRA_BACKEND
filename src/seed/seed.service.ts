@@ -45,6 +45,7 @@ export class SeedService {
       await this.levelService.deleteAllLevels();
       console.log('Levels deleted');
 
+      // Inicio del  bloque de inserción de datos, si se comenta este bloque, solo eliminara los dato sin insertar datos por defecto
       // Luego insertamos las entidades base
       await this.insertNewCategories(); // Primero las categorías
       console.log('Categories inserted');
@@ -52,10 +53,11 @@ export class SeedService {
       console.log('Docentes inserted');
       await this.insertNewEstudiante(); // Después los estudiantes
       console.log('Estudiantes inserted');
-      await this.insertNewCourses(); // Luego los cursos, ya que dependen de las categorías y docentes
-      console.log('Courses inserted');
       await this.insertNewLevels(); // Luego los niveles
       console.log('Levels inserted');
+
+      await this.insertNewCourses(); // Luego los cursos, ya que dependen de las categorías y docentes
+      console.log('Courses inserted');
 
       // Finalmente insertamos las relaciones
       await this.insertNewCalificacion();
@@ -64,6 +66,8 @@ export class SeedService {
       console.log('Student Courses inserted');
 
       return 'SEED EXECUTED';
+      // Fin del bloque de inserción de datos
+      // Si se desea eliminar los datos y no insertar nada, se puede comentar el bloque de inserción de datos
     } catch (error) {
       console.error('Error during seed execution:', error);
       throw error;
@@ -140,20 +144,11 @@ export class SeedService {
   private async insertNewStudentCourses() {
     await this.studentCoursesService.deleteAllStudentcourses();
 
-    const studentCourses = initialData.studentCourses;
-
+    const studentcourses = initialData.studentCourses;
     const insertPromises: Promise<StudentCourse | undefined>[] = [];
 
-    studentCourses.forEach((sc) => {
-      insertPromises.push(
-        this.studentCoursesService
-          .create({
-            studentId: sc.studentId,
-            coursesId: sc.coursesId,
-            enrollmentDate: sc.enrollmentDate,
-          })
-          .then((res) => (Array.isArray(res?.data) ? res.data[0] : res?.data)),
-      );
+    studentcourses.forEach((studentcourses) => {
+      insertPromises.push(this.studentCoursesService.create(studentcourses));
     });
 
     await Promise.all(insertPromises);

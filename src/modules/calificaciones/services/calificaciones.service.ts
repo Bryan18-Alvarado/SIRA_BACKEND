@@ -78,8 +78,6 @@ export class CalificacionesService {
     if (!estudiante) {
       throw new NotFoundException('Estudiante no encontrado');
     }
-    if (!estudiante) throw new NotFoundException('Estudiante no encontrado');
-
     const course = await this.coursesRepository.findOneBy({ id: courseId });
     if (!course) throw new NotFoundException('Curso no encontrado');
 

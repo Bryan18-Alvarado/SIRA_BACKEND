@@ -12,18 +12,23 @@ import {
 
 import { Estudiante } from 'src/modules/estudiantes/entities/estudiante.entity';
 import { Courses } from 'src/modules/courses/entities/courses.entity';
-import { Calificacion } from 'src/modules/calificaciones/entities/calificacion.entity';
 @Entity()
 export class StudentCourse {
   @PrimaryGeneratedColumn('increment', { type: 'int4' })
   studentcoursesId: number;
 
-  @ManyToOne(() => Estudiante, (estudiante) => estudiante.studentCourses)
-  @JoinColumn({ name: 'estudianteId' })
+  @Column()
+  studentId: number;
+
+  @Column()
+  coursesId: number;
+
+  @ManyToOne(() => Estudiante)
+  @JoinColumn({ name: 'studentId', referencedColumnName: 'id' }) // La columna 'estudianteId' es la clave foránea que apunta a 'Estudiante'
   estudiante: Estudiante;
 
-  @ManyToOne(() => Courses, (courses) => courses.studentCourses)
-  @JoinColumn({ name: 'coursesId' }) // La columna 'coursesId' es la clave foránea que apunta a 'Courses'
+  @ManyToOne(() => Courses)
+  @JoinColumn({ name: 'coursesId', referencedColumnName: 'id' }) // La columna 'coursesId' es la clave foránea que apunta a 'Courses'
   courses: Courses;
 
   @Column({ type: 'date' })

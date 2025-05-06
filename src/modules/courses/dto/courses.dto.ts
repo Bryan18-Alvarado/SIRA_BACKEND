@@ -75,10 +75,8 @@ export class CreateCoursesDto {
   readonly categories_id?: number;
 
   @IsNumber()
-  @IsOptional()
   @ApiProperty()
-  @IsNotEmpty()
-  readonly nivel_id?: number;
+  readonly level_id?: number;
 
   @IsNumber()
   @IsOptional()

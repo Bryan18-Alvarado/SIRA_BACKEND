@@ -24,7 +24,7 @@ interface SeedCalificacion {
 interface SeedCourse {
   categories_id: number;
   docentes_id: number;
-  nivel_id: number;
+  level_id: number;
   codigo: string;
   nombre: string;
   descripcion: string;
@@ -110,12 +110,26 @@ export const initialData: SeedData = {
       direccion: 'Av. Siempre Viva 742',
     },
   ],
+  levels: [
+    {
+      id: 1,
+      level_course: 'A1 - Principiante',
+    },
+    {
+      id: 2,
+      level_course: 'C1 - Avanzado',
+    },
+    {
+      id: 3,
+      level_course: 'Nivel Básico de Computación',
+    },
+  ],
 
   courses: [
     {
       categories_id: 1,
       docentes_id: 1,
-      nivel_id: 1,
+      level_id: 1,
       codigo: 'ENG-A1',
       nombre: 'Inglés A1',
       descripcion: 'Nivel introductorio de inglés',
@@ -132,7 +146,7 @@ export const initialData: SeedData = {
     {
       categories_id: 1,
       docentes_id: 2,
-      nivel_id: 2,
+      level_id: 2,
       codigo: 'ENG-C1',
       nombre: 'Inglés C1',
       descripcion: 'Nivel avanzado de inglés',
@@ -149,7 +163,7 @@ export const initialData: SeedData = {
     {
       categories_id: 2,
       docentes_id: 3,
-      nivel_id: 1,
+      level_id: 1,
       codigo: 'COMP-101',
       nombre: 'Computación Básica',
       descripcion: 'Fundamentos de informática',
@@ -279,20 +293,6 @@ export const initialData: SeedData = {
       status: true,
       createdAt: new Date(),
       isAvailable: true,
-    },
-  ],
-  levels: [
-    {
-      id: 1,
-      level_course: 'A1 - Principiante',
-    },
-    {
-      id: 2,
-      level_course: 'C1 - Avanzado',
-    },
-    {
-      id: 3,
-      level_course: 'Nivel Básico de Computación',
     },
   ],
 };
