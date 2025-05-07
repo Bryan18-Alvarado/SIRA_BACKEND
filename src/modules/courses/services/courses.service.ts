@@ -50,7 +50,7 @@ export class CoursesService {
       skip: offset,
       relations: {
         categories: true,
-        nivel: true,
+        level: true,
         docentes: true,
       },
     });
@@ -71,7 +71,7 @@ export class CoursesService {
       where: { id },
       relations: {
         categories: true,
-        nivel: true,
+        level: true,
         docentes: true,
       },
     });
@@ -89,7 +89,7 @@ export class CoursesService {
       where: { id },
       relations: {
         categories: true,
-        nivel: true,
+        level: true,
         docentes: true,
       },
     });
@@ -112,17 +112,17 @@ export class CoursesService {
     }
 
     // Validar nivel
-    if (changes.nivel_id) {
-      const nivel = await this.levelRepository.findOneBy({
-        id: changes.nivel_id,
+    if (changes.level_id) {
+      const level = await this.levelRepository.findOneBy({
+        id: changes.level_id,
       });
 
-      if (!nivel) {
+      if (!level) {
         throw new NotFoundException(
-          `El nivel con id ${changes.nivel_id} no fue encontrado`,
+          `El nivel con id ${changes.level_id} no fue encontrado`,
         );
       }
-      courses.nivel = nivel;
+      courses.level = level;
     }
 
     // Validar docente
@@ -178,4 +178,3 @@ export class CoursesService {
     );
   }
 }
-

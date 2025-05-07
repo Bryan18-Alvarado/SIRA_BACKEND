@@ -78,7 +78,7 @@ export class Courses {
 
   @ManyToOne(() => Level)
   @JoinColumn({ name: 'level_id', referencedColumnName: 'id' })
-  nivel: Level;
+  level: Level;
 
   @ManyToOne(() => Docente)
   @JoinColumn({ name: 'docentes_id', referencedColumnName: 'id' })

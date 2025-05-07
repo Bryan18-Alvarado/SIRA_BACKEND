@@ -37,48 +37,47 @@ export class StudentCoursesService {
     });
   }
 
-  async create(createStudentCourseDto: CreateStudentCourseDto) {
-    const { studentId, coursesId, enrollmentDate } = createStudentCourseDto;
-
+  async create(createStudentCoursesDto: CreateStudentCourseDto) {
     try {
-      const estudiante = await this.estudianteRepository.findOne({
-        where: { id: studentId },
-      });
-      if (!estudiante) {
-        throw new NotFoundException(
-          `Estudiante con ID ${studentId} no encontrado`,
-        );
-      }
-
-      const curso = await this.coursesRepository.findOne({
-        where: { id: coursesId },
-      });
-      if (!curso) {
-        throw new NotFoundException(`Curso con ID ${coursesId} no encontrado`);
-      }
-
-      const studentCourse = this.studentCourseRepository.create({
-        estudiante,
-        level: curso.nivel,
-        courses: curso,
-        enrollmentDate,
-      });
-
-      const saved = await this.studentCourseRepository.save(studentCourse);
-
-      return {
-        message: 'Estudiante inscrito correctamente',
-        data: saved,
-      };
+      const studentcourses = this.studentCourseRepository.create(
+        createStudentCoursesDto,
+      );
+      await this.studentCourseRepository.save(studentcourses);
+      return (
+        (await this.studentCourseRepository.findOne({
+          where: { studentcoursesId: studentcourses.studentcoursesId },
+          relations: {
+            estudiante: true, // 👈 relaciones relacionadas
+            courses: true,
+          }, // 👈 relaciones relacionadas
+        })) ?? undefined
+      );
     } catch (error) {
       this.handleDBException(error);
     }
   }
 
-  async update(id: number, updateDto: Partial<CreateStudentCourseDto>) {
+  async findOne(id: number) {
     const studentCourse = await this.studentCourseRepository.findOne({
       where: { studentcoursesId: id },
-      relations: ['estudiante', 'courses'],
+      relations: {
+        estudiante: true, // 👈 relaciones relacionadas
+        courses: true,
+      }, // 👈 relaciones relacionadas
+    });
+    if (!studentCourse) {
+      throw new NotFoundException(`studentcourses con id ${id} no encontrado`);
+    }
+    return studentCourse;
+  }
+
+  async update(id: number, changes: CreateStudentCourseDto) {
+    const studentCourse = await this.studentCourseRepository.findOne({
+      where: { studentcoursesId: id },
+      relations: {
+        estudiante: true, // 👈 relaciones relacionadas
+        courses: true,
+      }, // 👈 relaciones relacionadas
     });
 
     if (!studentCourse) {
@@ -86,9 +85,9 @@ export class StudentCoursesService {
     }
 
     try {
-      if (updateDto.studentId) {
+      if (changes.studentId) {
         const estudiante = await this.estudianteRepository.findOneBy({
-          id: updateDto.studentId,
+          id: changes.studentId,
         });
         if (!estudiante)
           throw new NotFoundException('Estudiante no encontrado');
@@ -96,16 +95,16 @@ export class StudentCoursesService {
         studentCourse.estudiante = estudiante;
       }
 
-      if (updateDto.coursesId) {
+      if (changes.coursesId) {
         const curso = await this.coursesRepository.findOneBy({
-          id: updateDto.coursesId,
+          id: changes.coursesId,
         });
         if (!curso) throw new NotFoundException('Curso no encontrado');
         studentCourse.courses = curso;
       }
 
-      if (updateDto.enrollmentDate) {
-        studentCourse.enrollmentDate = updateDto.enrollmentDate;
+      if (changes.enrollmentDate) {
+        studentCourse.enrollmentDate = changes.enrollmentDate;
       }
 
       const updated = await this.studentCourseRepository.save(studentCourse);
@@ -141,17 +140,6 @@ export class StudentCoursesService {
       message: `Registro con ID ${id} eliminado con éxito`,
       deletedAt: new Date(),
     };
-  }
-
-  async findOne(id: number) {
-    const studentCourse = await this.studentCourseRepository.findOne({
-      where: { studentcoursesId: id },
-      relations: ['estudiante', 'courses', 'grade'], // 👈 relaciones relacionadas
-    });
-    if (!studentCourse) {
-      throw new NotFoundException(`Registro con id ${id} no encontrado`);
-    }
-    return studentCourse;
   }
 
   private handleDBException(error: any) {
