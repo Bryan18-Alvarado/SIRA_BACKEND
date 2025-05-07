@@ -8,6 +8,7 @@ import { StudentCoursesModule } from 'src/modules/student-courses/student-course
 import { DocentesModule } from 'src/modules/docentes/docentes.module';
 import { CategoriesModule } from 'src/modules/categories/categories.module';
 import { LevelModule } from '../modules/level/level.module';
+import { AuthModule } from 'src/auth/auth.module';
 @Module({
   imports: [
     EstudiantesModule,
@@ -17,6 +18,7 @@ import { LevelModule } from '../modules/level/level.module';
     DocentesModule,
     CategoriesModule,
     LevelModule,
+    AuthModule,
   ],
   controllers: [SeedController],
   providers: [SeedService],

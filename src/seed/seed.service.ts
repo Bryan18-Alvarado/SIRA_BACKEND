@@ -47,23 +47,23 @@ export class SeedService {
 
       // Inicio del  bloque de inserción de datos, si se comenta este bloque, solo eliminara los dato sin insertar datos por defecto
       // Luego insertamos las entidades base
-      await this.insertNewCategories(); // Primero las categorías
-      console.log('Categories inserted');
-      await this.insertNewDocente(); // Luego los docentes
-      console.log('Docentes inserted');
-      await this.insertNewEstudiante(); // Después los estudiantes
-      console.log('Estudiantes inserted');
-      await this.insertNewLevels(); // Luego los niveles
-      console.log('Levels inserted');
+      // await this.insertNewCategories(); // Primero las categorías
+      // console.log('Categories inserted');
+      // await this.insertNewDocente(); // Luego los docentes
+      // console.log('Docentes inserted');
+      // await this.insertNewEstudiante(); // Después los estudiantes
+      // console.log('Estudiantes inserted');
+      // await this.insertNewLevels(); // Luego los niveles
+      // console.log('Levels inserted');
 
-      await this.insertNewCourses(); // Luego los cursos, ya que dependen de las categorías y docentes
-      console.log('Courses inserted');
+      // await this.insertNewCourses(); // Luego los cursos, ya que dependen de las categorías y docentes
+      // console.log('Courses inserted');
 
-      // Finalmente insertamos las relaciones
-      await this.insertNewCalificacion();
-      console.log('Calificaciones inserted');
-      await this.insertNewStudentCourses();
-      console.log('Student Courses inserted');
+      // // Finalmente insertamos las relaciones
+      // await this.insertNewCalificacion();
+      // console.log('Calificaciones inserted');
+      // await this.insertNewStudentCourses();
+      // console.log('Student Courses inserted');
 
       return 'SEED EXECUTED';
       // Fin del bloque de inserción de datos
@@ -87,19 +87,19 @@ export class SeedService {
     await Promise.all(insertPromises);
     return true;
   }
-  private async insertNewDocente() {
-    await this.docentesService.deleteAllDocentes();
+  // private async insertNewDocente() {
+  //   await this.docentesService.deleteAllDocentes();
 
-    const docentes = initialData.docentes;
-    const insertPromises: Promise<Docente | undefined>[] = [];
+  //   const docentes = initialData.docentes;
+  //   const insertPromises: Promise<Docente | undefined>[] = [];
 
-    docentes.forEach((docente) => {
-      insertPromises.push(this.docentesService.create(docente));
-    });
+  //   docentes.forEach((docente) => {
+  //     insertPromises.push(this.docentesService.create(docente));
+  //   });
 
-    await Promise.all(insertPromises);
-    return true;
-  }
+  //   await Promise.all(insertPromises);
+  //   return true;
+  // }
 
   private async insertNewCalificacion() {
     await this.calificacionesService.deleteAllCalificaciones();
