@@ -48,12 +48,12 @@ export class DocentesService {
       relations: { user: true },
     });
 
-    if (user) {
-      docente.user = user;
-    }
-
     if (!docente) {
       throw new NotFoundException(`Docente con id ${id} no encontrado`);
+    }
+
+    if (user) {
+      docente.user = user;
     }
 
     try {
