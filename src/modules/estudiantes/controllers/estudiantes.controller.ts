@@ -33,6 +33,11 @@ export class EstudiantesController {
     return this.estudianteService.findOne(id);
   }
 
+  @Get(':id/calificacion')
+  async findCalificacionesByEstudiante(@Param('id') id: number) {
+    return await this.estudianteService.findCalificacionesByEstudiante(id);
+  }
+
   @Patch(':id')
   updaate(
     @Param('id') id: number,

@@ -1,5 +1,11 @@
 import { ApiProperty, PartialType } from '@nestjs/swagger';
-import { IsNumber, IsOptional, IsString, MinLength } from 'class-validator';
+import {
+  IsBoolean,
+  IsNumber,
+  IsOptional,
+  IsString,
+  MinLength,
+} from 'class-validator';
 
 export class CreateLevelDto {
   @IsOptional()
@@ -11,6 +17,10 @@ export class CreateLevelDto {
   @ApiProperty()
   @MinLength(3)
   level_course: string;
+
+  @IsBoolean()
+  @ApiProperty()
+  isActive?: boolean;
 }
 
 export class UpdateLevelDto extends PartialType(CreateLevelDto) {}

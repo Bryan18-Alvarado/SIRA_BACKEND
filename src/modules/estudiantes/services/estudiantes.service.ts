@@ -10,7 +10,6 @@ import { Repository } from 'typeorm';
 import { Estudiante } from '../entities/estudiante.entity';
 import { CreateEstudianteDto } from '../dto/estudiantes.dto';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
-
 @Injectable()
 export class EstudiantesService {
   private readonly logger = new Logger('EstudiantesService');
@@ -26,6 +25,20 @@ export class EstudiantesService {
       take: limit,
       skip: offset,
     });
+  }
+
+  // Método que obtiene las calificaciones de un estudiante por su ID
+  async findCalificacionesByEstudiante(id: number) {
+    const estudiante = await this.estudianteRepository.findOne({
+      where: { id },
+      relations: ['calificaciones', 'calificaciones.course'], // Asegúrate de tener la relación correcta con calificaciones
+    });
+
+    if (!estudiante) {
+      throw new Error('Estudiante no encontrado');
+    }
+
+    return estudiante.calificaciones; // Devuelve las calificaciones del estudiante
   }
 
   async create(createEstudianteDto: CreateEstudianteDto) {
