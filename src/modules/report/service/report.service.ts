@@ -16,6 +16,8 @@ export class ReportService {
     const students = await this.studentRepository.find({
       relations: [
         'studentCourses',
+        'calificaciones',
+        'calificaciones.course',
         'studentCourses.courses',
         'studentCourses.courses.docentes',
         'studentCourses.courses.level',
@@ -30,20 +32,23 @@ export class ReportService {
       { header: 'ID', key: 'id', width: 10 },
       { header: 'Nombre', key: 'nombre', width: 20 },
       { header: 'Curso', key: 'curso', width: 25 },
-      { header: 'Nota', key: 'nota', width: 10 },
+      { header: 'Nota', key: 'calificacion', width: 10 },
       { header: 'Docente', key: 'docente', width: 25 },
-      { header: 'Nivel', key: 'nivel', width: 10 },
+      { header: 'Nivel', key: 'nivel', width: 20 },
       { header: 'Categoría', key: 'categoria', width: 15 },
     ];
 
     // agregar los datos de los estudiantes
     students.forEach((student) => {
       student.studentCourses.forEach((sc) => {
+        const calificacion = student.calificaciones.find(
+          (calif) => calif.course.id === sc.courses.id,
+        );
         worksheet.addRow({
           id: student.id,
           nombre: `${student.nombre} ${student.apellido}`,
           curso: sc.courses?.nombre || '',
-          calificacion: student.calificaciones,
+          calificacion: calificacion?.grade ?? '',
           docente: sc.courses?.docentes?.nombre || '',
           nivel: sc.courses?.level?.level_course || '',
           categoria: sc.courses?.categories?.nombre || '',
