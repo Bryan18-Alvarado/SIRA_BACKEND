@@ -19,8 +19,8 @@ export class LevelService {
     private readonly levelRepository: Repository<Level>,
   ) {}
 
-  findAll(PaginationDto: PaginationDto) {
-    const { limit = 3, offset = 0 } = PaginationDto;
+  findAll(paginationDto: PaginationDto) {
+    const { limit = 3, offset = 0 } = paginationDto;
     return this.levelRepository.find({
       take: limit,
       skip: offset,

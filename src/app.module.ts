@@ -25,6 +25,12 @@ import { LevelController } from './modules/level/controllers/level.controller';
 import { LevelService } from './modules/level/services/level.service';
 import { LevelModule } from './modules/level/level.module';
 import { SeedModule } from './seed/seed.module';
+import { GendersController } from './modules/genders/controllers/genders.controller';
+import { GendersService } from './modules/genders/services/genders.service';
+import { MaritalStatusController } from './modules/marital-status/controllers/marital-status.controller';
+import { MaritalStatusService } from './modules/marital-status/services/marital-status.service';
+import { MaritalStatusModule } from './modules/marital-status/maritalStatus.module';
+import { GendersModule } from './modules/genders/genders.module';
 import { ReportModule } from './modules/report/report.module';
 import { ReportController } from './modules/report/controllers/report.controller';
 import { ReportService } from './modules/report/service/report.service';
@@ -38,6 +44,8 @@ import { ReportService } from './modules/report/service/report.service';
     StudentCoursesModule,
     CalificacionesModule,
     LevelModule,
+    MaritalStatusModule,
+    GendersModule,
     ReportModule,
     ConfigModule.forRoot(),
     TypeOrmModule.forRoot({
@@ -62,6 +70,8 @@ import { ReportService } from './modules/report/service/report.service';
     CoursesController,
     StudentCoursesController,
     LevelController,
+    GendersController,
+    MaritalStatusController,
     ReportController,
   ],
   providers: [
@@ -72,7 +82,10 @@ import { ReportService } from './modules/report/service/report.service';
     CalificacionesService,
     StudentCoursesService,
     LevelService,
+    GendersService,
+    MaritalStatusService,
     ReportService,
   ],
 })
 export class AppModule {}
+
