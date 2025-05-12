@@ -1,8 +1,11 @@
+import { User } from 'src/auth/entities/user.entity';
 import {
   Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  JoinColumn,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -65,6 +68,10 @@ export class Docente {
 
   @Column({ type: 'bool', default: true })
   isAvailable: boolean;
+
+  @ManyToOne(() => User, (user) => user.docente, { eager: true })
+  @JoinColumn({ name: 'user_id' })
+  user: User;
 
   @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
