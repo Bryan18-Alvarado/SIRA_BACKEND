@@ -8,6 +8,8 @@ import {
   MinLength,
   IsEmail,
 } from 'class-validator';
+import { StudentCourse } from 'src/modules/student-courses/entities/studentcourse.entity';
+import { Calificacion } from 'src/modules/calificaciones/entities/calificacion.entity';
 
 export class CreateEstudianteDto {
   @IsOptional()

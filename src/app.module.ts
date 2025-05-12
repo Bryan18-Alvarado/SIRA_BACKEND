@@ -31,6 +31,9 @@ import { MaritalStatusController } from './modules/marital-status/controllers/ma
 import { MaritalStatusService } from './modules/marital-status/services/marital-status.service';
 import { MaritalStatusModule } from './modules/marital-status/maritalStatus.module';
 import { GendersModule } from './modules/genders/genders.module';
+import { ReportModule } from './modules/report/report.module';
+import { ReportController } from './modules/report/controllers/report.controller';
+import { ReportService } from './modules/report/service/report.service';
 
 @Module({
   imports: [
@@ -43,6 +46,7 @@ import { GendersModule } from './modules/genders/genders.module';
     LevelModule,
     MaritalStatusModule,
     GendersModule,
+    ReportModule,
     ConfigModule.forRoot(),
     TypeOrmModule.forRoot({
       type: 'postgres',
@@ -68,6 +72,7 @@ import { GendersModule } from './modules/genders/genders.module';
     LevelController,
     GendersController,
     MaritalStatusController,
+    ReportController,
   ],
   providers: [
     DocentesService,
@@ -79,6 +84,8 @@ import { GendersModule } from './modules/genders/genders.module';
     LevelService,
     GendersService,
     MaritalStatusService,
+    ReportService,
   ],
 })
 export class AppModule {}
+
