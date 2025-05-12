@@ -25,6 +25,9 @@ import { LevelController } from './modules/level/controllers/level.controller';
 import { LevelService } from './modules/level/services/level.service';
 import { LevelModule } from './modules/level/level.module';
 import { SeedModule } from './seed/seed.module';
+import { ReportModule } from './modules/report/report.module';
+import { ReportController } from './modules/report/controllers/report.controller';
+import { ReportService } from './modules/report/service/report.service';
 
 @Module({
   imports: [
@@ -35,6 +38,7 @@ import { SeedModule } from './seed/seed.module';
     StudentCoursesModule,
     CalificacionesModule,
     LevelModule,
+    ReportModule,
     ConfigModule.forRoot(),
     TypeOrmModule.forRoot({
       type: 'postgres',
@@ -58,6 +62,7 @@ import { SeedModule } from './seed/seed.module';
     CoursesController,
     StudentCoursesController,
     LevelController,
+    ReportController,
   ],
   providers: [
     DocentesService,
@@ -67,6 +72,7 @@ import { SeedModule } from './seed/seed.module';
     CalificacionesService,
     StudentCoursesService,
     LevelService,
+    ReportService,
   ],
 })
 export class AppModule {}
