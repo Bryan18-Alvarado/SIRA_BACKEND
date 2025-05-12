@@ -40,18 +40,18 @@ export class ReportService {
 
     // agregar los datos de los estudiantes
     students.forEach((student) => {
-      student.studentCourses.forEach((sc) => {
+      student.studentCourses.forEach((st) => {
         const calificacion = student.calificaciones.find(
-          (calif) => calif.course.id === sc.courses.id,
+          (calif) => calif.course.id === st.courses.id,
         );
         worksheet.addRow({
           id: student.id,
           nombre: `${student.nombre} ${student.apellido}`,
-          curso: sc.courses?.nombre || '',
+          curso: st.courses?.nombre || '',
           calificacion: calificacion?.grade ?? '',
-          docente: sc.courses?.docentes?.nombre || '',
-          nivel: sc.courses?.level?.level_course || '',
-          categoria: sc.courses?.categories?.nombre || '',
+          docente: st.courses?.docentes?.nombre || '',
+          nivel: st.courses?.level?.level_course || '',
+          categoria: st.courses?.categories?.nombre || '',
         });
       });
     });
