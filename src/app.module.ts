@@ -25,6 +25,12 @@ import { LevelController } from './modules/level/controllers/level.controller';
 import { LevelService } from './modules/level/services/level.service';
 import { LevelModule } from './modules/level/level.module';
 import { SeedModule } from './seed/seed.module';
+import { GendersController } from './modules/genders/controllers/genders.controller';
+import { GendersService } from './modules/genders/services/genders.service';
+import { MaritalStatusController } from './modules/marital-status/controllers/marital-status.controller';
+import { MaritalStatusService } from './modules/marital-status/services/marital-status.service';
+import { MaritalStatusModule } from './modules/marital-status/maritalStatus.module';
+import { GendersModule } from './modules/genders/genders.module';
 
 @Module({
   imports: [
@@ -35,6 +41,8 @@ import { SeedModule } from './seed/seed.module';
     StudentCoursesModule,
     CalificacionesModule,
     LevelModule,
+    MaritalStatusModule,
+    GendersModule,
     ConfigModule.forRoot(),
     TypeOrmModule.forRoot({
       type: 'postgres',
@@ -58,6 +66,8 @@ import { SeedModule } from './seed/seed.module';
     CoursesController,
     StudentCoursesController,
     LevelController,
+    GendersController,
+    MaritalStatusController,
   ],
   providers: [
     DocentesService,
@@ -67,6 +77,8 @@ import { SeedModule } from './seed/seed.module';
     CalificacionesService,
     StudentCoursesService,
     LevelService,
+    GendersService,
+    MaritalStatusService,
   ],
 })
 export class AppModule {}
