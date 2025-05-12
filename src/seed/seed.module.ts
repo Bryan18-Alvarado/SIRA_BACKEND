@@ -5,9 +5,8 @@ import { DocentesModule } from 'src/modules/docentes/docentes.module';
 import { CategoriesModule } from 'src/modules/categories/categories.module';
 import { LevelModule } from '../modules/level/level.module';
 import { AuthModule } from 'src/auth/auth.module';
-// import { GendersModule } from 'src/modules/genders/genders.module';
+// import { GendersModule } from 'src/modules/genders/genders.module'
 import { SeedController } from './seed.controller';
-
 @Module({
   imports: [
     EstudiantesModule,
