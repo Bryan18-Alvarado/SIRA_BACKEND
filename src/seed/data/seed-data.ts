@@ -1,8 +1,3 @@
-import {
-  EstadoCivil,
-  Genero,
-} from 'src/modules/docentes/entities/docentes.entity';
-
 interface SeedEstudiante {
   nombre: string;
   apellido: string;
@@ -51,7 +46,7 @@ export interface SeedDocente {
   nombre: string;
   apellido: string;
   edad: number;
-  genero: Genero;
+  genero: string;
   codigo_laboral: number;
   cursos_asignados: string;
   direccion?: string;
@@ -59,7 +54,7 @@ export interface SeedDocente {
   fecha_nacimiento: Date;
   telefono?: string;
   email?: string;
-  estado_civil: EstadoCivil;
+  estado_civil: string;
   isAvailable: boolean;
   createdAt: Date;
   updateAt?: Date;
@@ -232,7 +227,7 @@ export const initialData: SeedData = {
       nombre: 'Carlos',
       apellido: 'Rodríguez',
       edad: 45,
-      genero: Genero.MASCULINO,
+      genero: 'Masculino',
       codigo_laboral: 1234,
       cursos_asignados: 'Inglés A1',
       direccion: 'Calle Profesor 10',
@@ -240,7 +235,7 @@ export const initialData: SeedData = {
       fecha_nacimiento: new Date(1980, 2, 15),
       telefono: '555-1010',
       email: 'carlos.rodriguez@academia.com',
-      estado_civil: EstadoCivil.CASADO,
+      estado_civil: 'soltero',
       isAvailable: true,
       createdAt: new Date(),
     },
@@ -249,7 +244,7 @@ export const initialData: SeedData = {
       nombre: 'María',
       apellido: 'López',
       edad: 38,
-      genero: Genero.FEMENINO,
+      genero: 'Femenino',
       codigo_laboral: 5678,
       cursos_asignados: 'Inglés C1',
       direccion: 'Calle Profesora 5',
@@ -257,7 +252,7 @@ export const initialData: SeedData = {
       fecha_nacimiento: new Date(1987, 5, 23),
       telefono: '555-2020',
       email: 'maria.lopez@academia.com',
-      estado_civil: EstadoCivil.SOLTERO,
+      estado_civil: 'soltero',
       isAvailable: true,
       createdAt: new Date(),
     },
@@ -266,7 +261,7 @@ export const initialData: SeedData = {
       nombre: 'Juan',
       apellido: 'Sánchez',
       edad: 40,
-      genero: Genero.MASCULINO,
+      genero: 'soltero',
       codigo_laboral: 91011,
       cursos_asignados: 'Computación Básica',
       direccion: 'Calle Informática 7',
@@ -274,7 +269,7 @@ export const initialData: SeedData = {
       fecha_nacimiento: new Date(1985, 10, 3),
       telefono: '555-3030',
       email: 'juan.sanchez@academia.com',
-      estado_civil: EstadoCivil.SOLTERO,
+      estado_civil: 'soltero',
       isAvailable: true,
       createdAt: new Date(),
     },

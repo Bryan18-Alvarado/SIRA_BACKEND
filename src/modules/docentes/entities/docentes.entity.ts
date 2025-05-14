@@ -1,4 +1,6 @@
 import { User } from 'src/auth/entities/user.entity';
+import { Genders } from 'src/modules/genders/entities/genders.entity';
+import { MaritalStatus } from 'src/modules/marital-status/entities/marital-status.entity';
 import {
   Column,
   CreateDateColumn,
@@ -10,15 +12,6 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-export enum EstadoCivil {
-  SOLTERO = 'soltero',
-  CASADO = 'casado',
-}
-
-export enum Genero {
-  MASCULINO = 'masculino',
-  FEMENINO = 'femenino',
-}
 @Entity()
 export class Docente {
   @PrimaryGeneratedColumn('increment', { type: 'int4' })
@@ -33,11 +26,11 @@ export class Docente {
   @Column({ type: 'int' })
   edad: number;
 
-  @Column({
-    type: 'enum',
-    enum: Genero,
-  })
-  genero: Genero;
+  @Column({ type: 'int4', nullable: false })
+  genero_id: number;
+
+  @Column({ type: 'int4', nullable: false })
+  estado_civil_id: number;
 
   @Column({ type: 'int' })
   codigo_laboral: number;
@@ -60,18 +53,20 @@ export class Docente {
   @Column({ type: 'varchar', length: 100, unique: true, nullable: true })
   email: string;
 
-  @Column({
-    type: 'enum',
-    enum: EstadoCivil,
-  })
-  estado_civil: EstadoCivil;
-
   @Column({ type: 'bool', default: true })
   isAvailable: boolean;
 
   @ManyToOne(() => User, (user) => user.docente, { eager: true })
   @JoinColumn({ name: 'user_id' })
   user: User;
+
+  @ManyToOne(() => Genders)
+  @JoinColumn({ name: 'genero_id', referencedColumnName: 'id' })
+  genero: Genders;
+
+  @ManyToOne(() => MaritalStatus)
+  @JoinColumn({ name: 'estado_civil_id', referencedColumnName: 'id' })
+  estado_civil: MaritalStatus;
 
   @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;

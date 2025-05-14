@@ -7,16 +7,21 @@ import { LevelModule } from '../modules/level/level.module';
 import { AuthModule } from 'src/auth/auth.module';
 // import { GendersModule } from 'src/modules/genders/genders.module'
 import { SeedController } from './seed.controller';
+import { CalificacionesModule } from 'src/modules/calificaciones/calificaciones.module';
+import { CoursesModule } from 'src/modules/courses/courses.module';
+import { SeedService } from './seed.service';
 @Module({
   imports: [
     EstudiantesModule,
     StudentCoursesModule,
     DocentesModule,
     CategoriesModule,
-    // GendersModule,
     LevelModule,
     AuthModule,
+    CalificacionesModule,
+    CoursesModule,
   ],
   controllers: [SeedController],
+  providers: [SeedService],
 })
 export class SeedModule {}

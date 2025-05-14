@@ -4,14 +4,13 @@ import {
   IsBoolean,
   IsDate,
   IsEmail,
-  IsEnum,
+  IsNotEmpty,
   IsNumber,
   IsOptional,
   IsString,
   Min,
   MinLength,
 } from 'class-validator';
-import { EstadoCivil, Genero } from '../entities/docentes.entity';
 
 export class CreateDocenteDto {
   @IsOptional()
@@ -33,12 +32,17 @@ export class CreateDocenteDto {
   @ApiProperty()
   edad: number;
 
-  @IsEnum(Genero)
-  @ApiProperty({
-    enum: Genero,
-    description: 'Genero del docente (masculino o femenino)',
-  })
-  genero: Genero;
+  @IsNumber()
+  @IsOptional()
+  @ApiProperty()
+  @IsNotEmpty()
+  readonly genero?: string;
+
+  @IsNumber()
+  @IsOptional()
+  @ApiProperty()
+  @IsNotEmpty()
+  readonly estado_civil?: string;
 
   @IsNumber()
   @ApiProperty()
@@ -73,13 +77,6 @@ export class CreateDocenteDto {
   @ApiProperty()
   @IsOptional()
   email?: string;
-
-  @IsEnum(EstadoCivil)
-  @ApiProperty({
-    enum: EstadoCivil,
-    description: 'Estado civil del docente (casado o soltero)',
-  })
-  estado_civil: EstadoCivil;
 
   @IsBoolean()
   @ApiProperty()
