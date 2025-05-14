@@ -5,11 +5,17 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { FindOptionsWhere, ILike, Repository } from 'typeorm';
 import { Docente } from '../entities/docentes.entity';
-import { CreateDocenteDto, UpdateDocenteDto } from '../dto/docente-create.dto';
-import { PaginationDto } from 'src/common/dto/pagination.dto';
+import {
+  CreateDocenteDto,
+  FilterDocenteDto,
+  UpdateDocenteDto,
+} from '../dto/docente-create.dto';
+
 import { User } from 'src/auth/entities/user.entity';
+import { Genders } from 'src/modules/genders/entities/genders.entity';
+import { MaritalStatus } from 'src/modules/marital-status/entities/marital-status.entity';
 
 @Injectable()
 export class DocentesService {
@@ -18,13 +24,29 @@ export class DocentesService {
   constructor(
     @InjectRepository(Docente)
     private readonly docenteRepository: Repository<Docente>,
+    @InjectRepository(Genders)
+    private readonly genderRepository: Repository<Genders>,
+    @InjectRepository(MaritalStatus)
+    private readonly maritalStatusRepository: Repository<MaritalStatus>,
   ) {}
 
-  async findAll(paginationDto: PaginationDto) {
-    const { limit = 3, offset = 0 } = paginationDto;
+  findAll(params?: FilterDocenteDto) {
+    const { limit, offset, nombre } = params || {};
+    const where: FindOptionsWhere<Docente> = {};
+
+    if (nombre) {
+      where.nombre = ILike(`%${nombre}%`);
+    }
+
     return this.docenteRepository.find({
+      order: { id: 'ASC' },
+      where,
       take: limit,
       skip: offset,
+      relations: {
+        genero: true,
+        estado_civil: true,
+      },
     });
   }
 
@@ -34,7 +56,6 @@ export class DocentesService {
         ...createDocenteDto,
         user,
       });
-
       await this.docenteRepository.save(docente);
       return docente;
     } catch (error) {
@@ -42,10 +63,10 @@ export class DocentesService {
     }
   }
 
-  async update(id: number, updateDocenteDto: UpdateDocenteDto, user: User) {
+  async update(id: number, changes: UpdateDocenteDto, user: User) {
     const docente = await this.docenteRepository.findOne({
       where: { id },
-      relations: { user: true },
+      relations: { user: true, genero: true, estado_civil: true },
     });
 
     if (!docente) {
@@ -56,16 +77,36 @@ export class DocentesService {
       docente.user = user;
     }
 
-    try {
-      this.docenteRepository.merge(docente, updateDocenteDto);
-      await this.docenteRepository.save(docente);
-      return {
-        message: 'Registro actualizado con éxito',
-        data: docente,
-      };
-    } catch (error) {
-      this.handleDBException(error);
+    if (changes.genero_id) {
+      const genero = await this.genderRepository.findOneBy({
+        id: changes.genero_id,
+      });
+      if (!genero) {
+        throw new NotFoundException(
+          `Genero con id ${changes.genero_id} no encontrado`,
+        );
+      }
+      docente.genero = genero;
     }
+
+    if (changes.estado_civil_id) {
+      const estadoCivil = await this.maritalStatusRepository.findOneBy({
+        id: changes.estado_civil_id,
+      });
+      if (!estadoCivil) {
+        throw new NotFoundException(
+          `Estado civil con id ${changes.estado_civil_id} no encontrado`,
+        );
+      }
+      docente.estado_civil = estadoCivil;
+    }
+    this.docenteRepository.merge(docente, changes);
+
+    const updated = await this.docenteRepository.save(docente);
+    return {
+      message: 'registro actualizado correctamente',
+      data: updated,
+    };
   }
 
   async deleteAllDocentes() {
@@ -79,13 +120,13 @@ export class DocentesService {
   }
 
   async remove(id: number) {
-    const exists = await this.docenteRepository.exist({ where: { id } });
+    const exists = await this.docenteRepository.existsBy({ id });
 
     if (!exists) {
       throw new NotFoundException(`Docente con id ${id} no encontrado`);
     }
 
-    await this.docenteRepository.softDelete({ id });
+    await this.docenteRepository.softDelete(id);
     return {
       message: `Docente con id ${id} eliminado con éxito`,
       deletedAt: new Date(),
@@ -93,7 +134,11 @@ export class DocentesService {
   }
 
   async findOne(id: number) {
-    const docente = await this.docenteRepository.findOneBy({ id });
+    const docente = await this.docenteRepository.findOne({
+      where: { id: id },
+      relations: { genero: true, estado_civil: true },
+    });
+
     if (!docente) {
       throw new NotFoundException(`Docente con id ${id} no encontrado`);
     }

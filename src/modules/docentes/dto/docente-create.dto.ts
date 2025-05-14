@@ -7,6 +7,7 @@ import {
   IsNotEmpty,
   IsNumber,
   IsOptional,
+  IsPositive,
   IsString,
   Min,
   MinLength,
@@ -33,16 +34,14 @@ export class CreateDocenteDto {
   edad: number;
 
   @IsNumber()
-  @IsOptional()
   @ApiProperty()
   @IsNotEmpty()
-  readonly genero?: string;
+  readonly genero_id: number;
 
   @IsNumber()
-  @IsOptional()
   @ApiProperty()
   @IsNotEmpty()
-  readonly estado_civil?: string;
+  readonly estado_civil_id: number;
 
   @IsNumber()
   @ApiProperty()
@@ -85,3 +84,16 @@ export class CreateDocenteDto {
 }
 
 export class UpdateDocenteDto extends PartialType(CreateDocenteDto) {}
+
+export class FilterDocenteDto {
+  @IsOptional()
+  @IsPositive()
+  limit: number;
+
+  @IsOptional()
+  @Min(0)
+  offset: number;
+
+  @IsOptional()
+  nombre: string;
+}
