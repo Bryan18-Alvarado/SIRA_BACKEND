@@ -4,13 +4,16 @@ import {
   Delete,
   Get,
   Param,
-  Patch,
   Post,
+  Put,
   Query,
 } from '@nestjs/common';
 import { DocentesService } from '../services/docentes.service';
-import { CreateDocenteDto, UpdateDocenteDto } from '../dto/docente-create.dto';
-import { PaginationDto } from 'src/common/dto/pagination.dto';
+import {
+  CreateDocenteDto,
+  FilterDocenteDto,
+  UpdateDocenteDto,
+} from '../dto/docente-create.dto';
 import { Auth, GetUser } from 'src/auth/decorators';
 import { ValidRoles } from 'src/auth/interfaces';
 import { User } from 'src/auth/entities/user.entity';
@@ -20,37 +23,61 @@ export class DocentesController {
   constructor(private readonly docentesService: DocentesService) {}
 
   @Get()
-  findAll(@Query() paginationDto: PaginationDto) {
-    return this.docentesService.findAll(paginationDto);
+  async getFindAll(@Query() params: FilterDocenteDto) {
+    const rows = await this.docentesService.findAll(params);
+
+    const data = {
+      data: rows,
+    };
+    return data;
   }
 
   @Post()
   @Auth(ValidRoles.admin)
-  createDocente(
+  async createDocente(
     @Body() createDocenteDto: CreateDocenteDto,
     @GetUser() user: User,
   ) {
-    return this.docentesService.create(createDocenteDto, user);
+    const nuevo = await this.docentesService.create(createDocenteDto, user);
+    const data = {
+      data: nuevo,
+      message: 'Docente creado correctamente',
+    };
+    return data;
   }
 
   @Get(':id')
-  findOne(@Param('id') id: number) {
-    return this.docentesService.findOne(id);
+  async getOne(@Param('id') id: number) {
+    const rows = await this.docentesService.findOne(id);
+    const data = {
+      data: rows,
+    };
+    return data;
   }
 
-  @Patch(':id')
+  @Put(':id')
   @Auth(ValidRoles.admin)
-  update(
+  async update(
     @Param('id') id: number,
     @Body() updateDocenteDto: UpdateDocenteDto,
     @GetUser() user: User,
   ) {
-    return this.docentesService.update(id, updateDocenteDto, user);
+    const rows = await this.docentesService.update(id, updateDocenteDto, user);
+    const data = {
+      data: rows,
+      message: 'Docente actualizado correctamente',
+    };
+    return data;
   }
 
   @Delete(':id')
   @Auth(ValidRoles.admin)
-  remove(@Param('id') id: number) {
-    return this.docentesService.remove(id);
+  async remove(@Param('id') id: number) {
+    const dato = await this.docentesService.remove(id);
+    const data = {
+      data: dato,
+      message: 'Docente eliminado correctamente',
+    };
+    return data;
   }
 }

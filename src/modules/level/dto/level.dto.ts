@@ -18,6 +18,7 @@ export class CreateLevelDto {
   @MinLength(3)
   level_course: string;
 
+  @IsOptional()
   @IsBoolean()
   @ApiProperty()
   isActive?: boolean;
