@@ -7,9 +7,9 @@ import {
   IsString,
   MinLength,
   IsEmail,
+  IsNumber,
+  IsNotEmpty,
 } from 'class-validator';
-import { StudentCourse } from 'src/modules/student-courses/entities/studentcourse.entity';
-import { Calificacion } from 'src/modules/calificaciones/entities/calificacion.entity';
 
 export class CreateEstudianteDto {
   @IsOptional()
@@ -31,6 +31,11 @@ export class CreateEstudianteDto {
   @IsDate()
   @ApiProperty()
   fechaNacimiento: Date;
+
+  @IsNumber()
+  @ApiProperty()
+  @IsNotEmpty()
+  readonly genero_id: number;
 
   @IsString()
   @IsOptional()

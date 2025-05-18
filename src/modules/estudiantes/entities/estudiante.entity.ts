@@ -3,12 +3,15 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  JoinColumn,
+  ManyToMany,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { StudentCourse } from '../../student-courses/entities/studentcourse.entity';
 import { Calificacion } from '../../calificaciones/entities/calificacion.entity';
+import { Genders } from 'src/modules/genders/entities/genders.entity';
 
 @Entity()
 export class Estudiante {
@@ -24,6 +27,9 @@ export class Estudiante {
   @Column({ type: 'date' })
   fechaNacimiento: Date;
 
+  @Column({ type: 'int4', nullable: false })
+  genero_id: number;
+
   @Column({ type: 'varchar', length: 20, nullable: true })
   telefono: string;
 
@@ -32,6 +38,10 @@ export class Estudiante {
 
   @Column({ type: 'text', nullable: true })
   direccion: string;
+
+  @ManyToMany(() => Genders)
+  @JoinColumn({ name: 'genero_id', referencedColumnName: 'id' })
+  genero: Genders;
 
   @OneToMany(() => Calificacion, (calificacion) => calificacion.estudiante)
   calificaciones: Calificacion[];

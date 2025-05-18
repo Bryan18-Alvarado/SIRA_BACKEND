@@ -2,6 +2,7 @@ interface SeedEstudiante {
   nombre: string;
   apellido: string;
   fechaNacimiento: Date;
+  genero_id: number;
   telefono: string;
   correoElectronico: string;
   direccion: string;
@@ -92,6 +93,7 @@ export const initialData: SeedData = {
       nombre: 'Juan',
       apellido: 'Pérez',
       fechaNacimiento: new Date(2000, 4, 10),
+      genero_id: 1,
       telefono: '555-1234',
       correoElectronico: 'juan.perez@example.com',
       direccion: 'Calle Falsa 123',
@@ -100,6 +102,7 @@ export const initialData: SeedData = {
       nombre: 'Ana',
       apellido: 'García',
       fechaNacimiento: new Date(2008, 8, 22),
+      genero_id: 1,
       telefono: '555-5678',
       correoElectronico: 'ana.garcia@example.com',
       direccion: 'Av. Siempre Viva 742',
