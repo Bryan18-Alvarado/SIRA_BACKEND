@@ -25,7 +25,7 @@ export class Courses {
   @Column({ type: 'int4', nullable: false })
   level_id: number;
 
-  @Column({ type: 'int4', nullable: false })
+  @Column({ type: 'int4', nullable: true })
   docentes_id: number;
 
   @Column({ type: 'varchar', length: 100, unique: true })
