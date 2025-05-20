@@ -1,4 +1,5 @@
 interface SeedEstudiante {
+  id: number;
   nombre: string;
   apellido: string;
   fechaNacimiento: Date;
@@ -7,6 +8,15 @@ interface SeedEstudiante {
   correoElectronico: string;
   direccion: string;
 }
+
+// interface SeedUser {
+//   id: number;
+//   email: string;
+//   password: string;
+//   fullName: string;
+//   isActive: boolean;
+//   roles: string[];
+// }
 
 interface SeedCalificacion {
   studentId: number;
@@ -85,11 +95,13 @@ interface SeedData {
   docentes: SeedDocente[];
   categories: Seedcategories[];
   levels: SeedLevel[];
+  // users: SeedUser[];
 }
 
 export const initialData: SeedData = {
   estudiantes: [
     {
+      id: 1,
       nombre: 'Juan',
       apellido: 'Pérez',
       fechaNacimiento: new Date(2000, 4, 10),
@@ -99,6 +111,7 @@ export const initialData: SeedData = {
       direccion: 'Calle Falsa 123',
     },
     {
+      id: 3,
       nombre: 'Ana',
       apellido: 'García',
       fechaNacimiento: new Date(2008, 8, 22),
@@ -293,4 +306,14 @@ export const initialData: SeedData = {
       isAvailable: true,
     },
   ],
+  // users: [
+  //   {
+  //     id: 1,
+  //     email: 'carlos.rodriguez@academia.com',
+  //     password: '123456',
+  //     fullName: 'Carlos Rodríguez',
+  //     isActive: true,
+  //     roles: ['docente'],
+  //   },
+  // ],
 };
