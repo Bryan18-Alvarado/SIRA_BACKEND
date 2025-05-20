@@ -14,6 +14,7 @@ import { CategoriesService } from 'src/modules/categories/services/categories.se
 import { Categories } from '../modules/categories/entities/categories.entity';
 import { Level } from 'src/modules/level/entities/level.entity';
 import { LevelService } from 'src/modules/level/services/level.service';
+import { AuthService } from 'src/auth/auth.service';
 
 @Injectable()
 export class SeedService {
@@ -25,6 +26,7 @@ export class SeedService {
     private readonly docentesService: DocentesService,
     private readonly categoriesService: CategoriesService,
     private readonly levelService: LevelService,
+    // private readonly authService: AuthService,
   ) {}
 
   async runSeed() {
@@ -47,23 +49,23 @@ export class SeedService {
 
       // Inicio del  bloque de inserción de datos, si se comenta este bloque, solo eliminara los dato sin insertar datos por defecto
       // Luego insertamos las entidades base
-      // await this.insertNewCategories(); // Primero las categorías
-      // console.log('Categories inserted');
+      await this.insertNewCategories(); // Primero las categorías
+      console.log('Categories inserted');
       // await this.insertNewDocente(); // Luego los docentes
-      // console.log('Docentes inserted');
-      // await this.insertNewEstudiante(); // Después los estudiantes
-      // console.log('Estudiantes inserted');
-      // await this.insertNewLevels(); // Luego los niveles
-      // console.log('Levels inserted');
+      console.log('Docentes inserted');
+      await this.insertNewEstudiante(); // Después los estudiantes
+      console.log('Estudiantes inserted');
+      await this.insertNewLevels(); // Luego los niveles
+      console.log('Levels inserted');
 
-      // await this.insertNewCourses(); // Luego los cursos, ya que dependen de las categorías y docentes
-      // console.log('Courses inserted');
+      await this.insertNewCourses(); // Luego los cursos, ya que dependen de las categorías y docentes
+      console.log('Courses inserted');
 
       // // Finalmente insertamos las relaciones
-      // await this.insertNewCalificacion();
-      // console.log('Calificaciones inserted');
-      // await this.insertNewStudentCourses();
-      // console.log('Student Courses inserted');
+      await this.insertNewCalificacion();
+      console.log('Calificaciones inserted');
+      await this.insertNewStudentCourses();
+      console.log('Student Courses inserted');
 
       return 'SEED EXECUTED';
       // Fin del bloque de inserción de datos
@@ -87,10 +89,25 @@ export class SeedService {
     await Promise.all(insertPromises);
     return true;
   }
+
+  // private async insertNewUsers() {
+  //   const users = initialData.users;
+  //   const insertPromises: Promise<any>[] = [];
+
+  //   users.forEach((user) => {
+  //     insertPromises.push(this.authService.create(user));
+  //   });
+
+  //   await Promise.all(insertPromises);
+  //   console.log('Users inserted');
+  //   return true;
+  // }
+
   // private async insertNewDocente() {
   //   await this.docentesService.deleteAllDocentes();
 
   //   const docentes = initialData.docentes;
+  // const users = initialData.users;
   //   const insertPromises: Promise<Docente | undefined>[] = [];
 
   //   docentes.forEach((docente) => {
