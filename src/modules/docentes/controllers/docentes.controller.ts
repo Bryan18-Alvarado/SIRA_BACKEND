@@ -24,12 +24,8 @@ export class DocentesController {
 
   @Get()
   async getFindAll(@Query() params: FilterDocenteDto) {
-    const rows = await this.docentesService.findAll(params);
-
-    const data = {
-      data: rows,
-    };
-    return data;
+    const [rows, total] = await this.docentesService.findAll(params);
+    return { data: rows, total };
   }
 
   @Post()

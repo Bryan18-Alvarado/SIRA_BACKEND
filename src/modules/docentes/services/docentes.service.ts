@@ -30,24 +30,25 @@ export class DocentesService {
     private readonly maritalStatusRepository: Repository<MaritalStatus>,
   ) {}
 
-  findAll(params?: FilterDocenteDto) {
-    const { limit, offset, nombre } = params || {};
-    const where: FindOptionsWhere<Docente> = {};
+  async findAll(params?: FilterDocenteDto) {
+    const { limit = 3, offset = 0, nombre } = params || {};
+
+    const where = nombre ? { nombre: ILike(`%${nombre}%`) } : {};
 
     if (nombre) {
       where.nombre = ILike(`%${nombre}%`);
     }
 
-    return this.docenteRepository.find({
-      order: { id: 'ASC' },
+    const [data, total] = await this.docenteRepository.findAndCount({
       where,
       take: limit,
       skip: offset,
-      relations: {
-        genero: true,
-        estado_civil: true,
+      relations: ['genero', 'estado_civil'],
+      order: {
+        id: 'ASC',
       },
     });
+    return [data, total];
   }
 
   async create(createDocenteDto: CreateDocenteDto, user: User) {
