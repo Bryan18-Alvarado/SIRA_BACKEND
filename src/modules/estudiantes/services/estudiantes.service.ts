@@ -21,10 +21,16 @@ export class EstudiantesService {
 
   async findAll(paginationDto: PaginationDto) {
     const { limit = 3, offset = 0 } = paginationDto;
-    return this.estudianteRepository.find({
+
+    const [data, total] = await this.estudianteRepository.findAndCount({
       take: limit,
       skip: offset,
     });
+
+    return {
+      data,
+      total,
+    };
   }
 
   // Método que obtiene las calificaciones de un estudiante por su ID
