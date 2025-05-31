@@ -23,11 +23,11 @@ export class MaritalStatusService {
   ) {}
 
   async findAll(paginationDto: PaginationDto) {
-    const { limit = 3, offset = 0 } = paginationDto;
-    return this.maritalStatusRepository.find({
-      take: limit,
-      skip: offset,
+    const [data, total] = await this.maritalStatusRepository.findAndCount({
+      take: paginationDto.limit,
+      skip: paginationDto.offset,
     });
+    return { data, total };
   }
 
   async create(createMaritalStatusDto: CreateMaritalStatusDto) {
