@@ -1,4 +1,5 @@
 import { ApiProperty, PartialType } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import {
   IsNotEmpty,
   IsOptional,
@@ -66,7 +67,7 @@ export class CreateCoursesDto {
 
   @IsBoolean()
   @ApiProperty({ default: true })
-  status: boolean;
+  status?: boolean;
 
   @IsNumber()
   @IsOptional()
@@ -98,13 +99,15 @@ export class UpdateCoursesDto extends PartialType(CreateCoursesDto) {}
 
 export class FilterCoursesDto {
   @IsOptional()
+  @Type(() => Number)
   @IsPositive()
-  limit: number;
+  limit?: number;
 
   @IsOptional()
+  @Type(() => Number)
   @Min(0)
-  offset: number;
+  offset?: number;
 
   @IsOptional()
-  description: string;
+  descripcion: string;
 }

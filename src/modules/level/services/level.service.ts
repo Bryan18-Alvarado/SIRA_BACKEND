@@ -19,12 +19,12 @@ export class LevelService {
     private readonly levelRepository: Repository<Level>,
   ) {}
 
-  findAll(paginationDto: PaginationDto) {
-    const { limit = 3, offset = 0 } = paginationDto;
-    return this.levelRepository.find({
-      take: limit,
-      skip: offset,
+  async findAll(paginationDto: PaginationDto) {
+    const [data, total] = await this.levelRepository.findAndCount({
+      take: paginationDto.limit,
+      skip: paginationDto.offset,
     });
+    return { data, total };
   }
 
   async create(createLevelDto: CreateLevelDto) {

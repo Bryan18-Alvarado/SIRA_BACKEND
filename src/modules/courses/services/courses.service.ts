@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Courses } from '../entities/courses.entity';
-import { FindOptionsWhere, ILike, Repository } from 'typeorm';
+import { ILike, Repository } from 'typeorm';
 import {
   CreateCoursesDto,
   FilterCoursesDto,
@@ -35,25 +35,26 @@ export class CoursesService {
     private readonly docenteRepository: Repository<Docente>,
   ) {}
 
-  findAll(params?: FilterCoursesDto) {
-    const { limit, offset, description } = params || {};
-    const where: FindOptionsWhere<Courses> = {};
+  async findAll(params: FilterCoursesDto) {
+    const { limit = 5, offset = 0, descripcion } = params;
+    const where = descripcion ? { descripcion: ILike(`%${descripcion}%`) } : {};
 
-    if (description) {
-      where.descripcion = ILike(`%${description}%`);
+    if (descripcion) {
+      where.descripcion = ILike(`%${descripcion}%`);
     }
 
-    return this.coursesRepository.find({
-      order: { id: 'ASC' },
+    const [data, total] = await this.coursesRepository.findAndCount({
       where,
       take: limit,
       skip: offset,
-      relations: {
-        categories: true,
-        level: true,
-        docentes: true,
-      },
+      relations: ['categories', 'level', 'docentes'],
+      order: { id: 'ASC' },
     });
+
+    return {
+      data,
+      total,
+    };
   }
 
   async create(createCoursesDto: CreateCoursesDto) {

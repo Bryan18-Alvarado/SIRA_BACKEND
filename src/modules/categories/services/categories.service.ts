@@ -22,12 +22,12 @@ export class CategoriesService {
     private readonly categoriesRepository: Repository<Categories>,
   ) {}
 
-  findAll(paginationDto: PaginationDto) {
-    const { limit = 3, offset = 0 } = paginationDto;
-    return this.categoriesRepository.find({
-      take: limit,
-      skip: offset,
+  async findAll(paginationDto: PaginationDto) {
+    const [data, total] = await this.categoriesRepository.findAndCount({
+      take: paginationDto.limit,
+      skip: paginationDto.offset,
     });
+    return { data, total };
   }
 
   async create(createCategoriesDto: CreateCategoriesDto) {

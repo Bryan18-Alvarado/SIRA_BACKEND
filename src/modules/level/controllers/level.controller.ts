@@ -12,7 +12,7 @@ import { LevelService } from '../services/level.service';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { CreateLevelDto, UpdateLevelDto } from '../dto/level.dto';
 
-@Controller('level')
+@Controller('levels')
 export class LevelController {
   constructor(private readonly levelService: LevelService) {}
 

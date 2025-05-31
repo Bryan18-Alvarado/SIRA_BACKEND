@@ -21,11 +21,8 @@ export class CoursesController {
 
   @Get()
   async getFindAll(@Query() params: FilterCoursesDto) {
-    const rows = await this.coursesService.findAll(params);
-    const data = {
-      data: rows,
-    };
-    return data;
+    const { data, total } = await this.coursesService.findAll(params);
+    return { data, total };
   }
 
   @Post()
