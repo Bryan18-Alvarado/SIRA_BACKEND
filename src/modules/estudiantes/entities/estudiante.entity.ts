@@ -5,6 +5,7 @@ import {
   Entity,
   JoinColumn,
   ManyToMany,
+  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -39,7 +40,7 @@ export class Estudiante {
   @Column({ type: 'text', nullable: true })
   direccion: string;
 
-  @ManyToMany(() => Genders)
+  @ManyToOne(() => Genders)
   @JoinColumn({ name: 'genero_id', referencedColumnName: 'id' })
   genero: Genders;
 

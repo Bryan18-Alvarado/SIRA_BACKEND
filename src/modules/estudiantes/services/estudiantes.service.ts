@@ -25,6 +25,7 @@ export class EstudiantesService {
     const [data, total] = await this.estudianteRepository.findAndCount({
       take: limit,
       skip: offset,
+      relations: ['genero'],
     });
 
     return {
