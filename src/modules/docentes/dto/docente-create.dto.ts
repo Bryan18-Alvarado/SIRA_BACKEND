@@ -48,9 +48,10 @@ export class CreateDocenteDto {
   @Min(5)
   codigo_laboral: number;
 
+  @IsNumber()
   @ApiProperty()
-  @IsString()
-  cursos_asignados: string;
+  @IsNotEmpty()
+  readonly cursos_asignados_id: number;
 
   @IsString()
   @ApiProperty()

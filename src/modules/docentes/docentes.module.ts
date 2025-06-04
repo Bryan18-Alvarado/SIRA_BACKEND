@@ -7,10 +7,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from 'src/auth/auth.module';
 import { Genders } from '../genders/entities/genders.entity';
 import { MaritalStatus } from '../marital-status/entities/marital-status.entity';
+import { Courses } from '../courses/entities/courses.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Docente, Genders, MaritalStatus]),
+    TypeOrmModule.forFeature([Docente, Genders, MaritalStatus, Courses]),
     AuthModule,
   ],
   controllers: [DocentesController],

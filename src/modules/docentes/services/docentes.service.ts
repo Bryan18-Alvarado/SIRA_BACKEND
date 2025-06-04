@@ -5,7 +5,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindOptionsWhere, ILike, Repository } from 'typeorm';
+import { ILike, Repository } from 'typeorm';
 import { Docente } from '../entities/docentes.entity';
 import {
   CreateDocenteDto,
@@ -16,6 +16,7 @@ import {
 import { User } from 'src/auth/entities/user.entity';
 import { Genders } from 'src/modules/genders/entities/genders.entity';
 import { MaritalStatus } from 'src/modules/marital-status/entities/marital-status.entity';
+import { Courses } from 'src/modules/courses/entities/courses.entity';
 
 @Injectable()
 export class DocentesService {
@@ -28,6 +29,8 @@ export class DocentesService {
     private readonly genderRepository: Repository<Genders>,
     @InjectRepository(MaritalStatus)
     private readonly maritalStatusRepository: Repository<MaritalStatus>,
+    @InjectRepository(Courses)
+    private readonly coursesRepository: Repository<Courses>,
   ) {}
 
   async findAll(params?: FilterDocenteDto) {
@@ -43,7 +46,7 @@ export class DocentesService {
       where,
       take: limit,
       skip: offset,
-      relations: ['genero', 'estado_civil'],
+      relations: ['genero', 'estado_civil', 'cursos_asignados'],
       order: {
         id: 'ASC',
       },
@@ -101,8 +104,20 @@ export class DocentesService {
       }
       docente.estado_civil = estadoCivil;
     }
-    this.docenteRepository.merge(docente, changes);
 
+    if (changes.cursos_asignados_id) {
+      const curso = await this.coursesRepository.findOneBy({
+        id: changes.cursos_asignados_id,
+      });
+      if (!curso) {
+        throw new NotFoundException(
+          `Curso con id ${changes.cursos_asignados_id} no encontrado`,
+        );
+      }
+      docente.cursos = curso;
+    }
+
+    this.docenteRepository.merge(docente, changes);
     const updated = await this.docenteRepository.save(docente);
     return {
       message: 'registro actualizado correctamente',

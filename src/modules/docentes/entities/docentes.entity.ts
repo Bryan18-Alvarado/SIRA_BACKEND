@@ -1,4 +1,5 @@
 import { User } from 'src/auth/entities/user.entity';
+import { Courses } from 'src/modules/courses/entities/courses.entity';
 import { Genders } from 'src/modules/genders/entities/genders.entity';
 import { MaritalStatus } from 'src/modules/marital-status/entities/marital-status.entity';
 import {
@@ -35,8 +36,8 @@ export class Docente {
   @Column({ type: 'int' })
   codigo_laboral: number;
 
-  @Column({ type: 'varchar', length: 100 })
-  cursos_asignados: string;
+  @Column({ type: 'int4', nullable: false })
+  cursos_asignados_id: number;
 
   @Column({ type: 'text', nullable: true })
   direccion: string;
@@ -67,6 +68,10 @@ export class Docente {
   @ManyToOne(() => MaritalStatus)
   @JoinColumn({ name: 'estado_civil_id', referencedColumnName: 'id' })
   estado_civil: MaritalStatus;
+
+  @ManyToOne(() => Courses)
+  @JoinColumn({ name: 'cursos_asignados_id', referencedColumnName: 'id' })
+  cursos: Courses;
 
   @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
