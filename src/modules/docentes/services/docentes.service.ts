@@ -152,7 +152,7 @@ export class DocentesService {
   async findOne(id: number) {
     const docente = await this.docenteRepository.findOne({
       where: { id: id },
-      relations: { genero: true, estado_civil: true },
+      relations: { genero: true, estado_civil: true, cursos: true },
     });
 
     if (!docente) {
