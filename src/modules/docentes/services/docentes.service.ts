@@ -46,7 +46,7 @@ export class DocentesService {
       where,
       take: limit,
       skip: offset,
-      relations: ['genero', 'estado_civil', 'cursos_asignados'],
+      relations: ['genero', 'estado_civil', 'cursos'],
       order: {
         id: 'ASC',
       },
