@@ -34,6 +34,8 @@ import { GendersModule } from './modules/genders/genders.module';
 import { ReportModule } from './modules/report/report.module';
 import { ReportController } from './modules/report/controllers/report.controller';
 import { ReportService } from './modules/report/service/report.service';
+import { TutoresService } from './modules/tutores/services/tutores.service';
+import { TutoresController } from './modules/tutores/controllers/tutores.controller';
 
 @Module({
   imports: [
@@ -73,6 +75,7 @@ import { ReportService } from './modules/report/service/report.service';
     GendersController,
     MaritalStatusController,
     ReportController,
+    TutoresController,
   ],
   providers: [
     DocentesService,
@@ -85,6 +88,7 @@ import { ReportService } from './modules/report/service/report.service';
     GendersService,
     MaritalStatusService,
     ReportService,
+    TutoresService,
   ],
 })
 export class AppModule {}

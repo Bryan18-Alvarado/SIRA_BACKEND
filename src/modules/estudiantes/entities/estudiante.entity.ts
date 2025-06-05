@@ -13,11 +13,15 @@ import {
 import { StudentCourse } from '../../student-courses/entities/studentcourse.entity';
 import { Calificacion } from '../../calificaciones/entities/calificacion.entity';
 import { Genders } from 'src/modules/genders/entities/genders.entity';
+import { Tutor } from 'src/modules/tutores/entities/tutor.entity';
 
 @Entity()
 export class Estudiante {
   @PrimaryGeneratedColumn('increment', { type: 'int4' })
   id: number;
+
+  @Column({ type: 'varchar', length: 20, unique: true, nullable: true })
+  codigoEstudiante: string;
 
   @Column({ type: 'varchar', length: 100 })
   nombre: string;
@@ -39,6 +43,16 @@ export class Estudiante {
 
   @Column({ type: 'text', nullable: true })
   direccion: string;
+
+  @Column({ type: 'int', nullable: true })
+  tutor_id?: number;
+
+  @ManyToOne(() => Tutor, (tutor) => tutor.estudiantes, {
+    nullable: true,
+    onDelete: 'RESTRICT',
+  })
+  @JoinColumn({ name: 'tutor_id' })
+  tutor?: Tutor;
 
   @ManyToOne(() => Genders)
   @JoinColumn({ name: 'genero_id', referencedColumnName: 'id' })
