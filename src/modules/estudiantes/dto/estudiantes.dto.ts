@@ -1,5 +1,5 @@
 import { ApiProperty, PartialType } from '@nestjs/swagger';
-import { Transform } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 import {
   IsDate,
   IsInt,
@@ -9,13 +9,20 @@ import {
   IsEmail,
   IsNumber,
   IsNotEmpty,
+  ValidateNested,
 } from 'class-validator';
+import { CreateTutorDto } from 'src/modules/tutores/dto/tutor.dto';
 
 export class CreateEstudianteDto {
   @IsOptional()
   @IsInt()
   @ApiProperty()
   id?: number;
+
+  @IsOptional()
+  @IsString()
+  @ApiProperty({ readOnly: true })
+  codigoEstudiante?: string;
 
   @IsString()
   @MinLength(3)
@@ -51,6 +58,17 @@ export class CreateEstudianteDto {
   @IsOptional()
   @ApiProperty()
   direccion?: string;
+
+  @IsOptional()
+  @IsInt()
+  @ApiProperty({ required: false })
+  tutor_id?: number;
+
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => CreateTutorDto)
+  @ApiProperty({ required: false, type: () => CreateTutorDto })
+  tutor?: CreateTutorDto;
 }
 
 export class UpdateEstudianteDto extends PartialType(CreateEstudianteDto) {}

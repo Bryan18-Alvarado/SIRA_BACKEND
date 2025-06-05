@@ -10,6 +10,7 @@ import { Repository } from 'typeorm';
 import { Estudiante } from '../entities/estudiante.entity';
 import { CreateEstudianteDto } from '../dto/estudiantes.dto';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
+import { Tutor } from 'src/modules/tutores/entities/tutor.entity';
 @Injectable()
 export class EstudiantesService {
   private readonly logger = new Logger('EstudiantesService');
@@ -17,6 +18,8 @@ export class EstudiantesService {
   constructor(
     @InjectRepository(Estudiante)
     private readonly estudianteRepository: Repository<Estudiante>,
+    @InjectRepository(Tutor)
+    private readonly tutorRepository: Repository<Tutor>,
   ) {}
 
   async findAll(paginationDto: PaginationDto) {
@@ -25,7 +28,7 @@ export class EstudiantesService {
     const [data, total] = await this.estudianteRepository.findAndCount({
       take: limit,
       skip: offset,
-      relations: ['genero'],
+      relations: ['genero', 'tutor'],
     });
 
     return {
@@ -47,14 +50,69 @@ export class EstudiantesService {
 
     return estudiante.calificaciones; // Devuelve las calificaciones del estudiante
   }
+  private calcularEdad(fechaNacimiento: Date): number {
+    const hoy = new Date();
+    const nacimiento = new Date(fechaNacimiento);
+    let edad = hoy.getFullYear() - nacimiento.getFullYear();
+    const mes = hoy.getMonth() - nacimiento.getMonth();
+    if (mes < 0 || (mes === 0 && hoy.getDate() < nacimiento.getDate())) {
+      edad--;
+    }
+    return edad;
+  }
 
-  async create(createEstudianteDto: CreateEstudianteDto) {
+  // async create(createEstudianteDto: CreateEstudianteDto) {
+  //   try {
+  //     const estudiante = this.estudianteRepository.create(createEstudianteDto);
+  //     await this.estudianteRepository.save(estudiante);
+  //     return estudiante;
+  //   } catch (error) {
+  //     this.handleDBException(error);
+  //   }
+  // }
+
+  async create(createEstudianteDto: CreateEstudianteDto): Promise<Estudiante> {
     try {
-      const estudiante = this.estudianteRepository.create(createEstudianteDto);
+      const { fechaNacimiento, tutor_id, tutor, ...resData } =
+        createEstudianteDto;
+
+      const edad = this.calcularEdad(fechaNacimiento);
+      let nuevoTutorId: number | undefined;
+
+      if (edad < 18) {
+        if (!tutor_id && !tutor) {
+          throw new BadRequestException(
+            'El estudiante es menor de edad y requiere un tutor asignado o registrado.',
+          );
+        }
+
+        if (!tutor_id && tutor) {
+          const tutorCreado = this.tutorRepository.create(tutor);
+          const tutorGuardado = await this.tutorRepository.save(tutorCreado);
+          nuevoTutorId = tutorGuardado.id;
+        }
+      }
+
+      const estudiante = this.estudianteRepository.create({
+        fechaNacimiento,
+        ...resData,
+        tutor_id: tutor_id ?? nuevoTutorId,
+      });
+
+      const estudianteGuardado =
+        await this.estudianteRepository.save(estudiante);
+
+      estudianteGuardado.codigoEstudiante = `SR-${estudianteGuardado.id.toString().padStart(4, '0')}`;
+      await this.estudianteRepository.save(estudianteGuardado);
       await this.estudianteRepository.save(estudiante);
-      return estudiante;
+
+      return estudianteGuardado;
     } catch (error) {
+      if (error instanceof BadRequestException) {
+        throw error;
+      }
       this.handleDBException(error);
+      throw error;
     }
   }
 
