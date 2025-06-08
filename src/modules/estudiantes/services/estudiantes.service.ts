@@ -106,6 +106,17 @@ export class EstudiantesService {
       await this.estudianteRepository.save(estudianteGuardado);
       await this.estudianteRepository.save(estudiante);
 
+      // const estudianteConRelaciones = await this.estudianteRepository.findOne({
+      //   where: { id: estudianteGuardado.id },
+      //   relations: ['tutor', 'genero'],
+      // });
+
+      // if (!estudianteConRelaciones) {
+      //   throw new NotFoundException(
+      //     `Estudiante con id ${estudianteGuardado.id} no encontrado`,
+      //   );
+      // }
+
       return estudianteGuardado;
     } catch (error) {
       if (error instanceof BadRequestException) {
@@ -158,7 +169,10 @@ export class EstudiantesService {
   }
 
   async findOne(id: number) {
-    const estudiante = await this.estudianteRepository.findOneBy({ id });
+    const estudiante = await this.estudianteRepository.findOne({
+      where: { id },
+      relations: ['tutor', 'genero'],
+    });
     if (!estudiante) {
       throw new NotFoundException(`Estudiante con id ${id} no encontrado`);
     }

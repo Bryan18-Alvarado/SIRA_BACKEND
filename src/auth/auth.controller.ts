@@ -3,9 +3,10 @@ import {
   Controller,
   Get,
   Headers,
+  Param,
   Post,
+  Put,
   Req,
-  SetMetadata,
   UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
@@ -19,6 +20,7 @@ import { IncomingHttpHeaders } from 'http';
 import { UserRoleGuard } from './guards/user-role/user-role.guard';
 import { RoleProtected } from './decorators/role-protected/role-protected.decorator';
 import { ValidRoles } from './interfaces';
+import { UpdateUserRolesDto } from './dto/update-role';
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
@@ -62,6 +64,15 @@ export class AuthController {
       message: 'Hola mundo privado 2',
       user,
     };
+  }
+
+  @Put('update-roles/:id')
+  @Auth(ValidRoles.admin) // Solo admin puede asignar roles
+  async updateUserRoles(
+    @Param('id') id: number,
+    @Body() updateUserRolesDto: UpdateUserRolesDto,
+  ) {
+    return this.authService.updateRoles(id, updateUserRolesDto.roles);
   }
 
   @Get('private3')

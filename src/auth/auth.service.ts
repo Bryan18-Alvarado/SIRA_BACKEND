@@ -13,6 +13,7 @@ import * as bcrypt from 'bcrypt';
 import { LoginUserDto, CreateUserDto } from './dto';
 import { JwtPayload } from './interfaces/jwt-payload.interface';
 import { JwtService } from '@nestjs/jwt';
+import { ValidRoles } from './interfaces';
 
 @Injectable()
 export class AuthService {
@@ -62,6 +63,21 @@ export class AuthService {
     return {
       ...user,
       token: this.getJwtToken({ id: user.id }),
+    };
+  }
+
+  async updateRoles(userId: number, roles: ValidRoles[]) {
+    const user = await this.userRepository.findOneBy({ id: userId });
+
+    if (!user) {
+      throw new BadRequestException(`Usuario con id ${userId} no existe`);
+    }
+
+    user.roles = roles;
+    await this.userRepository.save(user);
+    return {
+      message: `Roles actualizados para ${user.fullName}`,
+      roles: user.roles,
     };
   }
 
