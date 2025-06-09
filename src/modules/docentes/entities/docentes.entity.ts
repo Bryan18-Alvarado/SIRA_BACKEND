@@ -34,7 +34,7 @@ export class Docente {
   @Column({ type: 'int4', nullable: false })
   estado_civil_id: number;
 
-  @Column({ type: 'int' })
+  @Column({ type: 'int', unique: true })
   codigo_laboral: number;
 
   @Column({ type: 'text', nullable: true })
