@@ -5,7 +5,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindOptionsWhere, ILike, Repository } from 'typeorm';
+import { ILike, In, Repository } from 'typeorm';
 import { Docente } from '../entities/docentes.entity';
 import {
   CreateDocenteDto,
@@ -16,6 +16,7 @@ import {
 import { User } from 'src/auth/entities/user.entity';
 import { Genders } from 'src/modules/genders/entities/genders.entity';
 import { MaritalStatus } from 'src/modules/marital-status/entities/marital-status.entity';
+import { Courses } from 'src/modules/courses/entities/courses.entity';
 
 @Injectable()
 export class DocentesService {
@@ -28,6 +29,8 @@ export class DocentesService {
     private readonly genderRepository: Repository<Genders>,
     @InjectRepository(MaritalStatus)
     private readonly maritalStatusRepository: Repository<MaritalStatus>,
+    @InjectRepository(Courses)
+    private readonly courseRepository: Repository<Courses>,
   ) {}
 
   async findAll(params?: FilterDocenteDto) {
@@ -43,7 +46,7 @@ export class DocentesService {
       where,
       take: limit,
       skip: offset,
-      relations: ['genero', 'estado_civil'],
+      relations: ['genero', 'estado_civil', 'courses'],
       order: {
         id: 'ASC',
       },
@@ -57,8 +60,25 @@ export class DocentesService {
         ...createDocenteDto,
         user,
       });
+
+      if (createDocenteDto.cursos_ids?.length) {
+        const cursos = await this.courseRepository.find({
+          where: { id: In(createDocenteDto.cursos_ids) },
+        });
+
+        if (cursos.length !== createDocenteDto.cursos_ids.length) {
+          throw new NotFoundException('Uno o más cursos no fueron encontrados');
+        }
+
+        docente.courses = cursos;
+      }
+
       await this.docenteRepository.save(docente);
-      return docente;
+
+      return {
+        message: 'Docente creado correctamente',
+        data: docente,
+      };
     } catch (error) {
       this.handleDBException(error);
     }
@@ -103,6 +123,18 @@ export class DocentesService {
     }
     this.docenteRepository.merge(docente, changes);
 
+    if (changes.cursos_ids?.length) {
+      const cursos = await this.courseRepository.find({
+        where: { id: In(changes.cursos_ids) },
+      });
+
+      if (cursos.length !== changes.cursos_ids.length) {
+        throw new NotFoundException('Uno o más cursos no fueron encontrados');
+      }
+
+      docente.courses = cursos;
+    }
+
     const updated = await this.docenteRepository.save(docente);
     return {
       message: 'registro actualizado correctamente',
@@ -137,7 +169,7 @@ export class DocentesService {
   async findOne(id: number) {
     const docente = await this.docenteRepository.findOne({
       where: { id: id },
-      relations: { genero: true, estado_civil: true },
+      relations: { genero: true, estado_civil: true, courses: true },
     });
 
     if (!docente) {

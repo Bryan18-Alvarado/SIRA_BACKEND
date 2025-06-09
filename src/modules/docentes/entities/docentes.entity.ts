@@ -8,9 +8,11 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Courses } from 'src/modules/courses/entities/courses.entity';
 
 @Entity()
 export class Docente {
@@ -34,9 +36,6 @@ export class Docente {
 
   @Column({ type: 'int' })
   codigo_laboral: number;
-
-  @Column({ type: 'varchar', length: 100 })
-  cursos_asignados: string;
 
   @Column({ type: 'text', nullable: true })
   direccion: string;
@@ -67,6 +66,9 @@ export class Docente {
   @ManyToOne(() => MaritalStatus)
   @JoinColumn({ name: 'estado_civil_id', referencedColumnName: 'id' })
   estado_civil: MaritalStatus;
+
+  @OneToMany(() => Courses, (course) => course.docentes)
+  courses: Courses[];
 
   @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;

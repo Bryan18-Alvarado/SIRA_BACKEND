@@ -1,9 +1,11 @@
 import { ApiProperty, PartialType } from '@nestjs/swagger';
 import { Transform, Type } from 'class-transformer';
 import {
+  IsArray,
   IsBoolean,
   IsDate,
   IsEmail,
+  IsInt,
   IsNotEmpty,
   IsNumber,
   IsOptional,
@@ -43,14 +45,16 @@ export class CreateDocenteDto {
   @IsNotEmpty()
   readonly estado_civil_id: number;
 
+  @IsOptional()
+  @IsArray()
+  @IsInt({ each: true })
+  @ApiProperty({ type: [Number], required: false })
+  cursos_ids?: number[];
+
   @IsNumber()
   @ApiProperty()
   @Min(5)
   codigo_laboral: number;
-
-  @ApiProperty()
-  @IsString()
-  cursos_asignados: string;
 
   @IsString()
   @ApiProperty()
@@ -83,7 +87,13 @@ export class CreateDocenteDto {
   isAvailable: boolean;
 }
 
-export class UpdateDocenteDto extends PartialType(CreateDocenteDto) {}
+export class UpdateDocenteDto extends PartialType(CreateDocenteDto) {
+  @IsOptional()
+  @IsArray()
+  @IsInt({ each: true })
+  @ApiProperty({ type: [Number], required: false })
+  cursos_ids?: number[];
+}
 
 export class FilterDocenteDto {
   @IsOptional()

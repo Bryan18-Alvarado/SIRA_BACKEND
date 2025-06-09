@@ -39,10 +39,6 @@ export class CoursesService {
     const { limit = 5, offset = 0, descripcion } = params;
     const where = descripcion ? { descripcion: ILike(`%${descripcion}%`) } : {};
 
-    if (descripcion) {
-      where.descripcion = ILike(`%${descripcion}%`);
-    }
-
     const [data, total] = await this.coursesRepository.findAndCount({
       where,
       take: limit,
