@@ -28,6 +28,9 @@ export class Docente {
   @Column({ type: 'int' })
   edad: number;
 
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  image: string;
+
   @Column({ type: 'int4', nullable: false })
   genero_id: number;
 

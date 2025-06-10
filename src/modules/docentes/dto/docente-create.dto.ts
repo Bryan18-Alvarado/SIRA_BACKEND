@@ -1,5 +1,5 @@
 import { ApiProperty, PartialType } from '@nestjs/swagger';
-import { Transform, Type } from 'class-transformer';
+import { Type } from 'class-transformer';
 import {
   IsArray,
   IsBoolean,
@@ -17,79 +17,96 @@ import {
 
 export class CreateDocenteDto {
   @IsOptional()
+  @Type(() => Number)
   @IsNumber()
   @ApiProperty()
   id?: number;
 
   @IsString()
-  @ApiProperty()
   @MinLength(3)
+  @ApiProperty()
   nombre: string;
 
   @IsString()
-  @ApiProperty()
   @MinLength(3)
+  @ApiProperty()
   apellido: string;
 
+  @Type(() => Number)
   @IsNumber()
   @ApiProperty()
   edad: number;
 
-  @IsNumber()
-  @ApiProperty()
-  @IsNotEmpty()
-  readonly genero_id: number;
+  @IsOptional()
+  @IsString()
+  @ApiProperty({
+    description: 'URL de la imagen del docente',
+    required: false,
+    example: '/uploads/docentes/archivo.jpg',
+  })
+  image?: string;
 
+  @Type(() => Number)
   @IsNumber()
-  @ApiProperty()
   @IsNotEmpty()
-  readonly estado_civil_id: number;
+  @ApiProperty()
+  genero_id: number;
+
+  @Type(() => Number)
+  @IsNumber()
+  @IsNotEmpty()
+  @ApiProperty()
+  estado_civil_id: number;
 
   @IsOptional()
   @IsArray()
+  @Type(() => Number)
   @IsInt({ each: true })
   @ApiProperty({ type: [Number], required: false })
   cursos_ids?: number[];
 
+  @Type(() => Number)
   @IsNumber()
-  @ApiProperty()
   @Min(5)
+  @ApiProperty()
   codigo_laboral: number;
 
+  @IsOptional()
   @IsString()
   @ApiProperty()
-  @IsOptional()
   direccion?: string;
 
-  @Transform(({ value }) => new Date(value))
+  @Type(() => Date)
   @IsDate()
   @ApiProperty()
   fecha_ingreso: Date;
 
-  @Transform(({ value }) => new Date(value))
+  @Type(() => Date)
   @IsDate()
   @ApiProperty()
   fecha_nacimiento: Date;
 
+  @IsOptional()
   @IsString()
   @ApiProperty()
-  @IsOptional()
   telefono?: string;
 
+  @IsOptional()
   @IsEmail()
   @ApiProperty()
-  @IsOptional()
   email?: string;
 
+  @IsOptional()
+  @Type(() => Boolean)
   @IsBoolean()
   @ApiProperty()
-  @IsOptional()
   isAvailable: boolean;
 }
 
 export class UpdateDocenteDto extends PartialType(CreateDocenteDto) {
   @IsOptional()
   @IsArray()
+  @Type(() => Number)
   @IsInt({ each: true })
   @ApiProperty({ type: [Number], required: false })
   cursos_ids?: number[];
