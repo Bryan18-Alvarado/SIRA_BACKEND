@@ -7,6 +7,9 @@ import {
   Post,
   Put,
   Query,
+  Req,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
 import { DocentesService } from '../services/docentes.service';
 import {
@@ -17,7 +20,10 @@ import {
 import { Auth, GetUser } from 'src/auth/decorators';
 import { ValidRoles } from 'src/auth/interfaces';
 import { User } from 'src/auth/entities/user.entity';
-
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import { extname } from 'path';
+import { Request } from 'express';
 @Controller('docentes')
 export class DocentesController {
   constructor(private readonly docentesService: DocentesService) {}
@@ -28,18 +34,64 @@ export class DocentesController {
     return { data: rows, total };
   }
 
+  @Post('upload')
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: './uploads/products',
+        filename: (req, file, cb) => {
+          const uniqueSuffix =
+            Date.now() + '-' + Math.round(Math.random() * 1e9);
+          const ext = extname(file.originalname);
+          cb(null, `${file.fieldname}-${uniqueSuffix}${ext}`);
+        },
+      }),
+    }),
+  )
+  uploadImage(@UploadedFile() file: Express.Multer.File) {
+    return {
+      message: 'Imagen subida correctamente',
+      filePath: `/uploads/docentes/${file.filename}`,
+    };
+  }
   @Post()
   @Auth(ValidRoles.admin)
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: './uploads/docentes',
+        filename: (req, file, cb) => {
+          const uniqueSuffix =
+            Date.now() + '-' + Math.round(Math.random() * 1e9);
+          const ext = extname(file.originalname);
+          cb(null, `${file.fieldname}-${uniqueSuffix}${ext}`);
+        },
+      }),
+      limits: {
+        fileSize: 30 * 1024 * 1538, // ~10MB
+      },
+    }),
+  )
   async createDocente(
     @Body() createDocenteDto: CreateDocenteDto,
     @GetUser() user: User,
+    @UploadedFile() file: Express.Multer.File,
+    @Req() req: Request,
   ) {
-    const nuevo = await this.docentesService.create(createDocenteDto, user);
-    const data = {
+    const imagePath = file
+      ? `${req.protocol}://${req.get('host')}/uploads/docentes/${file.filename}`
+      : undefined;
+
+    const nuevo = await this.docentesService.create(
+      createDocenteDto,
+      user,
+      imagePath,
+    );
+
+    return {
       data: nuevo,
       message: 'Docente creado correctamente',
     };
-    return data;
   }
 
   @Get(':id')
@@ -53,12 +105,31 @@ export class DocentesController {
 
   @Put(':id')
   @Auth(ValidRoles.admin)
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: './uploads/docentes',
+        filename: (req, file, cb) => {
+          const uniqueSuffix =
+            Date.now() + '-' + Math.round(Math.random() * 1e9);
+          const ext = extname(file.originalname);
+          cb(null, `${file.fieldname}-${uniqueSuffix}${ext}`);
+        },
+      }),
+    }),
+  )
   async update(
     @Param('id') id: number,
     @Body() updateDocenteDto: UpdateDocenteDto,
     @GetUser() user: User,
+    @UploadedFile() file: Express.Multer.File,
   ) {
-    const rows = await this.docentesService.update(id, updateDocenteDto, user);
+    const imagePath = file ? `/uploads/docentes/${file.filename}` : undefined;
+    const rows = await this.docentesService.update(
+      id,
+      { ...updateDocenteDto, image: imagePath },
+      user,
+    );
     const data = {
       data: rows,
       message: 'Docente actualizado correctamente',

@@ -54,11 +54,16 @@ export class DocentesService {
     return [data, total];
   }
 
-  async create(createDocenteDto: CreateDocenteDto, user: User) {
+  async create(
+    createDocenteDto: CreateDocenteDto,
+    user: User,
+    imagePath?: string,
+  ) {
     try {
       const docente = this.docenteRepository.create({
         ...createDocenteDto,
         user,
+        image: imagePath,
       });
 
       if (createDocenteDto.cursos_ids?.length) {
