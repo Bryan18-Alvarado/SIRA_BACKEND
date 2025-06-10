@@ -27,6 +27,11 @@ export class StudentCoursesController {
     return this.studentCoursesService.findOne(id);
   }
 
+  @Get('student/:studentId')
+  findByStudent(@Param('studentId') studentId: number) {
+    return this.studentCoursesService.findByStudentId(studentId);
+  }
+
   @Post()
   create(@Body() createStudentCourseDto: CreateStudentCourseDto) {
     return this.studentCoursesService.create(createStudentCourseDto);
