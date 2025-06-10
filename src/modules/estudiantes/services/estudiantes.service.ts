@@ -71,7 +71,10 @@ export class EstudiantesService {
   //   }
   // }
 
-  async create(createEstudianteDto: CreateEstudianteDto): Promise<Estudiante> {
+  async create(
+    createEstudianteDto: CreateEstudianteDto,
+    imagenPath?: string,
+  ): Promise<Estudiante> {
     try {
       const { fechaNacimiento, tutor_id, tutor, ...resData } =
         createEstudianteDto;
@@ -97,6 +100,7 @@ export class EstudiantesService {
         fechaNacimiento,
         ...resData,
         tutor_id: tutor_id ?? nuevoTutorId,
+        imagen: imagenPath,
       });
 
       const estudianteGuardado =

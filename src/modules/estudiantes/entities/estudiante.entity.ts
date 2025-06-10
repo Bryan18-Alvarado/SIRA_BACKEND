@@ -44,6 +44,9 @@ export class Estudiante {
   @Column({ type: 'text', nullable: true })
   direccion: string;
 
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  image: string;
+
   @Column({ type: 'int', nullable: true })
   tutor_id?: number;
 
