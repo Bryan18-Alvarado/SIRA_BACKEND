@@ -53,9 +53,12 @@ export class CoursesService {
     };
   }
 
-  async create(createCoursesDto: CreateCoursesDto) {
+  async create(createCoursesDto: CreateCoursesDto, imagePath?: string) {
     try {
-      const courses = this.coursesRepository.create(createCoursesDto);
+      const courses = this.coursesRepository.create({
+        ...createCoursesDto,
+        image: imagePath,
+      });
       await this.coursesRepository.save(courses);
       return courses;
     } catch (error) {

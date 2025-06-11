@@ -53,6 +53,15 @@ export class CreateCoursesDto {
   })
   horario: string;
 
+  @IsOptional()
+  @IsString()
+  @ApiProperty({
+    description: 'URL de la imagen del docente',
+    required: false,
+    example: '/uploads/docentes/archivo.jpg',
+  })
+  image?: string;
+
   @IsDateString()
   @ApiProperty()
   fecha_inicio: string;

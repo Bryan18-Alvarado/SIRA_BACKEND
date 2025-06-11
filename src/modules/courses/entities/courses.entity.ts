@@ -40,6 +40,9 @@ export class Courses {
   @Column({ type: 'varchar', length: 100 })
   duracion: string;
 
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  image: string;
+
   @Column({ type: 'varchar', length: 100, unique: true })
   horario: string;
 
