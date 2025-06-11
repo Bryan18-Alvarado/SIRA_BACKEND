@@ -82,7 +82,7 @@ export class DocentesService {
 
       const docenteGuardado = await this.docenteRepository.save(docente);
 
-      const passwordTemporal = 'SIRA-#DOCENTE321#';
+      const passwordTemporal = 'SIRA-#docente#';
       const nuevoUsuario = this.userRepository.create({
         email: createDocenteDto.user.email,
         password: bcrypt.hashSync(passwordTemporal, 10),
@@ -134,6 +134,16 @@ export class DocentesService {
         'El correo electrónico no corresponde al código laboral.',
       );
     }
+    const userWithPassword = await this.userRepository
+      .createQueryBuilder('user')
+      .addSelect('user.password')
+      .where('user.id = :id', { id: docente.user.id })
+      .getOne();
+    if (!userWithPassword) {
+      throw new BadRequestException('Usuario no encontrado con password');
+    }
+
+    docente.user = userWithPassword;
 
     return docente;
   }

@@ -66,7 +66,7 @@ export class CreateDocenteDto {
   @IsInt({ each: true })
   @ApiProperty({ type: [Number], required: false })
   cursos_ids?: number[];
-  
+
   @IsOptional()
   @IsString()
   @ApiProperty()
