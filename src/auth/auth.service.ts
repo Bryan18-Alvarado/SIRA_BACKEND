@@ -50,7 +50,7 @@ export class AuthService {
   }
 
   async login(loginUserDto: LoginUserDto) {
-    console.log('Login request received:', loginUserDto);
+    // console.log('Login request received:', loginUserDto);
     const { email, password, codigoEstudiante, codigo_laboral } = loginUserDto;
 
     let userEntity: User | null;
@@ -73,13 +73,13 @@ export class AuthService {
       userEntity = docente.user;
     } else {
       // Usuario común sin código: busca solo por email
-      console.log('Buscando usuario con email:', email);
+      // console.log('Buscando usuario con email:', email);
       userEntity = await this.userRepository
         .createQueryBuilder('user')
         .addSelect('user.password')
         .where('user.email = :email', { email })
         .getOne();
-      console.log('Usuario encontrado:', userEntity);
+      // console.log('Usuario encontrado:', userEntity);
 
       if (!userEntity) throw new BadRequestException('Usuario no encontrado');
     }
@@ -87,10 +87,10 @@ export class AuthService {
     if (!userEntity.password) {
       throw new BadRequestException('Credenciales no válidas');
     }
-    console.log('Password enviado:', password);
-    console.log('Hash en DB:', userEntity.password);
+    // console.log('Password enviado:', password);
+    // console.log('Hash en DB:', userEntity.password);
     const isPasswordValid = bcrypt.compareSync(password, userEntity.password);
-    console.log('¿Contraseña válida?', isPasswordValid);
+    // console.log('¿Contraseña válida?', isPasswordValid);
     if (!isPasswordValid) {
       throw new BadRequestException('Credenciales no válidas');
     }

@@ -63,18 +63,8 @@ export class DocentesService {
     imagePath?: string,
   ) {
     try {
-      const nuevoUsuario = this.userRepository.create({
-        email: createDocenteDto.user.email,
-        password: bcrypt.hashSync(createDocenteDto.user.password, 10),
-        fullName: `${createDocenteDto.nombre} ${createDocenteDto.apellido}`,
-        roles: ['docente'],
-      });
-
-      await this.userRepository.save(nuevoUsuario);
-
       const docente = this.docenteRepository.create({
         ...createDocenteDto,
-        user: nuevoUsuario,
         image: imagePath,
       });
 
@@ -90,11 +80,36 @@ export class DocentesService {
         docente.courses = cursos;
       }
 
-      await this.docenteRepository.save(docente);
+      const docenteGuardado = await this.docenteRepository.save(docente);
+
+      const passwordTemporal = 'SIRA-#DOCENTE321#';
+      const nuevoUsuario = this.userRepository.create({
+        email: createDocenteDto.user.email,
+        password: bcrypt.hashSync(passwordTemporal, 10),
+        fullName: `${createDocenteDto.nombre} ${createDocenteDto.apellido}`,
+        roles: ['docente'],
+      });
+
+      await this.userRepository.save(nuevoUsuario);
+
+      docenteGuardado.user = nuevoUsuario;
+
+      // Generar el código laboral
+      const year = new Date().getFullYear();
+      const iniciales =
+        createDocenteDto.nombre.charAt(0).toUpperCase() +
+        createDocenteDto.apellido.charAt(0).toUpperCase();
+      const codigoLaboral = `DOC-${year}-${iniciales}-${docenteGuardado.id
+        .toString()
+        .padStart(3, '0')}`;
+
+      // Asignar el código laboral y actualizar
+      docenteGuardado.codigo_laboral = codigoLaboral;
+      await this.docenteRepository.save(docenteGuardado);
 
       return {
         message: 'Docente creado correctamente',
-        data: docente,
+        data: docenteGuardado,
       };
     } catch (error) {
       this.handleDBException(error);

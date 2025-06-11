@@ -89,9 +89,10 @@ export class EstudiantesService {
           nuevoTutorId = tutorGuardado.id;
         }
       }
+      const passwordTemporal = 'SIRA-ESTUDIANTE321#';
       const nuevoUsuario = this.userRepository.create({
         email: createEstudianteDto.user.email,
-        password: bcrypt.hashSync(createEstudianteDto.user.password, 10),
+        password: bcrypt.hashSync(passwordTemporal, 10),
         fullName: `${resData.nombre} ${resData.apellido}`,
         roles: ['estudiante'],
       });
