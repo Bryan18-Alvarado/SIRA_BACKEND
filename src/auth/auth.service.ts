@@ -14,6 +14,8 @@ import { LoginUserDto, CreateUserDto } from './dto';
 import { JwtPayload } from './interfaces/jwt-payload.interface';
 import { JwtService } from '@nestjs/jwt';
 import { ValidRoles } from './interfaces';
+import { EstudiantesService } from 'src/modules/estudiantes/services/estudiantes.service';
+import { DocentesService } from 'src/modules/docentes/services/docentes.service';
 
 @Injectable()
 export class AuthService {
@@ -22,6 +24,8 @@ export class AuthService {
     private readonly userRepository: Repository<User>,
 
     private readonly jwtService: JwtService,
+    private readonly estudiantesService: EstudiantesService,
+    private readonly docentesService: DocentesService,
   ) {}
 
   async create(createUserDto: CreateUserDto) {
@@ -46,31 +50,52 @@ export class AuthService {
   }
 
   async login(loginUserDto: LoginUserDto) {
-    const { password, email } = loginUserDto;
-    const user = await this.userRepository.findOne({
-      where: { email },
-      select: {
-        email: true,
-        password: true,
-        id: true,
-        roles: true,
-        fullName: true,
-      },
-    });
+    const { email, password, tipoUsuario, codigoEstudiante, codigo_laboral } =
+      loginUserDto;
 
-    if (!user || !user.password) {
-      throw new BadRequestException('Credenciales no válidas (email)');
+    let userEntity: User;
+
+    if (tipoUsuario === 'estudiante') {
+      if (!codigoEstudiante) {
+        throw new BadRequestException('Debe proporcionar código de estudiante');
+      }
+
+      const estudiante =
+        await this.estudiantesService.validateUserByCodeAndEmail(
+          codigoEstudiante,
+          email,
+        );
+      userEntity = estudiante.user;
+    } else if (tipoUsuario === 'docente') {
+      if (!codigo_laboral) {
+        throw new BadRequestException('Debe proporcionar código laboral');
+      }
+
+      const docente = await this.docentesService.validateUserByCodeAndEmail(
+        codigo_laboral,
+        email,
+      );
+      userEntity = docente.user;
+    } else {
+      throw new BadRequestException('Tipo de usuario inválido');
     }
 
-    if (!bcrypt.compareSync(password, user.password)) {
-      throw new BadRequestException('Credenciales no válidas (password)');
+    if (!userEntity || !userEntity.password) {
+      throw new BadRequestException('Credenciales no válidas');
+    }
+
+    const isPasswordValid = bcrypt.compareSync(password, userEntity.password);
+
+    if (!isPasswordValid) {
+      throw new BadRequestException('Credenciales no válidas');
     }
 
     return {
-      ...user,
-      roles: user.roles,
-      fullName: user.fullName,
-      token: this.getJwtToken({ id: user.id }),
+      id: userEntity.id,
+      email: userEntity.email,
+      fullName: userEntity.fullName,
+      roles: userEntity.roles,
+      token: this.getJwtToken({ id: userEntity.id }),
     };
   }
 

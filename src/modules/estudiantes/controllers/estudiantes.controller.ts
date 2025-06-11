@@ -21,6 +21,9 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
 import { Request } from 'express';
+import { Auth, GetUser } from 'src/auth/decorators';
+import { ValidRoles } from 'src/auth/interfaces';
+import { User } from 'src/auth/entities/user.entity';
 
 @Controller('estudiantes')
 export class EstudiantesController {
@@ -53,6 +56,7 @@ export class EstudiantesController {
   }
 
   @Post()
+  @Auth(ValidRoles.admin)
   @UseInterceptors(
     FileInterceptor('file', {
       storage: diskStorage({
@@ -71,6 +75,7 @@ export class EstudiantesController {
   )
   async createEstudiante(
     @Body() createEstudianteDto: CreateEstudianteDto,
+    @GetUser() user: User,
     @UploadedFile() file: Express.Multer.File,
     @Req() req: Request,
   ) {
@@ -80,6 +85,7 @@ export class EstudiantesController {
 
     const nuevo = await this.estudianteService.create(
       createEstudianteDto,
+      user,
       imagePath,
     );
 
@@ -109,6 +115,7 @@ export class EstudiantesController {
   }
 
   @Put(':id')
+  @Auth(ValidRoles.admin)
   @UseInterceptors(
     FileInterceptor('file', {
       storage: diskStorage({
@@ -125,16 +132,21 @@ export class EstudiantesController {
   async update(
     @Param('id') id: number,
     @Body() updateEstudianteDto: UpdateEstudianteDto,
+    @GetUser() user: User,
     @UploadedFile() file: Express.Multer.File,
   ) {
     const imagePath = file
       ? `/uploads/estudiantes/${file.filename}`
       : undefined;
 
-    const rows = await this.estudianteService.update(id, {
-      ...updateEstudianteDto,
-      image: imagePath,
-    });
+    const rows = await this.estudianteService.update(
+      id,
+      {
+        ...updateEstudianteDto,
+        image: imagePath,
+      },
+      user,
+    );
 
     return {
       data: rows,
@@ -143,6 +155,7 @@ export class EstudiantesController {
   }
 
   @Delete(':id')
+  @Auth(ValidRoles.admin)
   async remove(@Param('id') id: number) {
     const dato = await this.estudianteService.remove(id);
     const data = {

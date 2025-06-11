@@ -11,6 +11,7 @@ import { Estudiante } from '../entities/estudiante.entity';
 import { CreateEstudianteDto } from '../dto/estudiantes.dto';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { Tutor } from 'src/modules/tutores/entities/tutor.entity';
+import { User } from 'src/auth/entities/user.entity';
 @Injectable()
 export class EstudiantesService {
   private readonly logger = new Logger('EstudiantesService');
@@ -20,6 +21,8 @@ export class EstudiantesService {
     private readonly estudianteRepository: Repository<Estudiante>,
     @InjectRepository(Tutor)
     private readonly tutorRepository: Repository<Tutor>,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
   ) {}
 
   async findAll(paginationDto: PaginationDto) {
@@ -59,19 +62,9 @@ export class EstudiantesService {
     }
     return edad;
   }
-
-  // async create(createEstudianteDto: CreateEstudianteDto) {
-  //   try {
-  //     const estudiante = this.estudianteRepository.create(createEstudianteDto);
-  //     await this.estudianteRepository.save(estudiante);
-  //     return estudiante;
-  //   } catch (error) {
-  //     this.handleDBException(error);
-  //   }
-  // }
-
   async create(
     createEstudianteDto: CreateEstudianteDto,
+    user: User,
     imagenPath?: string,
   ): Promise<Estudiante> {
     try {
@@ -94,10 +87,19 @@ export class EstudiantesService {
           nuevoTutorId = tutorGuardado.id;
         }
       }
+      const nuevoUsuario = this.userRepository.create({
+        email: user.email,
+        password: user.password,
+        fullName: `${resData.nombre} ${resData.apellido}`,
+        roles: ['student'],
+      });
+
+      await this.userRepository.save(nuevoUsuario);
 
       const estudiante = this.estudianteRepository.create({
         fechaNacimiento,
         ...resData,
+        user: nuevoUsuario,
         tutor_id: tutor_id ?? nuevoTutorId,
         image: imagenPath,
       });
@@ -109,17 +111,6 @@ export class EstudiantesService {
       await this.estudianteRepository.save(estudianteGuardado);
       await this.estudianteRepository.save(estudiante);
 
-      // const estudianteConRelaciones = await this.estudianteRepository.findOne({
-      //   where: { id: estudianteGuardado.id },
-      //   relations: ['tutor', 'genero'],
-      // });
-
-      // if (!estudianteConRelaciones) {
-      //   throw new NotFoundException(
-      //     `Estudiante con id ${estudianteGuardado.id} no encontrado`,
-      //   );
-      // }
-
       return estudianteGuardado;
     } catch (error) {
       if (error instanceof BadRequestException) {
@@ -130,14 +121,49 @@ export class EstudiantesService {
     }
   }
 
-  async update(id: number, updateEstudianteDto: Partial<CreateEstudianteDto>) {
+  async validateUserByCodeAndEmail(
+    codigoEstudiante: string,
+    email: string,
+  ): Promise<Estudiante> {
+    const estudiante = await this.estudianteRepository.findOne({
+      where: { codigoEstudiante },
+      relations: ['user'], // Relación para acceder al user
+    });
+
+    if (!estudiante) {
+      throw new BadRequestException('El código de estudiante no es válido.');
+    }
+
+    if (estudiante.user.email !== email) {
+      throw new BadRequestException(
+        'El correo electrónico no corresponde al código de estudiante.',
+      );
+    }
+
+    return estudiante; // Devuelves el estudiante, así puedes acceder a estudiante.user.id
+  }
+
+  async update(
+    id: number,
+    updateEstudianteDto: Partial<CreateEstudianteDto>,
+    user: User,
+  ) {
     const estudiante = await this.estudianteRepository.findOne({
       where: { id },
+      relations: {
+        user: true,
+        tutor: true,
+        genero: true,
+      },
     });
 
     if (!estudiante) {
       throw new NotFoundException(`Estudiante con id ${id} no encontrado`);
     }
+    if (user) {
+      estudiante.user = user;
+    }
+
     try {
       this.estudianteRepository.merge(estudiante, updateEstudianteDto);
       await this.estudianteRepository.save(estudiante);

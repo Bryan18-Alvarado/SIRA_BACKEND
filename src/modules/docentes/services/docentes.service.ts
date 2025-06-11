@@ -89,6 +89,28 @@ export class DocentesService {
     }
   }
 
+  async validateUserByCodeAndEmail(
+    codigo_laboral: string,
+    email: string,
+  ): Promise<Docente> {
+    const docente = await this.docenteRepository.findOne({
+      where: { codigo_laboral },
+      relations: ['user'],
+    });
+
+    if (!docente) {
+      throw new BadRequestException('Código laboral no válido.');
+    }
+
+    if (docente.user.email !== email) {
+      throw new BadRequestException(
+        'El correo electrónico no corresponde al código laboral.',
+      );
+    }
+
+    return docente;
+  }
+
   async update(id: number, changes: UpdateDocenteDto, user: User) {
     const docente = await this.docenteRepository.findOne({
       where: { id },

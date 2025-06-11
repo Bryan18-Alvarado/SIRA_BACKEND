@@ -9,6 +9,7 @@ import {
   JoinColumn,
   ManyToOne,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -38,7 +39,7 @@ export class Docente {
   estado_civil_id: number;
 
   @Column({ type: 'int', unique: true })
-  codigo_laboral: number;
+  codigo_laboral: string;
 
   @Column({ type: 'text', nullable: true })
   direccion: string;
@@ -66,7 +67,7 @@ export class Docente {
   @JoinColumn({ name: 'genero_id', referencedColumnName: 'id' })
   genero: Genders;
 
-  @ManyToOne(() => MaritalStatus)
+  @OneToOne(() => MaritalStatus)
   @JoinColumn({ name: 'estado_civil_id', referencedColumnName: 'id' })
   estado_civil: MaritalStatus;
 

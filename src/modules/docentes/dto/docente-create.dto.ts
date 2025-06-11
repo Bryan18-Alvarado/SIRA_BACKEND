@@ -69,7 +69,7 @@ export class CreateDocenteDto {
   @IsNumber()
   @Min(5)
   @ApiProperty()
-  codigo_laboral: number;
+  codigo_laboral: string;
 
   @IsOptional()
   @IsString()
