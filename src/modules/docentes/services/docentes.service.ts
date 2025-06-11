@@ -17,6 +17,7 @@ import { User } from 'src/auth/entities/user.entity';
 import { Genders } from 'src/modules/genders/entities/genders.entity';
 import { MaritalStatus } from 'src/modules/marital-status/entities/marital-status.entity';
 import { Courses } from 'src/modules/courses/entities/courses.entity';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class DocentesService {
@@ -31,6 +32,8 @@ export class DocentesService {
     private readonly maritalStatusRepository: Repository<MaritalStatus>,
     @InjectRepository(Courses)
     private readonly courseRepository: Repository<Courses>,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
   ) {}
 
   async findAll(params?: FilterDocenteDto) {
@@ -62,7 +65,6 @@ export class DocentesService {
     try {
       const docente = this.docenteRepository.create({
         ...createDocenteDto,
-        user,
         image: imagePath,
       });
 
@@ -78,15 +80,62 @@ export class DocentesService {
         docente.courses = cursos;
       }
 
-      await this.docenteRepository.save(docente);
+      const docenteGuardado = await this.docenteRepository.save(docente);
+
+      const passwordTemporal = 'SIRA-#DOCENTE321#';
+      const nuevoUsuario = this.userRepository.create({
+        email: createDocenteDto.user.email,
+        password: bcrypt.hashSync(passwordTemporal, 10),
+        fullName: `${createDocenteDto.nombre} ${createDocenteDto.apellido}`,
+        roles: ['docente'],
+      });
+
+      await this.userRepository.save(nuevoUsuario);
+
+      docenteGuardado.user = nuevoUsuario;
+
+      // Generar el código laboral
+      const year = new Date().getFullYear();
+      const iniciales =
+        createDocenteDto.nombre.charAt(0).toUpperCase() +
+        createDocenteDto.apellido.charAt(0).toUpperCase();
+      const codigoLaboral = `DOC-${year}-${iniciales}-${docenteGuardado.id
+        .toString()
+        .padStart(3, '0')}`;
+
+      // Asignar el código laboral y actualizar
+      docenteGuardado.codigo_laboral = codigoLaboral;
+      await this.docenteRepository.save(docenteGuardado);
 
       return {
         message: 'Docente creado correctamente',
-        data: docente,
+        data: docenteGuardado,
       };
     } catch (error) {
       this.handleDBException(error);
     }
+  }
+
+  async validateUserByCodeAndEmail(
+    codigo_laboral: string,
+    email: string,
+  ): Promise<Docente> {
+    const docente = await this.docenteRepository.findOne({
+      where: { codigo_laboral },
+      relations: ['user'],
+    });
+
+    if (!docente) {
+      throw new BadRequestException('Código laboral no válido.');
+    }
+
+    if (docente.user.email !== email) {
+      throw new BadRequestException(
+        'El correo electrónico no corresponde al código laboral.',
+      );
+    }
+
+    return docente;
   }
 
   async update(id: number, changes: UpdateDocenteDto, user: User) {

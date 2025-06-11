@@ -11,6 +11,7 @@ import {
   IsNotEmpty,
   ValidateNested,
 } from 'class-validator';
+import { CreateUserDto } from 'src/auth/dto';
 import { CreateTutorDto } from 'src/modules/tutores/dto/tutor.dto';
 
 export class CreateEstudianteDto {
@@ -33,6 +34,12 @@ export class CreateEstudianteDto {
   @MinLength(3)
   @ApiProperty()
   apellido: string;
+
+  @IsNotEmpty()
+  @ValidateNested()
+  @Type(() => CreateUserDto)
+  @ApiProperty({ type: () => CreateUserDto })
+  user: CreateUserDto;
 
   @Transform(({ value }) => new Date(value))
   @IsDate()

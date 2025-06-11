@@ -1,10 +1,11 @@
 import { Docente } from 'src/modules/docentes/entities/docentes.entity';
+import { Estudiante } from 'src/modules/estudiantes/entities/estudiante.entity';
 import {
   BeforeInsert,
   BeforeUpdate,
   Column,
   Entity,
-  OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
@@ -28,8 +29,12 @@ export class User {
   @Column('text', { array: true, default: ['user'] })
   roles: string[];
 
-  @OneToMany(() => Docente, (docente) => docente.user)
+  @OneToOne(() => Docente, (docente) => docente.user)
   docente: Docente;
+
+  @OneToOne(() => Estudiante, (estudiante) => estudiante.user)
+  estudiante: Estudiante;
+
   @BeforeInsert()
   checkFieldsBeforeInsert() {
     this.email = this.email.toLowerCase().trim();

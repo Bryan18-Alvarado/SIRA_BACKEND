@@ -14,6 +14,8 @@ import { LoginUserDto, CreateUserDto } from './dto';
 import { JwtPayload } from './interfaces/jwt-payload.interface';
 import { JwtService } from '@nestjs/jwt';
 import { ValidRoles } from './interfaces';
+import { EstudiantesService } from 'src/modules/estudiantes/services/estudiantes.service';
+import { DocentesService } from 'src/modules/docentes/services/docentes.service';
 
 @Injectable()
 export class AuthService {
@@ -22,6 +24,8 @@ export class AuthService {
     private readonly userRepository: Repository<User>,
 
     private readonly jwtService: JwtService,
+    private readonly estudiantesService: EstudiantesService,
+    private readonly docentesService: DocentesService,
   ) {}
 
   async create(createUserDto: CreateUserDto) {
@@ -46,31 +50,57 @@ export class AuthService {
   }
 
   async login(loginUserDto: LoginUserDto) {
-    const { password, email } = loginUserDto;
-    const user = await this.userRepository.findOne({
-      where: { email },
-      select: {
-        email: true,
-        password: true,
-        id: true,
-        roles: true,
-        fullName: true,
-      },
-    });
+    // console.log('Login request received:', loginUserDto);
+    const { email, password, codigoEstudiante, codigo_laboral } = loginUserDto;
 
-    if (!user || !user.password) {
-      throw new BadRequestException('Credenciales no válidas (email)');
+    let userEntity: User | null;
+
+    if (codigoEstudiante) {
+      const estudiante =
+        await this.estudiantesService.validateUserByCodeAndEmail(
+          codigoEstudiante,
+          email,
+        );
+      if (!estudiante)
+        throw new BadRequestException('Código de estudiante no válido');
+      userEntity = estudiante.user;
+    } else if (codigo_laboral) {
+      const docente = await this.docentesService.validateUserByCodeAndEmail(
+        codigo_laboral,
+        email,
+      );
+      if (!docente) throw new BadRequestException('Código laboral no válido');
+      userEntity = docente.user;
+    } else {
+      // Usuario común sin código: busca solo por email
+      // console.log('Buscando usuario con email:', email);
+      userEntity = await this.userRepository
+        .createQueryBuilder('user')
+        .addSelect('user.password')
+        .where('user.email = :email', { email })
+        .getOne();
+      // console.log('Usuario encontrado:', userEntity);
+
+      if (!userEntity) throw new BadRequestException('Usuario no encontrado');
     }
 
-    if (!bcrypt.compareSync(password, user.password)) {
-      throw new BadRequestException('Credenciales no válidas (password)');
+    if (!userEntity.password) {
+      throw new BadRequestException('Credenciales no válidas');
+    }
+    // console.log('Password enviado:', password);
+    // console.log('Hash en DB:', userEntity.password);
+    const isPasswordValid = bcrypt.compareSync(password, userEntity.password);
+    // console.log('¿Contraseña válida?', isPasswordValid);
+    if (!isPasswordValid) {
+      throw new BadRequestException('Credenciales no válidas');
     }
 
     return {
-      ...user,
-      roles: user.roles,
-      fullName: user.fullName,
-      token: this.getJwtToken({ id: user.id }),
+      id: userEntity.id,
+      email: userEntity.email,
+      fullName: userEntity.fullName,
+      roles: userEntity.roles,
+      token: this.getJwtToken({ id: userEntity.id }),
     };
   }
 

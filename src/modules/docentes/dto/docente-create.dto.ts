@@ -13,7 +13,9 @@ import {
   IsString,
   Min,
   MinLength,
+  ValidateNested,
 } from 'class-validator';
+import { CreateUserDto } from 'src/auth/dto';
 
 export class CreateDocenteDto {
   @IsOptional()
@@ -64,12 +66,11 @@ export class CreateDocenteDto {
   @IsInt({ each: true })
   @ApiProperty({ type: [Number], required: false })
   cursos_ids?: number[];
-
-  @Type(() => Number)
-  @IsNumber()
-  @Min(5)
+  
+  @IsOptional()
+  @IsString()
   @ApiProperty()
-  codigo_laboral: number;
+  codigo_laboral: string;
 
   @IsOptional()
   @IsString()
@@ -90,6 +91,12 @@ export class CreateDocenteDto {
   @IsString()
   @ApiProperty()
   telefono?: string;
+
+  @IsNotEmpty()
+  @ValidateNested()
+  @Type(() => CreateUserDto)
+  @ApiProperty({ type: () => CreateUserDto })
+  user: CreateUserDto;
 
   @IsOptional()
   @IsEmail()

@@ -53,7 +53,7 @@ export class SeedService {
       console.log('Categories inserted');
       // await this.insertNewDocente(); // Luego los docentes
       console.log('Docentes inserted');
-      await this.insertNewEstudiante(); // Después los estudiantes
+      // await this.insertNewEstudiante(); // Después los estudiantes
       console.log('Estudiantes inserted');
       await this.insertNewLevels(); // Luego los niveles
       console.log('Levels inserted');
@@ -76,19 +76,19 @@ export class SeedService {
     }
   }
 
-  private async insertNewEstudiante() {
-    await this.estudiantesService.deleteAllEstudiantes();
+  // private async insertNewEstudiante() {
+  //   await this.estudiantesService.deleteAllEstudiantes();
 
-    const estudiantes = initialData.estudiantes;
-    const insertPromises: Promise<Estudiante | undefined>[] = [];
+  //   const estudiantes = initialData.estudiantes;
+  //   const insertPromises: Promise<Estudiante | undefined>[] = [];
 
-    estudiantes.forEach((estudiante) => {
-      insertPromises.push(this.estudiantesService.create(estudiante));
-    });
+  //   estudiantes.forEach((estudiante) => {
+  //     insertPromises.push(this.estudiantesService.create(estudiante));
+  //   });
 
-    await Promise.all(insertPromises);
-    return true;
-  }
+  //   await Promise.all(insertPromises);
+  //   return true;
+  // }
 
   // private async insertNewUsers() {
   //   const users = initialData.users;

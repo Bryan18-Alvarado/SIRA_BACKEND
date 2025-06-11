@@ -4,9 +4,9 @@ import {
   DeleteDateColumn,
   Entity,
   JoinColumn,
-  ManyToMany,
   ManyToOne,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -14,6 +14,7 @@ import { StudentCourse } from '../../student-courses/entities/studentcourse.enti
 import { Calificacion } from '../../calificaciones/entities/calificacion.entity';
 import { Genders } from 'src/modules/genders/entities/genders.entity';
 import { Tutor } from 'src/modules/tutores/entities/tutor.entity';
+import { User } from 'src/auth/entities/user.entity';
 
 @Entity()
 export class Estudiante {
@@ -49,6 +50,10 @@ export class Estudiante {
 
   @Column({ type: 'int', nullable: true })
   tutor_id?: number;
+
+  @OneToOne(() => User, (user) => user.estudiante, { eager: true })
+  @JoinColumn({ name: 'user_id' })
+  user: User;
 
   @ManyToOne(() => Tutor, (tutor) => tutor.estudiantes, {
     nullable: true,
