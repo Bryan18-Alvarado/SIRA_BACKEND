@@ -17,6 +17,7 @@ import { User } from 'src/auth/entities/user.entity';
 import { Genders } from 'src/modules/genders/entities/genders.entity';
 import { MaritalStatus } from 'src/modules/marital-status/entities/marital-status.entity';
 import { Courses } from 'src/modules/courses/entities/courses.entity';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class DocentesService {
@@ -63,8 +64,8 @@ export class DocentesService {
   ) {
     try {
       const nuevoUsuario = this.userRepository.create({
-        email: user.email,
-        password: user.password,
+        email: createDocenteDto.user.email,
+        password: bcrypt.hashSync(createDocenteDto.user.password, 10),
         fullName: `${createDocenteDto.nombre} ${createDocenteDto.apellido}`,
         roles: ['docente'],
       });
