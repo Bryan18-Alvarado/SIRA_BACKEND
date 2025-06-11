@@ -37,11 +37,10 @@ export class EstudiantesService {
     };
   }
 
-  // Método que obtiene las calificaciones de un estudiante por su ID
   async findCalificacionesByEstudiante(id: number) {
     const estudiante = await this.estudianteRepository.findOne({
       where: { id },
-      relations: ['calificaciones', 'calificaciones.course'], // Asegúrate de tener la relación correcta con calificaciones
+      relations: ['calificaciones', 'calificaciones.course'],
     });
 
     if (!estudiante) {
@@ -71,7 +70,10 @@ export class EstudiantesService {
   //   }
   // }
 
-  async create(createEstudianteDto: CreateEstudianteDto): Promise<Estudiante> {
+  async create(
+    createEstudianteDto: CreateEstudianteDto,
+    imagenPath?: string,
+  ): Promise<Estudiante> {
     try {
       const { fechaNacimiento, tutor_id, tutor, ...resData } =
         createEstudianteDto;
@@ -97,6 +99,7 @@ export class EstudiantesService {
         fechaNacimiento,
         ...resData,
         tutor_id: tutor_id ?? nuevoTutorId,
+        image: imagenPath,
       });
 
       const estudianteGuardado =

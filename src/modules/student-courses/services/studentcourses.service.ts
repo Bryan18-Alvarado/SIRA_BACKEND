@@ -47,23 +47,29 @@ export class StudentCoursesService {
         (await this.studentCourseRepository.findOne({
           where: { studentcoursesId: studentcourses.studentcoursesId },
           relations: {
-            estudiante: true, // 👈 relaciones relacionadas
+            estudiante: true,
             courses: true,
-          }, // 👈 relaciones relacionadas
+          },
         })) ?? undefined
       );
     } catch (error) {
       this.handleDBException(error);
     }
   }
+  async findByStudentId(studentId: number) {
+    return await this.studentCourseRepository.find({
+      where: { estudiante: { id: studentId } },
+      relations: ['courses'],
+    });
+  }
 
   async findOne(id: number) {
     const studentCourse = await this.studentCourseRepository.findOne({
       where: { studentcoursesId: id },
       relations: {
-        estudiante: true, // 👈 relaciones relacionadas
+        estudiante: true,
         courses: true,
-      }, // 👈 relaciones relacionadas
+      },
     });
     if (!studentCourse) {
       throw new NotFoundException(`studentcourses con id ${id} no encontrado`);
@@ -75,9 +81,9 @@ export class StudentCoursesService {
     const studentCourse = await this.studentCourseRepository.findOne({
       where: { studentcoursesId: id },
       relations: {
-        estudiante: true, // 👈 relaciones relacionadas
+        estudiante: true,
         courses: true,
-      }, // 👈 relaciones relacionadas
+      },
     });
 
     if (!studentCourse) {

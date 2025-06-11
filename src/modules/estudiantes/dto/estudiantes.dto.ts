@@ -60,6 +60,15 @@ export class CreateEstudianteDto {
   direccion?: string;
 
   @IsOptional()
+  @IsString()
+  @ApiProperty({
+    description: 'URL de la imagen del estudiante',
+    required: false,
+    example: '/uploads/estudiantes/archivo.jpg',
+  })
+  image?: string;
+
+  @IsOptional()
   @IsInt()
   @ApiProperty({ required: false })
   tutor_id?: number;

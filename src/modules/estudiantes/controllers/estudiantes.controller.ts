@@ -1,9 +1,3 @@
-import { EstudiantesService } from '../services/estudiantes.service';
-import {
-  CreateEstudianteDto,
-  UpdateEstudianteDto,
-} from '../dto/estudiantes.dto';
-import { PaginationDto } from 'src/common/dto/pagination.dto';
 import {
   Body,
   Controller,
@@ -13,41 +7,148 @@ import {
   Post,
   Put,
   Query,
+  Req,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
+import { EstudiantesService } from '../services/estudiantes.service';
+import {
+  CreateEstudianteDto,
+  UpdateEstudianteDto,
+} from '../dto/estudiantes.dto';
+import { PaginationDto } from 'src/common/dto/pagination.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import { extname } from 'path';
+import { Request } from 'express';
 
 @Controller('estudiantes')
 export class EstudiantesController {
   constructor(private readonly estudianteService: EstudiantesService) {}
+
   @Get()
   getEstudiantesAll(@Query() paginationDto: PaginationDto): Promise<any> {
     return this.estudianteService.findAll(paginationDto);
   }
 
+  @Post('upload')
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: './uploads/estudiantes',
+        filename: (req, file, cb) => {
+          const uniqueSuffix =
+            Date.now() + '-' + Math.round(Math.random() * 1e9);
+          const ext = extname(file.originalname);
+          cb(null, `${file.fieldname}-${uniqueSuffix}${ext}`);
+        },
+      }),
+    }),
+  )
+  uploadImage(@UploadedFile() file: Express.Multer.File) {
+    return {
+      message: 'Imagen subida correctamente',
+      filePath: `/uploads/estudiantes/${file.filename}`,
+    };
+  }
+
   @Post()
-  createEstudiante(@Body() createEstudianteDto: CreateEstudianteDto) {
-    return this.estudianteService.create(createEstudianteDto);
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: './uploads/estudiantes',
+        filename: (req, file, cb) => {
+          const uniqueSuffix =
+            Date.now() + '-' + Math.round(Math.random() * 1e9);
+          const ext = extname(file.originalname);
+          cb(null, `${file.fieldname}-${uniqueSuffix}${ext}`);
+        },
+      }),
+      limits: {
+        fileSize: 30 * 1024 * 1538, // ~10MB
+      },
+    }),
+  )
+  async createEstudiante(
+    @Body() createEstudianteDto: CreateEstudianteDto,
+    @UploadedFile() file: Express.Multer.File,
+    @Req() req: Request,
+  ) {
+    const imagePath = file
+      ? `${req.protocol}://${req.get('host')}/uploads/estudiantes/${file.filename}`
+      : undefined;
+
+    const nuevo = await this.estudianteService.create(
+      createEstudianteDto,
+      imagePath,
+    );
+
+    return {
+      data: nuevo,
+      message: 'Estudiante creado correctamente',
+    };
   }
 
   @Get(':id')
-  findOne(@Param('id') id: number) {
-    return this.estudianteService.findOne(id);
+  async findOne(@Param('id') id: number) {
+    const rows = await this.estudianteService.findOne(id);
+    const data = {
+      data: rows,
+    };
+    return data;
   }
 
   @Get(':id/calificacion')
   async findCalificacionesByEstudiante(@Param('id') id: number) {
-    return await this.estudianteService.findCalificacionesByEstudiante(id);
+    const rows =
+      await this.estudianteService.findCalificacionesByEstudiante(id);
+    const data = {
+      data: rows,
+    };
+    return data;
   }
 
   @Put(':id')
-  updaate(
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: './uploads/estudiantes',
+        filename: (req, file, cb) => {
+          const uniqueSuffix =
+            Date.now() + '-' + Math.round(Math.random() * 1e9);
+          const ext = extname(file.originalname);
+          cb(null, `${file.fieldname}-${uniqueSuffix}${ext}`);
+        },
+      }),
+    }),
+  )
+  async update(
     @Param('id') id: number,
-    @Body() updateEstudianteDto: UpdateEstudianteDto, // O puedes crear un UpdateEstudianteDto
+    @Body() updateEstudianteDto: UpdateEstudianteDto,
+    @UploadedFile() file: Express.Multer.File,
   ) {
-    return this.estudianteService.update(id, updateEstudianteDto);
+    const imagePath = file
+      ? `/uploads/estudiantes/${file.filename}`
+      : undefined;
+
+    const rows = await this.estudianteService.update(id, {
+      ...updateEstudianteDto,
+      image: imagePath,
+    });
+
+    return {
+      data: rows,
+      message: 'Estudiante actualizado correctamente',
+    };
   }
 
   @Delete(':id')
-  remove(@Param('id') id: number) {
-    return this.estudianteService.remove(id);
+  async remove(@Param('id') id: number) {
+    const dato = await this.estudianteService.remove(id);
+    const data = {
+      data: dato,
+      message: 'Estudiante eliminado correctamente',
+    };
+    return data;
   }
 }
