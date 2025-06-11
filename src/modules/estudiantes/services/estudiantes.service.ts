@@ -89,20 +89,10 @@ export class EstudiantesService {
           nuevoTutorId = tutorGuardado.id;
         }
       }
-      const passwordTemporal = 'SIRA-ESTUDIANTE321#';
-      const nuevoUsuario = this.userRepository.create({
-        email: createEstudianteDto.user.email,
-        password: bcrypt.hashSync(passwordTemporal, 10),
-        fullName: `${resData.nombre} ${resData.apellido}`,
-        roles: ['estudiante'],
-      });
-
-      await this.userRepository.save(nuevoUsuario);
 
       const estudiante = this.estudianteRepository.create({
         fechaNacimiento,
         ...resData,
-        user: nuevoUsuario,
         tutor_id: tutor_id ?? nuevoTutorId,
         image: imagenPath,
       });
@@ -111,6 +101,23 @@ export class EstudiantesService {
         await this.estudianteRepository.save(estudiante);
 
       estudianteGuardado.codigoEstudiante = `SR-${estudianteGuardado.id.toString().padStart(4, '0')}`;
+      await this.estudianteRepository.save(estudianteGuardado);
+
+      // Ahora crear el usuario
+      const passwordTemporal = 'SIRA-estudiante321#';
+      const nuevoUsuario = this.userRepository.create({
+        email: createEstudianteDto.user.email,
+        password: bcrypt.hashSync(passwordTemporal, 10),
+        fullName: `${resData.nombre} ${resData.apellido}`,
+        roles: ['estudiante'],
+      });
+
+      const usuarioGuardado = await this.userRepository.save(nuevoUsuario);
+
+      // Asociar el usuario al estudiante
+      estudianteGuardado.user = usuarioGuardado;
+
+      // Guardar el estudiante con el usuario asociado
       await this.estudianteRepository.save(estudianteGuardado);
 
       return estudianteGuardado;
@@ -141,6 +148,16 @@ export class EstudiantesService {
         'El correo electrónico no corresponde al código de estudiante.',
       );
     }
+    const userWithPassword = await this.userRepository
+      .createQueryBuilder('user')
+      .addSelect('user.password')
+      .where('user.id = :id', { id: estudiante.user.id })
+      .getOne();
+    if (!userWithPassword) {
+      throw new BadRequestException('Usuario no encontrado con password');
+    }
+
+    estudiante.user = userWithPassword;
 
     return estudiante;
   }

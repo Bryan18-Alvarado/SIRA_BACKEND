@@ -56,7 +56,7 @@ export class CoursesController {
   }
 
   @Post()
-  @Auth(ValidRoles.admin)
+  // @Auth(ValidRoles.admin)
   @UseInterceptors(
     FileInterceptor('file', {
       storage: diskStorage({
