@@ -50,42 +50,47 @@ export class AuthService {
   }
 
   async login(loginUserDto: LoginUserDto) {
-    const { email, password, tipoUsuario, codigoEstudiante, codigo_laboral } =
-      loginUserDto;
+    console.log('Login request received:', loginUserDto);
+    const { email, password, codigoEstudiante, codigo_laboral } = loginUserDto;
 
-    let userEntity: User;
+    let userEntity: User | null;
 
-    if (tipoUsuario === 'estudiante') {
-      if (!codigoEstudiante) {
-        throw new BadRequestException('Debe proporcionar código de estudiante');
-      }
-
+    if (codigoEstudiante) {
       const estudiante =
         await this.estudiantesService.validateUserByCodeAndEmail(
           codigoEstudiante,
           email,
         );
+      if (!estudiante)
+        throw new BadRequestException('Código de estudiante no válido');
       userEntity = estudiante.user;
-    } else if (tipoUsuario === 'docente') {
-      if (!codigo_laboral) {
-        throw new BadRequestException('Debe proporcionar código laboral');
-      }
-
+    } else if (codigo_laboral) {
       const docente = await this.docentesService.validateUserByCodeAndEmail(
         codigo_laboral,
         email,
       );
+      if (!docente) throw new BadRequestException('Código laboral no válido');
       userEntity = docente.user;
     } else {
-      throw new BadRequestException('Tipo de usuario inválido');
+      // Usuario común sin código: busca solo por email
+      console.log('Buscando usuario con email:', email);
+      userEntity = await this.userRepository
+        .createQueryBuilder('user')
+        .addSelect('user.password')
+        .where('user.email = :email', { email })
+        .getOne();
+      console.log('Usuario encontrado:', userEntity);
+
+      if (!userEntity) throw new BadRequestException('Usuario no encontrado');
     }
 
-    if (!userEntity || !userEntity.password) {
+    if (!userEntity.password) {
       throw new BadRequestException('Credenciales no válidas');
     }
-
+    console.log('Password enviado:', password);
+    console.log('Hash en DB:', userEntity.password);
     const isPasswordValid = bcrypt.compareSync(password, userEntity.password);
-
+    console.log('¿Contraseña válida?', isPasswordValid);
     if (!isPasswordValid) {
       throw new BadRequestException('Credenciales no válidas');
     }

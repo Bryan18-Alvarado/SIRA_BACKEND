@@ -31,6 +31,8 @@ export class DocentesService {
     private readonly maritalStatusRepository: Repository<MaritalStatus>,
     @InjectRepository(Courses)
     private readonly courseRepository: Repository<Courses>,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
   ) {}
 
   async findAll(params?: FilterDocenteDto) {
@@ -60,9 +62,18 @@ export class DocentesService {
     imagePath?: string,
   ) {
     try {
+      const nuevoUsuario = this.userRepository.create({
+        email: user.email,
+        password: user.password,
+        fullName: `${createDocenteDto.nombre} ${createDocenteDto.apellido}`,
+        roles: ['docente'],
+      });
+
+      await this.userRepository.save(nuevoUsuario);
+
       const docente = this.docenteRepository.create({
         ...createDocenteDto,
-        user,
+        user: nuevoUsuario,
         image: imagePath,
       });
 

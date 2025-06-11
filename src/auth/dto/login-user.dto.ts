@@ -1,12 +1,10 @@
 import {
   IsEmail,
-  IsIn,
-  IsNotEmpty,
+  IsOptional,
   IsString,
   Matches,
   MaxLength,
   MinLength,
-  ValidateIf,
 } from 'class-validator';
 
 export class LoginUserDto {
@@ -14,15 +12,11 @@ export class LoginUserDto {
   @IsEmail()
   email: string;
 
-  @IsString()
-  @IsIn(['estudiante', 'docente'])
-  tipoUsuario: string;
-
-  @ValidateIf((o) => o.tipoUsuario === 'estudiante')
+  @IsOptional()
   @IsString()
   codigoEstudiante: string;
 
-  @ValidateIf((o) => o.tipoUsuario === 'docente')
+  @IsOptional()
   @IsString()
   codigo_laboral: string;
 

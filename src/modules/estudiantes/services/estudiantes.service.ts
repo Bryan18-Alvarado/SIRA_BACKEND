@@ -12,6 +12,7 @@ import { CreateEstudianteDto } from '../dto/estudiantes.dto';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { Tutor } from 'src/modules/tutores/entities/tutor.entity';
 import { User } from 'src/auth/entities/user.entity';
+import * as bcrypt from 'bcrypt';
 @Injectable()
 export class EstudiantesService {
   private readonly logger = new Logger('EstudiantesService');
@@ -62,6 +63,7 @@ export class EstudiantesService {
     }
     return edad;
   }
+
   async create(
     createEstudianteDto: CreateEstudianteDto,
     user: User,
@@ -88,10 +90,10 @@ export class EstudiantesService {
         }
       }
       const nuevoUsuario = this.userRepository.create({
-        email: user.email,
-        password: user.password,
+        email: createEstudianteDto.user.email,
+        password: bcrypt.hashSync(createEstudianteDto.user.password, 10),
         fullName: `${resData.nombre} ${resData.apellido}`,
-        roles: ['student'],
+        roles: ['estudiante'],
       });
 
       await this.userRepository.save(nuevoUsuario);
@@ -109,7 +111,6 @@ export class EstudiantesService {
 
       estudianteGuardado.codigoEstudiante = `SR-${estudianteGuardado.id.toString().padStart(4, '0')}`;
       await this.estudianteRepository.save(estudianteGuardado);
-      await this.estudianteRepository.save(estudiante);
 
       return estudianteGuardado;
     } catch (error) {
@@ -127,11 +128,11 @@ export class EstudiantesService {
   ): Promise<Estudiante> {
     const estudiante = await this.estudianteRepository.findOne({
       where: { codigoEstudiante },
-      relations: ['user'], // Relación para acceder al user
+      relations: ['user'],
     });
 
     if (!estudiante) {
-      throw new BadRequestException('El código de estudiante no es válido.');
+      throw new BadRequestException('Código de estudiante no válido.');
     }
 
     if (estudiante.user.email !== email) {
@@ -140,7 +141,7 @@ export class EstudiantesService {
       );
     }
 
-    return estudiante; // Devuelves el estudiante, así puedes acceder a estudiante.user.id
+    return estudiante;
   }
 
   async update(
