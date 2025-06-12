@@ -59,7 +59,7 @@ export class Docente {
   @Column({ type: 'bool', default: true })
   isAvailable: boolean;
 
-  @ManyToOne(() => User, (user) => user.docente, { eager: true })
+  @OneToOne(() => User, (user) => user.docente, { eager: true })
   @JoinColumn({ name: 'user_id' })
   user: User;
 
