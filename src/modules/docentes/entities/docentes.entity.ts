@@ -67,7 +67,7 @@ export class Docente {
   @JoinColumn({ name: 'genero_id', referencedColumnName: 'id' })
   genero: Genders;
 
-  @OneToOne(() => MaritalStatus)
+  @ManyToOne(() => MaritalStatus)
   @JoinColumn({ name: 'estado_civil_id', referencedColumnName: 'id' })
   estado_civil: MaritalStatus;
 
