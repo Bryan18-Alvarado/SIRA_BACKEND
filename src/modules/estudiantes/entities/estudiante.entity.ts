@@ -36,11 +36,11 @@ export class Estudiante {
   @Column({ type: 'int4', nullable: false })
   genero_id: number;
 
-  @Column({ type: 'varchar', length: 20, nullable: true })
+  @Column({ type: 'varchar', length: 20, nullable: true, unique: true })
   telefono: string;
 
   @Column({ type: 'varchar', length: 100, unique: true, nullable: true })
-  correoElectronico: string;
+  email: string;
 
   @Column({ type: 'text', nullable: true })
   direccion: string;

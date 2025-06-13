@@ -59,7 +59,7 @@ export class CreateEstudianteDto {
   @IsEmail()
   @IsOptional()
   @ApiProperty()
-  correoElectronico?: string;
+  email?: string;
 
   @IsString()
   @IsOptional()
