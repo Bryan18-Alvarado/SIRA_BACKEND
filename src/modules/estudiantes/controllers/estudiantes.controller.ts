@@ -115,7 +115,7 @@ export class EstudiantesController {
   }
 
   @Put(':id')
-  @Auth(ValidRoles.admin)
+  @Auth(ValidRoles.estudiante, ValidRoles.admin)
   @UseInterceptors(
     FileInterceptor('file', {
       storage: diskStorage({

@@ -148,18 +148,19 @@ export class DocentesService {
     return docente;
   }
 
-  async update(id: number, changes: UpdateDocenteDto, user: User) {
+  async update(id: number, changes: UpdateDocenteDto) {
     const docente = await this.docenteRepository.findOne({
       where: { id },
-      relations: { user: true, genero: true, estado_civil: true },
+      relations: {
+        user: true,
+        genero: true,
+        estado_civil: true,
+        courses: true,
+      },
     });
 
     if (!docente) {
       throw new NotFoundException(`Docente con id ${id} no encontrado`);
-    }
-
-    if (user) {
-      docente.user = user;
     }
 
     if (changes.genero_id) {
