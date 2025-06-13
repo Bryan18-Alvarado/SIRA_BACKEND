@@ -104,7 +104,7 @@ export class DocentesController {
   }
 
   @Put(':id')
-  @Auth(ValidRoles.admin)
+  @Auth(ValidRoles.docente, ValidRoles.admin)
   @UseInterceptors(
     FileInterceptor('file', {
       storage: diskStorage({
@@ -125,11 +125,10 @@ export class DocentesController {
     @UploadedFile() file: Express.Multer.File,
   ) {
     const imagePath = file ? `/uploads/docentes/${file.filename}` : undefined;
-    const rows = await this.docentesService.update(
-      id,
-      { ...updateDocenteDto, image: imagePath },
-      user,
-    );
+    const rows = await this.docentesService.update(id, {
+      ...updateDocenteDto,
+      image: imagePath,
+    });
     const data = {
       data: rows,
       message: 'Docente actualizado correctamente',
