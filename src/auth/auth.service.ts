@@ -56,40 +56,35 @@ export class AuthService {
 
     let userEntity: User | null = null;
 
-    // Intentar como admin
     try {
+      // Intentar admin
       const admin = await this.adminService.validateUserByCodeAndEmail(
         codigo,
         email,
       );
       userEntity = admin.user;
-    } catch (error) {
-      // Si no es admin, intentamos como estudiante
+    } catch {
       try {
+        // Intentar estudiante
         const estudiante =
           await this.estudiantesService.validateUserByCodeAndEmail(
             codigo,
             email,
           );
         userEntity = estudiante.user;
-      } catch (error) {
-        // Si no es estudiante, intentamos como docente
+      } catch {
         try {
+          // Intentar docente
           const docente = await this.docentesService.validateUserByCodeAndEmail(
             codigo,
             email,
           );
           userEntity = docente.user;
-        } catch (error) {
-          // Si no es docente, intentamos como usuario común
-          userEntity = await this.userRepository
-            .createQueryBuilder('user')
-            .addSelect('user.password')
-            .where('user.email = :email', { email })
-            .getOne();
-
-          if (!userEntity)
-            throw new BadRequestException('Usuario no encontrado');
+        } catch {
+          // No hay usuario que coincida con código y email
+          throw new BadRequestException(
+            'Código o correo electrónico no válido.',
+          );
         }
       }
     }
