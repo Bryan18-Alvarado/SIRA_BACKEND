@@ -9,6 +9,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { EstudiantesModule } from 'src/modules/estudiantes/estudiantes.module';
 import { DocentesModule } from 'src/modules/docentes/docentes.module';
+import { AdminModule } from 'src/modules/admin/admin.module';
 @Module({
   controllers: [AuthController],
   providers: [AuthService, JwtStrategy],
@@ -16,6 +17,7 @@ import { DocentesModule } from 'src/modules/docentes/docentes.module';
     ConfigModule,
     TypeOrmModule.forFeature([User]),
     EstudiantesModule,
+    AdminModule,
     forwardRef(() => DocentesModule),
     PassportModule.register({ defaultStrategy: 'jwt' }),
 

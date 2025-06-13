@@ -108,7 +108,7 @@ export class EstudiantesService {
       const nuevoUsuario = this.userRepository.create({
         email: createEstudianteDto.user.email,
         password: bcrypt.hashSync(passwordTemporal, 10),
-        fullName: `${resData.nombre} ${resData.apellido}`,
+        userName: `${resData.nombre} ${resData.apellido}`,
         roles: ['estudiante'],
       });
 
@@ -131,11 +131,11 @@ export class EstudiantesService {
   }
 
   async validateUserByCodeAndEmail(
-    codigoEstudiante: string,
+    codigo: string,
     email: string,
   ): Promise<Estudiante> {
     const estudiante = await this.estudianteRepository.findOne({
-      where: { codigoEstudiante },
+      where: { codigoEstudiante: codigo },
       relations: ['user'],
     });
 
