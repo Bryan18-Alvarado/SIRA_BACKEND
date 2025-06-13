@@ -10,12 +10,7 @@ async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   app.setGlobalPrefix('api/v1/'); // Hace que todos los endpoints empiecen con /api
 
-  const uploadPath = join(
-    __dirname,
-    '..',
-    'uploads/docentes',
-    'uploads/courses',
-  );
+  const uploadPath = join(__dirname, '..', 'uploads/docentes');
   if (!existsSync(uploadPath)) {
     mkdirSync(uploadPath, { recursive: true });
   }
