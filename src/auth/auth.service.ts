@@ -16,6 +16,7 @@ import { JwtService } from '@nestjs/jwt';
 import { ValidRoles } from './interfaces';
 import { EstudiantesService } from 'src/modules/estudiantes/services/estudiantes.service';
 import { DocentesService } from 'src/modules/docentes/services/docentes.service';
+import { AdminService } from 'src/modules/admin/service/admin.service';
 
 @Injectable()
 export class AuthService {
@@ -26,6 +27,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
     private readonly estudiantesService: EstudiantesService,
     private readonly docentesService: DocentesService,
+    private readonly adminService: AdminService, // Asegúrate de importar el servicio de Admin
   ) {}
 
   async create(createUserDto: CreateUserDto) {
@@ -50,47 +52,53 @@ export class AuthService {
   }
 
   async login(loginUserDto: LoginUserDto) {
-    // console.log('Login request received:', loginUserDto);
-    const { email, password, codigoEstudiante, codigo_laboral } = loginUserDto;
+    const { email, password, codigo } = loginUserDto;
 
-    let userEntity: User | null;
+    let userEntity: User | null = null;
 
-    if (codigoEstudiante) {
-      const estudiante =
-        await this.estudiantesService.validateUserByCodeAndEmail(
-          codigoEstudiante,
-          email,
-        );
-      if (!estudiante)
-        throw new BadRequestException('Código de estudiante no válido');
-      userEntity = estudiante.user;
-    } else if (codigo_laboral) {
-      const docente = await this.docentesService.validateUserByCodeAndEmail(
-        codigo_laboral,
+    // Intentar como admin
+    try {
+      const admin = await this.adminService.validateUserByCodeAndEmail(
+        codigo,
         email,
       );
-      if (!docente) throw new BadRequestException('Código laboral no válido');
-      userEntity = docente.user;
-    } else {
-      // Usuario común sin código: busca solo por email
-      // console.log('Buscando usuario con email:', email);
-      userEntity = await this.userRepository
-        .createQueryBuilder('user')
-        .addSelect('user.password')
-        .where('user.email = :email', { email })
-        .getOne();
-      // console.log('Usuario encontrado:', userEntity);
+      userEntity = admin.user;
+    } catch (error) {
+      // Si no es admin, intentamos como estudiante
+      try {
+        const estudiante =
+          await this.estudiantesService.validateUserByCodeAndEmail(
+            codigo,
+            email,
+          );
+        userEntity = estudiante.user;
+      } catch (error) {
+        // Si no es estudiante, intentamos como docente
+        try {
+          const docente = await this.docentesService.validateUserByCodeAndEmail(
+            codigo,
+            email,
+          );
+          userEntity = docente.user;
+        } catch (error) {
+          // Si no es docente, intentamos como usuario común
+          userEntity = await this.userRepository
+            .createQueryBuilder('user')
+            .addSelect('user.password')
+            .where('user.email = :email', { email })
+            .getOne();
 
-      if (!userEntity) throw new BadRequestException('Usuario no encontrado');
+          if (!userEntity)
+            throw new BadRequestException('Usuario no encontrado');
+        }
+      }
     }
 
-    if (!userEntity.password) {
+    if (!userEntity?.password) {
       throw new BadRequestException('Credenciales no válidas');
     }
-    // console.log('Password enviado:', password);
-    // console.log('Hash en DB:', userEntity.password);
+
     const isPasswordValid = bcrypt.compareSync(password, userEntity.password);
-    // console.log('¿Contraseña válida?', isPasswordValid);
     if (!isPasswordValid) {
       throw new BadRequestException('Credenciales no válidas');
     }
@@ -98,7 +106,7 @@ export class AuthService {
     return {
       id: userEntity.id,
       email: userEntity.email,
-      fullName: userEntity.fullName,
+      userName: userEntity.userName,
       roles: userEntity.roles,
       token: this.getJwtToken({ id: userEntity.id }),
     };
@@ -114,7 +122,7 @@ export class AuthService {
     user.roles = roles;
     await this.userRepository.save(user);
     return {
-      message: `Roles actualizados para ${user.fullName}`,
+      message: `Roles actualizados para ${user.userName}`,
       roles: user.roles,
     };
   }
