@@ -13,6 +13,7 @@ import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { Tutor } from 'src/modules/tutores/entities/tutor.entity';
 import { User } from 'src/auth/entities/user.entity';
 import * as bcrypt from 'bcrypt';
+import { StudentCourse } from 'src/modules/student-courses/entities/studentcourse.entity';
 @Injectable()
 export class EstudiantesService {
   private readonly logger = new Logger('EstudiantesService');
@@ -24,6 +25,8 @@ export class EstudiantesService {
     private readonly tutorRepository: Repository<Tutor>,
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    @InjectRepository(StudentCourse)
+    private readonly studentCourseRepository: Repository<StudentCourse>,
   ) {}
 
   async findAll(paginationDto: PaginationDto) {
@@ -32,7 +35,7 @@ export class EstudiantesService {
     const [data, total] = await this.estudianteRepository.findAndCount({
       take: limit,
       skip: offset,
-      relations: ['genero', 'tutor'],
+      relations: ['genero', 'tutor', 'user'],
     });
 
     return {
@@ -70,7 +73,7 @@ export class EstudiantesService {
     imagenPath?: string,
   ): Promise<Estudiante> {
     try {
-      const { fechaNacimiento, tutor_id, tutor, ...resData } =
+      const { fechaNacimiento, tutor_id, tutor, cursos_ids, ...resData } =
         createEstudianteDto;
 
       const edad = this.calcularEdad(fechaNacimiento);
@@ -119,6 +122,15 @@ export class EstudiantesService {
 
       // Guardar el estudiante con el usuario asociado
       await this.estudianteRepository.save(estudianteGuardado);
+      if (cursos_ids && cursos_ids.length > 0) {
+        const studentCourses = cursos_ids.map((courseId) => ({
+          studentId: estudianteGuardado.id,
+          coursesId: courseId,
+          enrollmentDate: new Date(),
+        }));
+
+        await this.studentCourseRepository.save(studentCourses);
+      }
 
       return estudianteGuardado;
     } catch (error) {
@@ -179,19 +191,22 @@ export class EstudiantesService {
     if (!estudiante) {
       throw new NotFoundException(`Estudiante con id ${id} no encontrado`);
     }
-    if (user) {
-      estudiante.user = user;
-    }
-
-    try {
-      this.estudianteRepository.merge(estudiante, updateEstudianteDto);
-      await this.estudianteRepository.save(estudiante);
-      return {
-        message: 'Registro actualizado con éxito',
-        data: estudiante,
-      };
-    } catch (error) {
-      this.handleDBException(error);
+    if (user && user.id) {
+      const userEntity = await this.userRepository.findOneBy({ id: user.id });
+      if (userEntity) {
+        estudiante.user = userEntity;
+      }
+    } else {
+      try {
+        this.estudianteRepository.merge(estudiante, updateEstudianteDto);
+        await this.estudianteRepository.save(estudiante);
+        return {
+          message: 'Registro actualizado con éxito',
+          data: estudiante,
+        };
+      } catch (error) {
+        this.handleDBException(error);
+      }
     }
   }
 
@@ -219,7 +234,7 @@ export class EstudiantesService {
   async findOne(id: number) {
     const estudiante = await this.estudianteRepository.findOne({
       where: { id },
-      relations: ['tutor', 'genero'],
+      relations: ['tutor', 'genero', 'user', 'cursos'],
     });
     if (!estudiante) {
       throw new NotFoundException(`Estudiante con id ${id} no encontrado`);

@@ -7,10 +7,11 @@ import { Tutor } from '../tutores/entities/tutor.entity';
 import { TutoresModule } from '../tutores/tutores.module';
 import { User } from 'src/auth/entities/user.entity';
 import { PassportModule } from '@nestjs/passport';
+import { StudentCourse } from '../student-courses/entities/studentcourse.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Estudiante, Tutor, User]),
+    TypeOrmModule.forFeature([Estudiante, Tutor, User, StudentCourse]),
     TutoresModule,
     PassportModule,
   ], // Importamos el módulo TypeOrmModule y registramos la entidad Estudiante

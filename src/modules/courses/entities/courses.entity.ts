@@ -1,18 +1,18 @@
 import { Categories } from 'src/modules/categories/entities/categories.entity';
 import { Level } from 'src/modules/level/entities/level.entity';
 import { Docente } from 'src/modules/docentes/entities/docentes.entity';
-import { StudentCourse } from 'src/modules/student-courses/entities/studentcourse.entity';
 import {
   Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
   JoinColumn,
+  ManyToMany,
   ManyToOne,
-  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Estudiante } from 'src/modules/estudiantes/entities/estudiante.entity';
 
 @Entity()
 export class Courses {
@@ -87,6 +87,6 @@ export class Courses {
   @JoinColumn({ name: 'docentes_id', referencedColumnName: 'id' })
   docentes: Docente;
 
-  @OneToMany(() => StudentCourse, (studentCourse) => studentCourse.courses)
-  studentCourses: StudentCourse[];
+  @ManyToMany(() => Estudiante, (estudiante) => estudiante.cursos)
+  estudiantes: Estudiante[];
 }

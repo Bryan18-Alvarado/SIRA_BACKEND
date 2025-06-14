@@ -44,22 +44,21 @@ export class ReportService {
 
     // agregar los datos de los estudiantes
     students.forEach((student) => {
-      student.studentCourses.forEach((st) => {
+      student.cursos.forEach((curso) => {
         const calificacion = student.calificaciones.find(
-          (calif) => calif.course.id === st.courses.id,
+          (calif) => calif.course.id === curso.id, // Aquí curso.id directamente
         );
         worksheet.addRow({
           id: student.id,
           nombre: `${student.nombre} ${student.apellido}`,
-          curso: st.courses?.nombre || '',
+          curso: curso?.nombre || '',
           calificacion: calificacion?.grade ?? '',
-          docente: st.courses?.docentes?.nombre || '',
-          nivel: st.courses?.level?.level_course || '',
-          categoria: st.courses?.categories?.nombre || '',
+          docente: curso?.docentes?.nombre || '',
+          nivel: curso?.level?.level_course || '',
+          categoria: curso?.categories?.nombre || '',
         });
       });
     });
-
     // configurar el encabezado para la descarga del archivo
 
     res.setHeader(
