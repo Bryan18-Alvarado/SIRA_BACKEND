@@ -10,6 +10,7 @@ import {
   IsNumber,
   IsNotEmpty,
   ValidateNested,
+  IsArray,
 } from 'class-validator';
 import { CreateUserDto } from 'src/auth/dto';
 import { CreateTutorDto } from 'src/modules/tutores/dto/tutor.dto';
@@ -85,6 +86,16 @@ export class CreateEstudianteDto {
   @Type(() => CreateTutorDto)
   @ApiProperty({ required: false, type: () => CreateTutorDto })
   tutor?: CreateTutorDto;
+
+  @IsOptional()
+  @IsArray()
+  @IsInt({ each: true })
+  @ApiProperty({
+    description: 'IDs de los cursos a los que se inscribirá el estudiante',
+    type: [Number],
+    example: [1, 2, 3],
+  })
+  cursos_ids?: number[];
 }
 
 export class UpdateEstudianteDto extends PartialType(CreateEstudianteDto) {}

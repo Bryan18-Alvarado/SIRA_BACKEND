@@ -18,6 +18,8 @@ import {
   UpdateTutorDto,
 } from '../dto/tutor.dto';
 import { TutoresService } from '../services/tutores.service';
+import { Auth } from 'src/auth/decorators';
+import { ValidRoles } from 'src/auth/interfaces';
 
 @Controller('tutores')
 export class TutoresController {
@@ -47,7 +49,7 @@ export class TutoresController {
   }
 
   @Delete(':id')
-  @HttpCode(HttpStatus.NO_CONTENT) // 204 No Content
+  @Auth(ValidRoles.admin)
   async remove(@Param('id', ParseIntPipe) id: number) {
     await this.tutorsService.remove(id);
   }

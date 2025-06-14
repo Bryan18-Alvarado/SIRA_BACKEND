@@ -13,6 +13,7 @@ import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { Tutor } from 'src/modules/tutores/entities/tutor.entity';
 import { User } from 'src/auth/entities/user.entity';
 import * as bcrypt from 'bcrypt';
+import { StudentCourse } from 'src/modules/student-courses/entities/studentcourse.entity';
 @Injectable()
 export class EstudiantesService {
   private readonly logger = new Logger('EstudiantesService');
@@ -24,6 +25,8 @@ export class EstudiantesService {
     private readonly tutorRepository: Repository<Tutor>,
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    @InjectRepository(StudentCourse)
+    private readonly studentCourseRepository: Repository<StudentCourse>,
   ) {}
 
   async findAll(paginationDto: PaginationDto) {
@@ -70,7 +73,7 @@ export class EstudiantesService {
     imagenPath?: string,
   ): Promise<Estudiante> {
     try {
-      const { fechaNacimiento, tutor_id, tutor, ...resData } =
+      const { fechaNacimiento, tutor_id, tutor, cursos_ids, ...resData } =
         createEstudianteDto;
 
       const edad = this.calcularEdad(fechaNacimiento);
@@ -119,6 +122,15 @@ export class EstudiantesService {
 
       // Guardar el estudiante con el usuario asociado
       await this.estudianteRepository.save(estudianteGuardado);
+      if (cursos_ids && cursos_ids.length > 0) {
+        const studentCourses = cursos_ids.map((courseId) => ({
+          studentId: estudianteGuardado.id,
+          coursesId: courseId,
+          enrollmentDate: new Date(),
+        }));
+
+        await this.studentCourseRepository.save(studentCourses);
+      }
 
       return estudianteGuardado;
     } catch (error) {
