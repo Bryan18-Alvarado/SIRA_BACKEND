@@ -12,7 +12,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { StudentCourse } from '../../student-courses/entities/studentcourse.entity';
+// import { StudentCourse } from '../../student-courses/entities/studentcourse.entity';
 import { Calificacion } from '../../calificaciones/entities/calificacion.entity';
 import { Genders } from 'src/modules/genders/entities/genders.entity';
 import { Tutor } from 'src/modules/tutores/entities/tutor.entity';

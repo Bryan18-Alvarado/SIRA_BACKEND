@@ -139,19 +139,16 @@ export class EstudiantesController {
       ? `/uploads/estudiantes/${file.filename}`
       : undefined;
 
-    const rows = await this.estudianteService.update(
-      id,
-      {
-        ...updateEstudianteDto,
-        image: imagePath,
-      },
-      user,
-    );
+    const rows = await this.estudianteService.update(id, {
+      ...updateEstudianteDto,
+      image: imagePath,
+    });
 
-    return {
+    const data = {
       data: rows,
       message: 'Estudiante actualizado correctamente',
     };
+    return data;
   }
 
   @Delete(':id')

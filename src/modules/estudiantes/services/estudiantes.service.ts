@@ -8,12 +8,16 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Estudiante } from '../entities/estudiante.entity';
-import { CreateEstudianteDto } from '../dto/estudiantes.dto';
+import {
+  CreateEstudianteDto,
+  UpdateEstudianteDto,
+} from '../dto/estudiantes.dto';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { Tutor } from 'src/modules/tutores/entities/tutor.entity';
 import { User } from 'src/auth/entities/user.entity';
 import * as bcrypt from 'bcrypt';
 import { StudentCourse } from 'src/modules/student-courses/entities/studentcourse.entity';
+import { Genders } from 'src/modules/genders/entities/genders.entity';
 @Injectable()
 export class EstudiantesService {
   private readonly logger = new Logger('EstudiantesService');
@@ -27,6 +31,8 @@ export class EstudiantesService {
     private readonly userRepository: Repository<User>,
     @InjectRepository(StudentCourse)
     private readonly studentCourseRepository: Repository<StudentCourse>,
+    @InjectRepository(Genders)
+    private readonly generoRepository: Repository<Genders>,
   ) {}
 
   async findAll(paginationDto: PaginationDto) {
@@ -35,7 +41,7 @@ export class EstudiantesService {
     const [data, total] = await this.estudianteRepository.findAndCount({
       take: limit,
       skip: offset,
-      relations: ['genero', 'tutor', 'user'],
+      relations: ['genero', 'tutor', 'user', 'cursos'],
     });
 
     return {
@@ -174,40 +180,66 @@ export class EstudiantesService {
     return estudiante;
   }
 
-  async update(
-    id: number,
-    updateEstudianteDto: Partial<CreateEstudianteDto>,
-    user: User,
-  ) {
+  async update(id: number, changes: UpdateEstudianteDto) {
     const estudiante = await this.estudianteRepository.findOne({
       where: { id },
       relations: {
         user: true,
         tutor: true,
         genero: true,
+        cursos: true,
+        calificaciones: true,
       },
     });
 
     if (!estudiante) {
       throw new NotFoundException(`Estudiante con id ${id} no encontrado`);
     }
-    if (user && user.id) {
-      const userEntity = await this.userRepository.findOneBy({ id: user.id });
-      if (userEntity) {
-        estudiante.user = userEntity;
-      }
-    } else {
-      try {
-        this.estudianteRepository.merge(estudiante, updateEstudianteDto);
-        await this.estudianteRepository.save(estudiante);
-        return {
-          message: 'Registro actualizado con éxito',
-          data: estudiante,
-        };
-      } catch (error) {
-        this.handleDBException(error);
-      }
+
+    if (changes.tutor_id) {
+      const tutor = await this.tutorRepository.findOneBy({
+        id: changes.tutor_id,
+      });
+      if (!tutor)
+        throw new NotFoundException(
+          `Tutor con id ${changes.tutor_id} no encontrado`,
+        );
+      estudiante.tutor = tutor;
     }
+
+    if (changes.genero_id) {
+      const genero = await this.generoRepository.findOneBy({
+        id: changes.genero_id,
+      });
+      if (!genero)
+        throw new NotFoundException(
+          `Genero con id ${changes.genero_id} no encontrado`,
+        );
+      estudiante.genero = genero;
+    }
+
+    if (estudiante.user) {
+      // Actualizar el email del usuario si cambia el email del estudiante
+      if (changes.email) {
+        estudiante.user.email = changes.email;
+      }
+
+      // Actualizar el userName con nombre y apellido combinados
+      const nombre = changes.nombre ?? estudiante.nombre;
+      const apellido = changes.apellido ?? estudiante.apellido;
+      estudiante.user.userName = `${nombre} ${apellido}`;
+
+      // Guardar los cambios en el usuario
+      await this.userRepository.save(estudiante.user);
+    }
+
+    this.estudianteRepository.merge(estudiante, changes);
+
+    const updated = await this.estudianteRepository.save(estudiante);
+    return {
+      message: 'registro actualizado correctamente',
+      data: updated,
+    };
   }
 
   async deleteAllEstudiantes() {
