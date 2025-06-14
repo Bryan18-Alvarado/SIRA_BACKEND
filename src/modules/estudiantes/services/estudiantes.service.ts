@@ -35,7 +35,7 @@ export class EstudiantesService {
     const [data, total] = await this.estudianteRepository.findAndCount({
       take: limit,
       skip: offset,
-      relations: ['genero', 'tutor'],
+      relations: ['genero', 'tutor', 'user'],
     });
 
     return {
@@ -191,19 +191,22 @@ export class EstudiantesService {
     if (!estudiante) {
       throw new NotFoundException(`Estudiante con id ${id} no encontrado`);
     }
-    if (user) {
-      estudiante.user = user;
-    }
-
-    try {
-      this.estudianteRepository.merge(estudiante, updateEstudianteDto);
-      await this.estudianteRepository.save(estudiante);
-      return {
-        message: 'Registro actualizado con éxito',
-        data: estudiante,
-      };
-    } catch (error) {
-      this.handleDBException(error);
+    if (user && user.id) {
+      const userEntity = await this.userRepository.findOneBy({ id: user.id });
+      if (userEntity) {
+        estudiante.user = userEntity;
+      }
+    } else {
+      try {
+        this.estudianteRepository.merge(estudiante, updateEstudianteDto);
+        await this.estudianteRepository.save(estudiante);
+        return {
+          message: 'Registro actualizado con éxito',
+          data: estudiante,
+        };
+      } catch (error) {
+        this.handleDBException(error);
+      }
     }
   }
 
@@ -231,7 +234,7 @@ export class EstudiantesService {
   async findOne(id: number) {
     const estudiante = await this.estudianteRepository.findOne({
       where: { id },
-      relations: ['tutor', 'genero'],
+      relations: ['tutor', 'genero', 'user', 'cursos'],
     });
     if (!estudiante) {
       throw new NotFoundException(`Estudiante con id ${id} no encontrado`);

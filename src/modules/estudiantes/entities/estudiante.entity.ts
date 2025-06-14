@@ -4,6 +4,8 @@ import {
   DeleteDateColumn,
   Entity,
   JoinColumn,
+  JoinTable,
+  ManyToMany,
   ManyToOne,
   OneToMany,
   OneToOne,
@@ -15,6 +17,7 @@ import { Calificacion } from '../../calificaciones/entities/calificacion.entity'
 import { Genders } from 'src/modules/genders/entities/genders.entity';
 import { Tutor } from 'src/modules/tutores/entities/tutor.entity';
 import { User } from 'src/auth/entities/user.entity';
+import { Courses } from 'src/modules/courses/entities/courses.entity';
 
 @Entity()
 export class Estudiante {
@@ -69,9 +72,13 @@ export class Estudiante {
   @OneToMany(() => Calificacion, (calificacion) => calificacion.estudiante)
   calificaciones: Calificacion[];
 
-  @OneToMany(() => StudentCourse, (studentCourse) => studentCourse.estudiante)
-  studentCourses: StudentCourse[];
-
+  @ManyToMany(() => Courses, (curso) => curso.estudiantes, { cascade: true })
+  @JoinTable({
+    name: 'student_courses', // Nombre de la tabla pivote
+    joinColumn: { name: 'estudiante_id' },
+    inverseJoinColumn: { name: 'curso_id' },
+  })
+  cursos: Courses[];
   @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
 
