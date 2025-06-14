@@ -186,6 +186,21 @@ export class DocentesService {
       }
       docente.estado_civil = estadoCivil;
     }
+
+    if (docente.user) {
+      // Actualizar el email del usuario si cambia el email del estudiante
+      if (changes.email) {
+        docente.user.email = changes.email;
+      }
+
+      // Actualizar el userName con nombre y apellido combinados
+      const nombre = changes.nombre ?? docente.nombre;
+      const apellido = changes.apellido ?? docente.apellido;
+      docente.user.userName = `${nombre} ${apellido}`;
+
+      // Guardar los cambios en el usuario
+      await this.userRepository.save(docente.user);
+    }
     this.docenteRepository.merge(docente, changes);
 
     if (changes.cursos_ids?.length) {
