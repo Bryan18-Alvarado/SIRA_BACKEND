@@ -185,6 +185,19 @@ export class EstudiantesService {
 
     return estudiante;
   }
+  async updateEstudianteImage(id: number, imagePath: string) {
+    const estudiante = await this.estudianteRepository.findOneBy({ id });
+
+    if (!estudiante) {
+      throw new NotFoundException(`Estudiante con id ${id} no encontrado`);
+    }
+
+    estudiante.image = imagePath;
+
+    const updatedEstudiante = await this.estudianteRepository.save(estudiante);
+
+    return updatedEstudiante;
+  }
 
   async update(id: number, changes: UpdateEstudianteDto) {
     const estudiante = await this.estudianteRepository.findOne({
