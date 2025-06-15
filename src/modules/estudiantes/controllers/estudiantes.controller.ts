@@ -116,7 +116,7 @@ export class EstudiantesController {
   }
 
   @Put(':id/upload-image')
-  @Auth(ValidRoles.admin)
+  @Auth(ValidRoles.admin, ValidRoles.estudiante)
   @UseInterceptors(
     FileInterceptor('file', {
       storage: diskStorage({
@@ -187,6 +187,11 @@ export class EstudiantesController {
     return data;
   }
 
+  @Get('usuario/:userId')
+  async findByUserId(@Param('userId') userId: number) {
+    const estudiante = await this.estudianteService.findByUserId(userId);
+    return { data: estudiante };
+  }
   @Delete(':id')
   @Auth(ValidRoles.admin)
   async remove(@Param('id') id: number) {

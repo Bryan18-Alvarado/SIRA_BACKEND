@@ -262,6 +262,19 @@ export class EstudiantesService {
       data: updated,
     };
   }
+  async findByUserId(userId: number) {
+    const estudiante = await this.estudianteRepository.findOne({
+      where: { user: { id: userId } }, // Relación con user
+    });
+
+    if (!estudiante) {
+      throw new NotFoundException(
+        `No se encontró estudiante con el usuario ${userId}`,
+      );
+    }
+
+    return estudiante;
+  }
 
   async deleteAllEstudiantes() {
     const query = this.estudianteRepository.createQueryBuilder('estudiante');
