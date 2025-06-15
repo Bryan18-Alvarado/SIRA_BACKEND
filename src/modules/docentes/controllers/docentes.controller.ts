@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -101,6 +102,38 @@ export class DocentesController {
       data: rows,
     };
     return data;
+  }
+
+  @Put(':id/upload-image')
+  @Auth(ValidRoles.admin)
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: './uploads/docentes',
+        filename: (req, file, cb) => {
+          const uniqueSuffix =
+            Date.now() + '-' + Math.round(Math.random() * 1e9);
+          const ext = extname(file.originalname);
+          cb(null, `${file.fieldname}-${uniqueSuffix}${ext}`);
+        },
+      }),
+    }),
+  )
+  async updateDocenteImage(
+    @Param('id') id: number,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    if (!file) {
+      throw new BadRequestException('Debe proporcionar una imagen');
+    }
+
+    const imagePath = `/uploads/docentes/${file.filename}`;
+    const datos = await this.docentesService.updateDocenteImage(id, imagePath);
+
+    return {
+      data: datos,
+      message: 'Imagen actualizada correctamente',
+    };
   }
 
   @Put(':id')

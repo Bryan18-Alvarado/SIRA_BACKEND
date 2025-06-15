@@ -147,6 +147,19 @@ export class DocentesService {
 
     return docente;
   }
+  async updateDocenteImage(id: number, imagePath: string) {
+    const docente = await this.docenteRepository.findOneBy({ id });
+
+    if (!docente) {
+      throw new NotFoundException(`Docente con id ${id} no encontrado`);
+    }
+
+    docente.image = imagePath;
+
+    const updatedDocente = await this.docenteRepository.save(docente);
+
+    return updatedDocente;
+  }
 
   async update(id: number, changes: UpdateDocenteDto) {
     const docente = await this.docenteRepository.findOne({
