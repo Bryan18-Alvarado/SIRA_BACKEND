@@ -44,10 +44,13 @@ export class ReportService {
 
     // agregar los datos de los estudiantes
     students.forEach((student) => {
-      student.cursos.forEach((curso) => {
+      student.studentCourses.forEach((studentCourse) => {
+        const curso = studentCourse.courses; // El curso real está aquí
+
         const calificacion = student.calificaciones.find(
-          (calif) => calif.course.id === curso.id, // Aquí curso.id directamente
+          (calif) => calif.course.id === curso.id, // Ahora sí compara correctamente
         );
+
         worksheet.addRow({
           id: student.id,
           nombre: `${student.nombre} ${student.apellido}`,
