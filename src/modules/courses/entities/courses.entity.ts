@@ -87,6 +87,6 @@ export class Courses {
   @JoinColumn({ name: 'docentes_id', referencedColumnName: 'id' })
   docentes: Docente;
 
-  @ManyToMany(() => Estudiante, (estudiante) => estudiante.cursos)
+  @ManyToMany(() => Estudiante, (estudiante) => estudiante.studentCourses)
   estudiantes: Estudiante[];
 }

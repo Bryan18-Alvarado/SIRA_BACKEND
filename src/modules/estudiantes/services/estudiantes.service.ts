@@ -41,7 +41,13 @@ export class EstudiantesService {
     const [data, total] = await this.estudianteRepository.findAndCount({
       take: limit,
       skip: offset,
-      relations: ['genero', 'tutor', 'user', 'cursos'],
+      relations: [
+        'genero',
+        'tutor',
+        'user',
+        'studentCourses',
+        'studentCourses.courses',
+      ],
     });
 
     return {
@@ -187,8 +193,10 @@ export class EstudiantesService {
         user: true,
         tutor: true,
         genero: true,
-        cursos: true,
         calificaciones: true,
+        studentCourses: {
+          courses: true,
+        },
       },
     });
 
@@ -266,7 +274,13 @@ export class EstudiantesService {
   async findOne(id: number) {
     const estudiante = await this.estudianteRepository.findOne({
       where: { id },
-      relations: ['tutor', 'genero', 'user', 'cursos'],
+      relations: [
+        'tutor',
+        'genero',
+        'user',
+        'studentCourses',
+        'studentCourses.courses',
+      ],
     });
     if (!estudiante) {
       throw new NotFoundException(`Estudiante con id ${id} no encontrado`);
