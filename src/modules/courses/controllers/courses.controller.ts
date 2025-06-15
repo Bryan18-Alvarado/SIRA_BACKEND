@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -97,6 +98,38 @@ export class CoursesController {
       data: rows,
     };
     return data;
+  }
+
+  @Put(':id/upload-image')
+  @Auth(ValidRoles.admin)
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: './uploads/courses',
+        filename: (req, file, cb) => {
+          const uniqueSuffix =
+            Date.now() + '-' + Math.round(Math.random() * 1e9);
+          const ext = extname(file.originalname);
+          cb(null, `${file.fieldname}-${uniqueSuffix}${ext}`);
+        },
+      }),
+    }),
+  )
+  async updateCourseImage(
+    @Param('id') id: number,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    if (!file) {
+      throw new BadRequestException('Debe proporcionar una imagen');
+    }
+
+    const imagePath = `/uploads/courses/${file.filename}`;
+    const datos = await this.coursesService.updateCourseImage(id, imagePath);
+
+    return {
+      data: datos,
+      message: 'Imagen actualizada correctamente',
+    };
   }
 
   @Put(':id')

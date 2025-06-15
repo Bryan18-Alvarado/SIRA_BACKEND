@@ -147,6 +147,20 @@ export class CoursesService {
     };
   }
 
+  async updateCourseImage(id: number, imagePath: string) {
+    const course = await this.coursesRepository.findOneBy({ id });
+
+    if (!course) {
+      throw new NotFoundException(`Curso con id ${id} no encontrado`);
+    }
+
+    course.image = imagePath;
+
+    const updatedCourse = await this.coursesRepository.save(course);
+
+    return updatedCourse;
+  }
+
   async remove(id: number) {
     const exists = await this.coursesRepository.existsBy({ id });
     if (!exists) {
