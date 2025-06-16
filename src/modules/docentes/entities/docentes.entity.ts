@@ -50,7 +50,7 @@ export class Docente {
   @Column({ type: 'date' })
   fecha_nacimiento: Date;
 
-  @Column({ type: 'varchar', length: 20, nullable: true })
+  @Column({ type: 'varchar', length: 20, nullable: true, unique: true })
   telefono: string;
 
   @Column({ type: 'varchar', length: 100, unique: true, nullable: true })
