@@ -15,7 +15,7 @@ export class CreateLevelDto {
 
   @IsString()
   @ApiProperty()
-  @MinLength(3)
+  @MinLength(2)
   level_course: string;
 
   @IsOptional()

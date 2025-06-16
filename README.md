@@ -1,166 +1,75 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
-
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
-
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
-
-## Description
-
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
-
-## Project setup
-
-<!-- Welcome to SIRA -->
-
-```bash
-1. Clonar proyecto
-2. `npm install`
-3. Clonar el archivo `.env.template` y renombrarlo a `.env`
-4. Cambiar las variables de entorno
-5. Crear la base de datos
-6. Levantar el api: `npm run start:dev`
-```
-
-## Compile and run the project
-
-```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
-```
-
-## Run tests
-
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
-```
-
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
-```bash
-$ npm install -g mau
-$ mau deploy
-```
-
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
-
-## Resources
-
-Check out a few resources that may come in handy when working with NestJS:
-
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
-
 # SIRA - Sistema Integral de Registro Académico
 
-![Logo del Proyecto](./logo.png) <!-- Opcional, coloca tu logo aquí -->
-
-## Descripción
+![Logo del Proyecto](./public/images/sira.jpeg)
 
 SIRA es un sistema backend desarrollado en **NestJS** que permite la gestión académica de estudiantes, docentes, cursos y reportes. El objetivo es facilitar el registro, consulta y administración de información académica, integrándose con una base de datos **PostgreSQL** y ofreciendo endpoints seguros y documentados.
 
 ---
 
-## Requisitos Previos
+## 🚀 Características
 
-- **Node.js** v18 o superior
-- **npm** v9 o superior
-- **PostgreSQL** 15 o superior
-- **Docker** (opcional, para despliegue y pruebas)
-- **Git** (para clonar el repositorio)
+- Gestión de estudiantes, docentes, cursos y tutores.
+- Generación de reportes académicos.
+- Integración con **PostgreSQL**.
+- Endpoints seguros con autenticación JWT/nextAuth-beta.
+- Documentación interactiva con Swagger.
 
 ---
 
-## Instalación y Configuración
+## 📋 Requisitos Previos
+
+- **Node.js** v18 o superior (se uso node 20.9.0)
+- **npm** v9 o superior (10.1.0)
+- **PostgreSQL** 15 o superior (usamos la 14)
+- **Git** (para clonar el repositorio) (2.49.0)
+
+---
+
+## ⚙️ Instalación y Configuración
 
 1. **Clona el repositorio:**
+
    ```bash
-   git clone https://github.com/tu-usuario/sira-backend.git
+   git clone https://github.com/Bryan18-Alvarado/SIRA_BACKEND.git
    cd sira-backend
    ```
 
 2. **Instala las dependencias:**
+
    ```bash
    npm install
    ```
 
 3. **Configura las variables de entorno:**
-   - Crea un archivo `.env` en la raíz del proyecto con la configuración de tu base de datos y JWT, por ejemplo:
-     ```
-     DB_HOST=localhost
-     DB_PORT=5432
-     DB_USERNAME=postgres
-     DB_PASSWORD=tu_password
-     DB_DATABASE=sira
-     JWT_SECRET=tu_jwt_secret
-     ```
+   Crea un archivo `.env` en la raíz del proyecto con la configuración de tu base de datos y JWT:
+
+   ```env
+   DB_HOST=localhost
+   DB_PORT=5432
+   DB_USERNAME=postgres
+   DB_PASSWORD=tu_password
+   DB_DATABASE=sira
+   JWT_SECRET=tu_jwt_secret
+   ```
+
+   **Nota importante:**: asegurate de que el .env este dentro del .gitignore.
+   _Este paso es obligatorio para que el sistema funcione correctamente._
 
 4. **Configura la base de datos:**
-   - Asegúrate de tener PostgreSQL corriendo y una base de datos creada con el nombre especificado en `.env`.
+   Asegúrate de tener PostgreSQL corriendo y una base de datos creada con el nombre especificado en `.env`.
 
 ---
 
-## Ejecución del Proyecto
+## 🚀 Ejecución del Proyecto
 
 - **Modo desarrollo:**
+
   ```bash
   npm run start:dev
   ```
 
 - **Modo producción:**
+
   ```bash
   npm run build
   npm run start:prod
@@ -173,49 +82,67 @@ SIRA es un sistema backend desarrollado en **NestJS** que permite la gestión ac
 
 ---
 
-## Uso del Sistema
+## 📚 Uso del Sistema
 
 ### Endpoints Clave
 
-- **Autenticación**
-  - `POST /auth/login` - Iniciar sesión y obtener token JWT
+- **Autenticación:** `POST /auth/login` - Iniciar sesión y obtener token JWT
+- **Estudiantes:** `GET /estudiantes` - Listar estudiantes
+- **Docentes:** `GET /docentes` - Listar docentes
+- **Cursos:** `GET /cursos` - Listar cursos
+- **Reportes:** `GET /reportes/estudiantes` - Descargar reporte general de estudiantes
+- **Documentación Swagger:** `GET /api` - Acceso a la documentación interactiva
 
-- **Estudiantes**
-  - `GET /estudiantes` - Listar estudiantes
-  - `GET /estudiantes/:id` - Obtener detalle de un estudiante
+![Creacion docente](./public/images/creacionDocenteUser.png)
+**Nota importante:**: EndPoint para crear un docente desde el postman con su respectivo usuario.
+_Este paso es obligatorio para que el sistema funcione correctamente._
 
-- **Docentes**
-  - `GET /docentes` - Listar docentes
+![Creacion docente](./public/images/creacionEstudianteUser.png)
+**Nota importante:**: Endpoint para crear un estudiante desde postman, funciona igual que docente, pero se diferencia por el tipo de codigo y contrasena inicial
 
-- **Cursos**
-  - `GET /cursos` - Listar cursos
+![Creacion docente](./public/images/creacionTutores.png)
+**Nota importante:**: Endpoint para crear un tutor en caso de que el estudiante tenga menos de 18 years o alguna discapacidad desde postman
 
-- **Reportes**
-  - `GET /reportes/estudiantes` - Descargar reporte general de estudiantes (Excel)
-  - `GET /reportes/estudiantes-por-curso/:courseId` - Descargar reporte de estudiantes por curso (Excel)
+![Cargar imagen estudiante](./public/images/imageEstudiante.png)
+**Nota importante:** nos permite cargar imagenes a un estudiante desde el backend usando el metodo put desde postman, usando un form data
 
-- **Documentación Swagger**
-  - `GET /api` - Acceso a la documentación interactiva de la API
+![login admin](./public/images/loginAdmin.png)
+**Nota importante:**: EndPoint para iniciar sesion en al usuario admin.
+
+![login admin](./public/images/loginDocente.png)
+**Nota importante:**: EndPoint para iniciar sesion en al usuario docente.
+
+![login admin](./public/images/loginEstudiante.png)
+**Nota importante:**: EndPoint para iniciar sesion en al usuario estudiante.
+
+![pivote](./public/images/pivote.png)
+**Nota importante:**: EndPoint de nuestra relacion pivote cursos estudiantes
+
+![register](./public/images/register.png)
+**Nota importante:**: EndPoint para registrar un usuario
+
+![Update roles](./public/images/updateRoles.png)
+**Nota importante:**: EndPoint para asignar un role a un usuario a traves de un metodo update/put
 
 ---
 
-## Tecnologías Usadas
+## 🛠️ Tecnologías Usadas
 
-- [NestJS](https://nestjs.com/)
-- [TypeORM](https://typeorm.io/)
-- [PostgreSQL](https://www.postgresql.org/)
-- [ExcelJS](https://github.com/exceljs/exceljs)
-- [Swagger](https://swagger.io/)
-- [Jest](https://jestjs.io/) (pruebas unitarias)
-
----
-
-## Autor
-
-- [Tu Nombre](https://github.com/tu-usuario)
+- NestJS
+- TypeORM
+- PostgreSQL
+- ExcelJS
+- Swagger
+- Jest
 
 ---
 
-## Licencia
+## 👤 Autores
 
-Este proyecto está bajo la licencia UNLICENSED.
+Desarrollado por [AB Bryan Arauz Alvarado](https://github.com/Bryan18-Alvarado).
+
+Desarrollado por [Katia Julieth Silva Reyes](https://github.com/katia-silva09).
+
+---
+
+© 2025 SIRA - Todos los derechos reservados.
