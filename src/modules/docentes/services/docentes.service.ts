@@ -57,6 +57,19 @@ export class DocentesService {
     return [data, total];
   }
 
+  async findCursosByDocenteId(docenteId: number) {
+    const docente = await this.docenteRepository.findOne({
+      where: { id: docenteId },
+      relations: ['courses'],
+    });
+
+    if (!docente) {
+      throw new NotFoundException(`No se encontró docente con id ${docenteId}`);
+    }
+
+    return docente.courses;
+  }
+
   async create(
     createDocenteDto: CreateDocenteDto,
     user: User,
@@ -259,6 +272,19 @@ export class DocentesService {
     };
   }
 
+  async findDocenteIdByUserId(userId: number) {
+    const docente = await this.docenteRepository.findOne({
+      where: { user: { id: userId } }, // Relación con user
+    });
+
+    if (!docente) {
+      throw new NotFoundException(
+        `No se encontró docente con el usuario ${userId}`,
+      );
+    }
+
+    return docente.id;
+  }
   async findOne(id: number) {
     const docente = await this.docenteRepository.findOne({
       where: { id: id },

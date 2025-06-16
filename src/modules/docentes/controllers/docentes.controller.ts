@@ -105,7 +105,7 @@ export class DocentesController {
   }
 
   @Put(':id/upload-image')
-  @Auth(ValidRoles.admin)
+  @Auth(ValidRoles.admin, ValidRoles.docente)
   @UseInterceptors(
     FileInterceptor('file', {
       storage: diskStorage({
@@ -167,6 +167,18 @@ export class DocentesController {
       message: 'Docente actualizado correctamente',
     };
     return data;
+  }
+
+  @Get(':id/cursos')
+  async getCursosByDocente(@Param('id') id: number) {
+    const courses = await this.docentesService.findCursosByDocenteId(id);
+    return { data: courses };
+  }
+
+  @Get('docente/usuario/:userId')
+  async findDocenteByUserId(@Param('userId') userId: number) {
+    const docenteId = await this.docentesService.findDocenteIdByUserId(userId);
+    return { data: docenteId };
   }
 
   @Delete(':id')

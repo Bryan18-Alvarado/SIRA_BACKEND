@@ -25,7 +25,12 @@ export class StudentCoursesController {
   findOne(@Param('id') id: number) {
     return this.studentCoursesService.findOne(id);
   }
-
+  @Get('course/:courseId')
+  async getStudentsByCourse(@Param('courseId') courseId: number) {
+    const students =
+      await this.studentCoursesService.findStudentsByCourseId(courseId);
+    return { data: students };
+  }
   @Get('student/:studentId')
   findByStudent(@Param('studentId') studentId: number) {
     return this.studentCoursesService.findByStudentId(studentId);

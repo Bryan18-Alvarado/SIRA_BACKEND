@@ -26,6 +26,7 @@ export class ReportService {
         'studentCourses.courses.docentes',
         'studentCourses.courses.level',
         'studentCourses.courses.categories',
+        'tutor', // Agrega la relación con el tutor
       ],
     });
 
@@ -35,6 +36,7 @@ export class ReportService {
     worksheet.columns = [
       { header: 'ID', key: 'id', width: 10 },
       { header: 'Nombre', key: 'nombre', width: 20 },
+      { header: 'Tutor', key: 'tutor', width: 25 }, // Nueva columna
       { header: 'Curso', key: 'curso', width: 25 },
       { header: 'Nota', key: 'calificacion', width: 10 },
       { header: 'Docente', key: 'docente', width: 25 },
@@ -48,12 +50,15 @@ export class ReportService {
         const curso = studentCourse.courses; // El curso real está aquí
 
         const calificacion = student.calificaciones.find(
-          (calif) => calif.course.id === curso.id, // Ahora sí compara correctamente
+          (calif) => calif.course.id === curso.id,
         );
 
         worksheet.addRow({
           id: student.id,
           nombre: `${student.nombre} ${student.apellido}`,
+          tutor: student.tutor
+            ? `${student.tutor.nombre} ${student.tutor.apellido}`
+            : '',
           curso: curso?.nombre || '',
           calificacion: calificacion?.grade ?? '',
           docente: curso?.docentes?.nombre || '',
@@ -62,7 +67,6 @@ export class ReportService {
         });
       });
     });
-    // configurar el encabezado para la descarga del archivo
 
     res.setHeader(
       'Content-Type',
@@ -73,7 +77,6 @@ export class ReportService {
       'attachment; filename=estudiantes.xlsx',
     );
 
-    // escribir el archivo en la respuesta
     await workbook.xlsx.write(res);
     res.end();
   }
@@ -84,7 +87,7 @@ export class ReportService {
   ): Promise<void> {
     const studentCourses = await this.studentCourseRepository.find({
       where: { courses: { id: CoursesId } },
-      relations: ['estudiante', 'courses'],
+      relations: ['estudiante', 'estudiante.tutor', 'courses'],
     });
 
     const workbook = new ExcelJS.Workbook();
@@ -93,6 +96,7 @@ export class ReportService {
     worksheet.columns = [
       { header: 'ID Estudiante', key: 'idEstudiante', width: 15 },
       { header: 'Nombre Estudiante', key: 'nombreEstudiante', width: 30 },
+      { header: 'Tutor', key: 'tutor', width: 30 }, // Nueva columna
       { header: 'Curso', key: 'curso', width: 25 },
       { header: 'Fecha de Inscripción', key: 'fecha', width: 20 },
     ];
@@ -102,6 +106,9 @@ export class ReportService {
       worksheet.addRow({
         idEstudiante: stc.estudiante?.id,
         nombreEstudiante: `${stc.estudiante?.nombre} ${stc.estudiante?.apellido}`,
+        tutor: stc.estudiante?.tutor
+          ? `${stc.estudiante.tutor.nombre} ${stc.estudiante.tutor.apellido}`
+          : '',
         curso: stc.courses?.nombre || '',
         fecha: enrollmentDate.toLocaleDateString(),
       });
