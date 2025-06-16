@@ -6,7 +6,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, In } from 'typeorm';
 import { StudentCourse } from '../entities/studentcourse.entity';
 import { CreateStudentCourseDto } from '../dto/studentcourse.dto';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
@@ -61,6 +61,25 @@ export class StudentCoursesService {
       where: { estudiante: { id: studentId } },
       relations: ['courses'],
     });
+  }
+
+  async findStudentsByCourseId(coursesId: number) {
+    const studentCourses = await this.studentCourseRepository.find({
+      where: { coursesId },
+    });
+
+    const studentIds = studentCourses.map((sc) => sc.studentId);
+
+    if (studentIds.length === 0) {
+      return [];
+    }
+
+    // Busca los estudiantes cuyos IDs están en el array
+    const students = await this.estudianteRepository.findBy({
+      id: In(studentIds),
+    });
+
+    return students;
   }
 
   async findOne(id: number) {
