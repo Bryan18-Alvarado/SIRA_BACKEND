@@ -68,6 +68,10 @@ SIRA es un sistema backend desarrollado en **NestJS** que permite la gestión ac
   npm run start:dev
   ```
 
+## 🚀 para crear el usuario admin, necesitas agregar el codigo dentro de la tabla admin, haciendo uso de este insert
+
+INSERT INTO "admin" (codigo_admin, "userId") VALUES ('ADM001', 1);
+
 - **Modo producción:**
 
   ```bash
