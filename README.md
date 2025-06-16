@@ -104,6 +104,118 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 
 Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
 
-# SIRA_BACKEND
+# SIRA - Sistema Integral de Registro Académico
 
-proyecto sistema de registro académico Ingenieria de software II
+![Logo del Proyecto](./logo.png) <!-- Opcional, coloca tu logo aquí -->
+
+## Descripción
+
+SIRA es un sistema backend desarrollado en **NestJS** que permite la gestión académica de estudiantes, docentes, cursos y reportes. El objetivo es facilitar el registro, consulta y administración de información académica, integrándose con una base de datos **PostgreSQL** y ofreciendo endpoints seguros y documentados.
+
+---
+
+## Requisitos Previos
+
+- **Node.js** v18 o superior
+- **npm** v9 o superior
+- **PostgreSQL** 15 o superior
+- **Docker** (opcional, para despliegue y pruebas)
+- **Git** (para clonar el repositorio)
+
+---
+
+## Instalación y Configuración
+
+1. **Clona el repositorio:**
+   ```bash
+   git clone https://github.com/tu-usuario/sira-backend.git
+   cd sira-backend
+   ```
+
+2. **Instala las dependencias:**
+   ```bash
+   npm install
+   ```
+
+3. **Configura las variables de entorno:**
+   - Crea un archivo `.env` en la raíz del proyecto con la configuración de tu base de datos y JWT, por ejemplo:
+     ```
+     DB_HOST=localhost
+     DB_PORT=5432
+     DB_USERNAME=postgres
+     DB_PASSWORD=tu_password
+     DB_DATABASE=sira
+     JWT_SECRET=tu_jwt_secret
+     ```
+
+4. **Configura la base de datos:**
+   - Asegúrate de tener PostgreSQL corriendo y una base de datos creada con el nombre especificado en `.env`.
+
+---
+
+## Ejecución del Proyecto
+
+- **Modo desarrollo:**
+  ```bash
+  npm run start:dev
+  ```
+
+- **Modo producción:**
+  ```bash
+  npm run build
+  npm run start:prod
+  ```
+
+- **Pruebas:**
+  ```bash
+  npm run test
+  ```
+
+---
+
+## Uso del Sistema
+
+### Endpoints Clave
+
+- **Autenticación**
+  - `POST /auth/login` - Iniciar sesión y obtener token JWT
+
+- **Estudiantes**
+  - `GET /estudiantes` - Listar estudiantes
+  - `GET /estudiantes/:id` - Obtener detalle de un estudiante
+
+- **Docentes**
+  - `GET /docentes` - Listar docentes
+
+- **Cursos**
+  - `GET /cursos` - Listar cursos
+
+- **Reportes**
+  - `GET /reportes/estudiantes` - Descargar reporte general de estudiantes (Excel)
+  - `GET /reportes/estudiantes-por-curso/:courseId` - Descargar reporte de estudiantes por curso (Excel)
+
+- **Documentación Swagger**
+  - `GET /api` - Acceso a la documentación interactiva de la API
+
+---
+
+## Tecnologías Usadas
+
+- [NestJS](https://nestjs.com/)
+- [TypeORM](https://typeorm.io/)
+- [PostgreSQL](https://www.postgresql.org/)
+- [ExcelJS](https://github.com/exceljs/exceljs)
+- [Swagger](https://swagger.io/)
+- [Jest](https://jestjs.io/) (pruebas unitarias)
+
+---
+
+## Autor
+
+- [Tu Nombre](https://github.com/tu-usuario)
+
+---
+
+## Licencia
+
+Este proyecto está bajo la licencia UNLICENSED.
